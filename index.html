@@ -3,69 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VehicleCheck — Vehicle History Reports</title>
+  <title>VehicleCheck — Australian Vehicle History Reports</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --brand:    #1a56db;
-      --brand-dk: #1340a8;
-      --accent:   #0ea5e9;
-      --green:    #16a34a;
-      --red:      #dc2626;
-      --amber:    #d97706;
-      --bg:       #f1f5f9;
-      --surface:  #ffffff;
-      --border:   #e2e8f0;
-      --text:     #0f172a;
-      --muted:    #64748b;
-      --sidebar-w: 280px;
-      --bottom-h: 80px;
+      --navy:      #0d2b4e;
+      --navy-md:   #1a3d6b;
+      --blue:      #1d6fcd;
+      --blue-lt:   #e8f0fb;
+      --green:     #0a7a4a;
+      --green-bg:  #e8f7ef;
+      --green-bd:  #a7d9be;
+      --red:       #c0201a;
+      --red-bg:    #fdf0f0;
+      --red-bd:    #f5b3b0;
+      --amber:     #b06000;
+      --amber-bg:  #fdf6e8;
+      --amber-bd:  #f5d5a0;
+      --bg:        #edf1f7;
+      --surface:   #ffffff;
+      --surface-2: #f5f7fa;
+      --border:    #dde3ed;
+      --border-md: #c4cdd9;
+      --text:      #0d1f35;
+      --text-2:    #2c405a;
+      --muted:     #5a6e86;
+      --sidebar-w: 288px;
+      --bottom-h:  80px;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      height: 100vh;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
-    /* ── Top Nav ── */
+    /* ─ Header ─ */
     header {
-      background: var(--brand);
+      background: var(--navy);
       color: #fff;
-      padding: 0 24px;
-      height: 56px;
+      height: 54px;
+      padding: 0 20px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,.18);
-      z-index: 10;
+      z-index: 30;
+      box-shadow: 0 2px 10px rgba(0,0,0,.22);
     }
-    header .logo { font-size: 1.25rem; font-weight: 700; letter-spacing: -.3px; }
-    header .logo span { color: var(--accent); }
-    header .tagline { font-size: .78rem; opacity: .75; margin-top: 1px; }
-    header .spacer { flex: 1; }
-    header .badge {
-      background: rgba(255,255,255,.18);
-      border: 1px solid rgba(255,255,255,.3);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-size: .75rem;
+    .logo-mark {
+      width: 30px; height: 30px;
+      background: var(--blue);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
+    .logo-mark svg { width: 16px; height: 16px; }
+    .logo-text { font-size: 1.05rem; font-weight: 800; letter-spacing: -.2px; }
+    .logo-text span { color: #6eb4ff; }
+    .hdr-divider { width: 1px; height: 20px; background: rgba(255,255,255,.18); }
+    .hdr-tagline { font-size: .72rem; color: rgba(255,255,255,.6); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 5px;
+      padding: 4px 10px;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      color: rgba(255,255,255,.85);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .hdr-badge svg { opacity: .75; }
 
-    /* ── Main layout ── */
-    .main {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
+    /* ─ Main layout ─ */
+    .main { display: flex; flex: 1; overflow: hidden; }
 
-    /* ── Sidebar ── */
+    /* ─ Sidebar ─ */
     aside {
       width: var(--sidebar-w);
       background: var(--surface);
@@ -75,677 +97,781 @@
       overflow-y: auto;
       flex-shrink: 0;
     }
-
-    .sidebar-header {
-      padding: 16px 20px 12px;
+    .sb-head {
+      padding: 14px 18px 12px;
       border-bottom: 1px solid var(--border);
-      background: #f8fafc;
+      background: var(--surface-2);
     }
-    .sidebar-header h2 { font-size: .85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-    .sidebar-header p { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+    .sb-head h2 { font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+    .sb-head p { font-size: .72rem; color: var(--muted); margin-top: 1px; }
 
-    .sidebar-price {
-      padding: 14px 20px;
-      background: linear-gradient(135deg, #eff6ff, #dbeafe);
-      border-bottom: 1px solid #bfdbfe;
+    .sb-total {
+      padding: 12px 18px;
+      background: linear-gradient(135deg, #0d2b4e, #1a3d6b);
+      color: #fff;
+      border-bottom: 1px solid #0a2040;
     }
-    .sidebar-price .total-label { font-size: .75rem; color: var(--brand); font-weight: 600; }
-    .sidebar-price .total-amount { font-size: 1.7rem; font-weight: 800; color: var(--brand); letter-spacing: -.5px; }
-    .sidebar-price .total-sub { font-size: .72rem; color: var(--muted); }
+    .sb-total .lbl { font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #6eb4ff; }
+    .sb-total .amt { font-size: 1.65rem; font-weight: 800; letter-spacing: -.5px; line-height: 1.1; }
+    .sb-total .sub { font-size: .68rem; color: rgba(255,255,255,.5); margin-top: 1px; }
 
-    .section-group { padding: 12px 0; }
-    .section-group + .section-group { border-top: 1px solid var(--border); }
-    .group-label {
-      padding: 6px 20px 4px;
-      font-size: .7rem;
+    .sb-group { padding: 10px 0; }
+    .sb-group + .sb-group { border-top: 1px solid var(--border); }
+    .sb-group-label {
+      padding: 4px 18px 6px;
+      font-size: .66rem;
       font-weight: 700;
-      color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: .07em;
+      letter-spacing: .09em;
+      color: var(--muted);
     }
 
-    .check-item {
+    .cb-item {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 8px 20px;
+      padding: 7px 18px;
       cursor: pointer;
-      transition: background .12s;
       user-select: none;
+      transition: background .1s;
     }
-    .check-item:hover { background: #f8fafc; }
-    .check-item input[type=checkbox] { display: none; }
-    .check-box {
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--border);
+    .cb-item:hover { background: var(--surface-2); }
+    .cb-item input { display: none; }
+    .cb-box {
+      width: 17px; height: 17px;
+      border: 2px solid var(--border-md);
       border-radius: 4px;
       flex-shrink: 0;
       margin-top: 1px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all .15s;
-      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .12s;
+      background: var(--surface);
     }
-    .check-item.checked .check-box {
-      background: var(--brand);
-      border-color: var(--brand);
-    }
-    .check-item.checked .check-box::after {
+    .cb-item.on .cb-box { background: var(--blue); border-color: var(--blue); }
+    .cb-item.on .cb-box::after {
       content: '';
-      width: 9px;
-      height: 5px;
+      width: 9px; height: 5px;
       border: 2px solid #fff;
-      border-top: none;
-      border-right: none;
+      border-top: none; border-right: none;
       transform: rotate(-45deg) translateY(-1px);
     }
-    .check-info { flex: 1; }
-    .check-name { font-size: .85rem; font-weight: 600; }
-    .check-desc { font-size: .72rem; color: var(--muted); margin-top: 1px; }
-    .check-price {
-      font-size: .78rem;
-      font-weight: 700;
-      color: var(--brand);
-      white-space: nowrap;
-      align-self: center;
-    }
-    .check-item.checked .check-name { color: var(--brand); }
+    .cb-info { flex: 1; min-width: 0; }
+    .cb-name { font-size: .83rem; font-weight: 600; color: var(--text-2); }
+    .cb-item.on .cb-name { color: var(--blue); }
+    .cb-desc { font-size: .69rem; color: var(--muted); margin-top: 1px; }
+    .cb-price { font-size: .76rem; font-weight: 700; color: var(--blue); align-self: center; white-space: nowrap; }
 
-    /* ── Report area ── */
+    /* ─ Report area ─ */
     .report-area {
       flex: 1;
       overflow-y: auto;
-      padding: 24px;
-      padding-bottom: calc(var(--bottom-h) + 24px);
+      padding: 20px;
+      padding-bottom: calc(var(--bottom-h) + 20px);
     }
 
-    .report-placeholder {
+    .empty-state {
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100%;
       color: var(--muted);
       text-align: center;
-      gap: 12px;
+      gap: 10px;
     }
-    .report-placeholder .icon { font-size: 3.5rem; opacity: .35; }
-    .report-placeholder h3 { font-size: 1.1rem; font-weight: 600; }
-    .report-placeholder p { font-size: .85rem; max-width: 320px; line-height: 1.5; }
-
-    .report-hero {
-      background: linear-gradient(135deg, var(--brand) 0%, #2563eb 100%);
+    .empty-state .es-icon {
+      width: 56px; height: 56px;
+      border: 2px solid var(--border-md);
       border-radius: 14px;
-      padding: 24px 28px;
-      color: #fff;
-      margin-bottom: 20px;
-      display: flex;
-      gap: 24px;
-      align-items: center;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--border-md);
     }
-    .report-hero .car-icon { font-size: 3.5rem; opacity: .9; }
-    .report-hero h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -.3px; }
-    .report-hero .sub { font-size: .85rem; opacity: .8; margin-top: 2px; }
-    .report-hero .badges { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-    .hero-badge {
-      background: rgba(255,255,255,.2);
-      border: 1px solid rgba(255,255,255,.35);
-      border-radius: 20px;
-      padding: 3px 10px;
-      font-size: .72rem;
-      font-weight: 600;
-    }
+    .empty-state h3 { font-size: .95rem; font-weight: 600; }
+    .empty-state p { font-size: .8rem; max-width: 280px; line-height: 1.6; }
 
-    .report-section {
+    /* Vehicle hero ─ */
+    .vehicle-hero {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      margin-bottom: 16px;
       overflow: hidden;
-      animation: slideIn .25s ease;
+      margin-bottom: 16px;
     }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .car-photo-wrap {
+      position: relative;
+      background: linear-gradient(165deg, #c8d8e8 0%, #dde8f2 50%, #ccd6e4 100%);
+      height: 200px;
+      overflow: hidden;
     }
-
-    .section-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      background: #fafbfc;
+    .car-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 60%;
     }
-    .section-head .s-icon { font-size: 1.3rem; }
-    .section-head h3 { font-size: .95rem; font-weight: 700; flex: 1; }
-    .section-head .status-pill {
-      font-size: .7rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      text-transform: uppercase;
+    .car-photo-wrap .car-svg-fallback {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .car-photo-wrap .car-svg-fallback svg {
+      width: 100%; height: auto;
+      max-height: 200px;
+    }
+    .photo-badge {
+      position: absolute;
+      top: 10px; left: 12px;
+      background: rgba(13,27,50,.6);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 5px;
+      padding: 3px 8px;
+      font-size: .66rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.85);
       letter-spacing: .04em;
-    }
-    .pill-green  { background: #dcfce7; color: #15803d; }
-    .pill-red    { background: #fee2e2; color: #b91c1c; }
-    .pill-amber  { background: #fef3c7; color: #92400e; }
-    .pill-blue   { background: #dbeafe; color: #1d4ed8; }
-    .pill-grey   { background: #f1f5f9; color: #475569; }
-
-    .section-body { padding: 18px 20px; }
-
-    /* Grid of KV pairs */
-    .kv-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 14px;
-    }
-    .kv { display: flex; flex-direction: column; gap: 2px; }
-    .kv .k { font-size: .7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-    .kv .v { font-size: .9rem; font-weight: 600; }
-
-    /* Table */
-    .data-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
-    .data-table th {
-      text-align: left;
-      font-size: .7rem;
-      font-weight: 700;
-      color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: .05em;
-      padding: 0 10px 8px;
-      border-bottom: 2px solid var(--border);
     }
-    .data-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
-    .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: #f8fafc; }
 
-    /* Odometer chart */
-    .odo-chart { display: flex; flex-direction: column; gap: 8px; }
-    .odo-row { display: flex; align-items: center; gap: 10px; font-size: .82rem; }
-    .odo-row .odo-date { width: 80px; color: var(--muted); font-size: .75rem; flex-shrink: 0; }
-    .odo-row .odo-bar-wrap { flex: 1; background: #f1f5f9; border-radius: 4px; overflow: hidden; height: 22px; }
-    .odo-row .odo-bar { height: 100%; background: linear-gradient(90deg, var(--brand), var(--accent)); border-radius: 4px; display: flex; align-items: center; padding-left: 8px; color: #fff; font-size: .72rem; font-weight: 700; transition: width .6s ease; }
-    .odo-row .odo-src { width: 90px; text-align: right; color: var(--muted); font-size: .72rem; flex-shrink: 0; }
+    .vehicle-info {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 16px 18px;
+      border-top: 1px solid var(--border);
+      align-items: start;
+    }
+    .vi-title { font-size: 1.2rem; font-weight: 800; color: var(--text); letter-spacing: -.3px; }
+    .vi-sub { font-size: .78rem; color: var(--muted); margin-top: 3px; font-family: 'SF Mono', 'Fira Mono', 'Roboto Mono', monospace; }
+    .vi-specs {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .spec-chip {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 3px 8px;
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+    .report-meta { text-align: right; }
+    .report-id { font-size: .65rem; font-family: monospace; color: var(--muted); letter-spacing: .04em; }
+    .report-ts { font-size: .65rem; color: var(--muted); margin-top: 2px; }
+    .report-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      background: var(--green-bg);
+      border: 1px solid var(--green-bd);
+      border-radius: 20px;
+      padding: 3px 9px;
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
-    /* Price chart */
-    .price-chart { position: relative; height: 140px; margin-top: 8px; }
-    .price-chart svg { width: 100%; height: 100%; overflow: visible; }
-
-    /* Market gauge */
-    .gauge-row { display: flex; align-items: center; gap: 20px; }
-    .gauge-wrap { position: relative; width: 130px; height: 70px; flex-shrink: 0; }
-    .gauge-wrap svg { width: 100%; height: 100%; }
-    .gauge-val { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 1.1rem; font-weight: 800; color: var(--text); }
-    .gauge-label { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .7rem; color: var(--muted); white-space: nowrap; }
-    .gauge-info h4 { font-size: .95rem; font-weight: 700; }
-    .gauge-info p { font-size: .8rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
-
-    /* PPSR */
-    .ppsr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
-    .ppsr-card {
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
+    /* Health grid ─ */
+    .health-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .health-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      align-items: flex-start;
     }
-    .ppsr-card .p-icon { font-size: 1.4rem; }
-    .ppsr-card .p-label { font-size: .72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-    .ppsr-card .p-result { font-size: .88rem; font-weight: 700; }
-    .ppsr-card.pass { border-color: #86efac; background: #f0fdf4; }
-    .ppsr-card.fail { border-color: #fca5a5; background: #fef2f2; }
-    .ppsr-card.pass .p-result { color: var(--green); }
-    .ppsr-card.fail .p-result { color: var(--red); }
+    .health-card.pass { border-color: var(--green-bd); background: var(--green-bg); }
+    .health-card.fail { border-color: var(--red-bd); background: var(--red-bg); }
+    .health-card.info { border-color: #b3cef0; background: #eef5ff; }
+    .hc-label { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .hc-value { font-size: .82rem; font-weight: 700; }
+    .health-card.pass .hc-value { color: var(--green); }
+    .health-card.fail .hc-value { color: var(--red); }
+    .health-card.info .hc-value { color: #1552a0; }
+    .hc-icon { width: 20px; height: 20px; }
 
-    /* Locked overlay */
-    .locked-notice {
-      background: #f8fafc;
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 32px;
-      text-align: center;
+    /* Section cards ─ */
+    .rs {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .rs-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .rs-icon {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .rs-icon.green { background: var(--green-bg); color: var(--green); }
+    .rs-icon.red   { background: var(--red-bg); color: var(--red); }
+    .rs-icon.blue  { background: var(--blue-lt); color: var(--blue); }
+    .rs-icon.amber { background: var(--amber-bg); color: var(--amber); }
+    .rs-icon.navy  { background: #e8eef7; color: var(--navy); }
+    .rs-title { font-size: .88rem; font-weight: 700; flex: 1; }
+    .rs-pill {
+      font-size: .63rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .pill-g { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bd); }
+    .pill-r { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-bd); }
+    .pill-a { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+    .pill-b { background: var(--blue-lt);  color: var(--blue);  border: 1px solid #b3cef0; }
+    .rs-src {
+      font-size: .62rem;
       color: var(--muted);
-      margin-bottom: 16px;
+      padding: 4px 8px;
+      background: var(--border);
+      border-radius: 4px;
     }
-    .locked-notice .l-icon { font-size: 2rem; margin-bottom: 8px; }
-    .locked-notice p { font-size: .85rem; }
 
-    /* ── Bottom bar ── */
+    .rs-body { padding: 16px; }
+
+    /* KV Grid ─ */
+    .kv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .kv { display: flex; flex-direction: column; gap: 2px; }
+    .kv .k { font-size: .64rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+    .kv .v { font-size: .85rem; font-weight: 600; color: var(--text); }
+    .kv .v.mono { font-family: 'SF Mono', 'Fira Mono', 'Roboto Mono', monospace; font-size: .8rem; }
+
+    /* PPSR grid ─ */
+    .ppsr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 10px; }
+    .ppsr-card {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .ppsr-card.pass { border-color: var(--green-bd); background: var(--green-bg); }
+    .ppsr-card.fail { border-color: var(--red-bd); background: var(--red-bg); }
+    .pp-lbl { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .pp-res { font-size: .82rem; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+    .ppsr-card.pass .pp-res { color: var(--green); }
+    .ppsr-card.fail .pp-res { color: var(--red); }
+    .pp-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* Odometer chart ─ */
+    .odo-rows { display: flex; flex-direction: column; gap: 7px; }
+    .odo-row { display: flex; align-items: center; gap: 10px; }
+    .odo-date { width: 64px; font-size: .68rem; color: var(--muted); flex-shrink: 0; }
+    .odo-bar-bg { flex: 1; height: 22px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .odo-bar { height: 100%; background: linear-gradient(90deg, var(--navy), var(--blue)); border-radius: 4px; display: flex; align-items: center; padding: 0 8px; min-width: 60px; }
+    .odo-bar span { font-size: .68rem; font-weight: 700; color: #fff; white-space: nowrap; }
+    .odo-src { width: 88px; font-size: .66rem; color: var(--muted); text-align: right; flex-shrink: 0; }
+
+    /* Ownership timeline ─ */
+    .ow-timeline { display: flex; flex-direction: column; gap: 0; }
+    .ow-item { display: flex; gap: 14px; align-items: stretch; }
+    .ow-line-col { display: flex; flex-direction: column; align-items: center; width: 24px; flex-shrink: 0; }
+    .ow-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--blue); border: 2px solid var(--blue-lt); flex-shrink: 0; margin-top: 3px; }
+    .ow-connector { flex: 1; width: 2px; background: var(--border); margin: 2px 0; }
+    .ow-item:last-child .ow-connector { display: none; }
+    .ow-card {
+      flex: 1;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .ow-card h4 { font-size: .82rem; font-weight: 700; }
+    .ow-card .ow-detail { font-size: .72rem; color: var(--muted); margin-top: 3px; }
+
+    /* Price chart ─ */
+    .price-chart-wrap { position: relative; }
+    .price-chart-wrap svg { width: 100%; display: block; }
+
+    /* Market value ─ */
+    .mv-row { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; }
+    .mv-estimate {
+      flex: 1;
+      background: linear-gradient(135deg, var(--navy), var(--navy-md));
+      color: #fff;
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .mv-estimate .lbl { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #6eb4ff; }
+    .mv-estimate .val { font-size: 1.6rem; font-weight: 800; letter-spacing: -.5px; }
+    .mv-estimate .sub { font-size: .7rem; color: rgba(255,255,255,.6); margin-top: 2px; }
+    .mv-range { display: flex; flex-direction: column; gap: 6px; }
+    .mv-range-bar { display: flex; align-items: center; gap: 8px; font-size: .72rem; }
+    .mv-range-bar .rl { width: 32px; color: var(--muted); text-align: right; }
+    .mv-range-bar .rb { flex: 1; height: 8px; background: var(--border); border-radius: 4px; position: relative; }
+    .mv-range-bar .rf { height: 100%; border-radius: 4px; }
+    .mv-range-bar .rv { width: 40px; font-weight: 700; }
+
+    /* Source attribution ─ */
+    .src-attr {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .src-tag {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: .62rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .03em;
+    }
+
+    /* Report footer ─ */
+    .report-footer {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .rf-left { display: flex; flex-direction: column; gap: 2px; }
+    .rf-id { font-size: .68rem; font-family: monospace; color: var(--muted); letter-spacing: .04em; }
+    .rf-note { font-size: .65rem; color: var(--muted); }
+    .rf-sources { display: flex; gap: 5px; flex-wrap: wrap; }
+
+    /* Bottom bar ─ */
     .bottom-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       height: var(--bottom-h);
       background: var(--surface);
       border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
-      padding: 0 24px;
-      gap: 16px;
-      box-shadow: 0 -4px 16px rgba(0,0,0,.07);
-      z-index: 20;
+      padding: 0 20px;
+      gap: 14px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.07);
+      z-index: 25;
     }
-    .bottom-bar .bb-label { font-size: .85rem; font-weight: 600; white-space: nowrap; }
-    .bottom-bar .bb-sub { font-size: .72rem; color: var(--muted); }
-    .bottom-bar .bb-inputs { display: flex; gap: 10px; flex: 1; max-width: 560px; }
-    .bottom-bar input {
+    .bb-label { flex-shrink: 0; }
+    .bb-label strong { display: block; font-size: .83rem; }
+    .bb-label span { font-size: .68rem; color: var(--muted); }
+    .bb-inputs { display: flex; gap: 8px; flex: 1; max-width: 500px; }
+    .bb-inputs input {
       flex: 1;
       border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: .9rem;
+      border-radius: 7px;
+      padding: 9px 12px;
+      font-size: .85rem;
       outline: none;
-      transition: border-color .15s;
+      transition: border-color .15s, box-shadow .15s;
+      font-family: inherit;
     }
-    .bottom-bar input:focus { border-color: var(--brand); }
-    .bottom-bar input::placeholder { color: #94a3b8; }
-    .btn-lookup {
-      background: var(--brand);
+    .bb-inputs input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,111,205,.12); }
+    .bb-inputs input::placeholder { color: #a0aab8; }
+    .btn-run {
+      background: var(--navy);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 10px 24px;
-      font-size: .9rem;
+      border-radius: 7px;
+      padding: 9px 22px;
+      font-size: .85rem;
       font-weight: 700;
       cursor: pointer;
       transition: background .15s, transform .1s;
       white-space: nowrap;
+      display: flex; align-items: center; gap: 6px;
     }
-    .btn-lookup:hover { background: var(--brand-dk); }
-    .btn-lookup:active { transform: scale(.97); }
-    .btn-lookup:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+    .btn-run:hover { background: var(--navy-md); }
+    .btn-run:active { transform: scale(.97); }
+    .btn-run:disabled { background: #9aabbf; cursor: not-allowed; transform: none; }
+    .btn-run svg { opacity: .8; }
 
-    /* ── Payment modal ── */
+    /* Modal ─ */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15,23,42,.55);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: fixed; inset: 0;
+      background: rgba(10,20,40,.6);
+      backdrop-filter: blur(5px);
+      display: flex; align-items: center; justify-content: center;
       z-index: 100;
       animation: fadeIn .2s ease;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .modal-overlay.hidden { display: none; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .modal {
       background: var(--surface);
-      border-radius: 16px;
-      width: 440px;
+      border-radius: 14px;
+      width: 420px;
       max-width: 94vw;
+      box-shadow: 0 30px 80px rgba(0,0,0,.28);
       overflow: hidden;
-      box-shadow: 0 24px 64px rgba(0,0,0,.25);
-      animation: popIn .22s cubic-bezier(.34,1.56,.64,1);
+      animation: popIn .22s cubic-bezier(.34,1.4,.64,1);
     }
     @keyframes popIn {
-      from { opacity: 0; transform: scale(.9) translateY(10px); }
+      from { opacity: 0; transform: scale(.88) translateY(12px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    .modal-header {
-      background: linear-gradient(135deg, var(--brand), #2563eb);
-      padding: 24px 28px 20px;
+    .modal-hdr {
+      background: linear-gradient(135deg, var(--navy), var(--navy-md));
+      padding: 20px 22px 18px;
       color: #fff;
+      position: relative;
     }
-    .modal-header h2 { font-size: 1.2rem; font-weight: 800; }
-    .modal-header .vehicle-id {
-      font-size: .82rem;
-      opacity: .8;
-      margin-top: 4px;
-      font-family: monospace;
-      letter-spacing: .05em;
+    .modal-hdr h2 { font-size: 1.08rem; font-weight: 800; }
+    .modal-hdr .m-vid { font-size: .72rem; color: rgba(255,255,255,.6); font-family: monospace; letter-spacing: .04em; margin-top: 3px; }
+    .btn-close {
+      position: absolute; top: 14px; right: 16px;
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      width: 26px; height: 26px; border-radius: 50%;
+      cursor: pointer; font-size: .9rem;
+      display: flex; align-items: center; justify-content: center;
     }
+    .btn-close:hover { background: rgba(255,255,255,.25); }
 
-    .modal-body { padding: 22px 28px; }
+    .modal-body { padding: 18px 22px; }
 
-    .report-line-items { margin-bottom: 18px; }
-    .line-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 7px 0;
-      font-size: .85rem;
-      border-bottom: 1px dashed var(--border);
+    .line-items { margin-bottom: 14px; }
+    .li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 0;
+      font-size: .83rem;
+      border-bottom: 1px solid var(--border);
     }
-    .line-item:last-child { border-bottom: none; }
-    .line-item .li-name { color: var(--text); }
-    .line-item .li-price { font-weight: 700; color: var(--brand); }
+    .li:last-child { border-bottom: none; }
+    .li .lp { font-weight: 700; color: var(--navy); }
 
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: #eff6ff;
-      border-radius: 8px;
-      margin-bottom: 18px;
-    }
-    .total-row .t-label { font-size: .88rem; font-weight: 700; }
-    .total-row .t-amount { font-size: 1.35rem; font-weight: 800; color: var(--brand); }
-
-    .payment-methods {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-    .pay-method {
-      flex: 1;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      cursor: pointer;
-      font-size: .78rem;
-      font-weight: 600;
-      transition: all .15s;
-    }
-    .pay-method:hover, .pay-method.selected { border-color: var(--brand); background: #eff6ff; color: var(--brand); }
-    .pay-method .pm-icon { font-size: 1.3rem; display: block; margin-bottom: 3px; }
-
-    .card-fields { display: grid; gap: 10px; margin-bottom: 18px; }
-    .card-fields input {
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
+    .total-strip {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--blue-lt);
+      border: 1px solid #b3cef0;
+      border-radius: 7px;
       padding: 10px 14px;
-      font-size: .88rem;
-      outline: none;
+      margin-bottom: 16px;
     }
-    .card-fields input:focus { border-color: var(--brand); }
-    .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .total-strip .tl { font-size: .82rem; font-weight: 700; }
+    .total-strip .ta { font-size: 1.25rem; font-weight: 800; color: var(--navy); }
+
+    .pay-methods { display: flex; gap: 6px; margin-bottom: 14px; }
+    .pay-method {
+      flex: 1; border: 1.5px solid var(--border);
+      border-radius: 7px; padding: 8px 6px;
+      text-align: center; cursor: pointer;
+      font-size: .72rem; font-weight: 600;
+      color: var(--text-2); transition: all .15s;
+    }
+    .pay-method:hover, .pay-method.sel {
+      border-color: var(--blue); background: var(--blue-lt); color: var(--blue);
+    }
+    .pay-method .pm-lbl { display: block; margin-top: 3px; }
+
+    .card-fields { display: grid; gap: 8px; margin-bottom: 14px; }
+    .card-fields input {
+      border: 1.5px solid var(--border); border-radius: 7px;
+      padding: 9px 12px; font-size: .85rem; outline: none; font-family: inherit;
+    }
+    .card-fields input:focus { border-color: var(--blue); }
+    .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .btn-pay {
       width: 100%;
-      background: linear-gradient(135deg, var(--green), #15803d);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
+      background: linear-gradient(135deg, #0a7a4a, #0d9a5c);
+      color: #fff; border: none; border-radius: 8px;
+      padding: 13px; font-size: .92rem; font-weight: 800;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
       transition: opacity .15s, transform .1s;
-      letter-spacing: .02em;
     }
     .btn-pay:hover { opacity: .92; }
     .btn-pay:active { transform: scale(.98); }
 
-    .modal-footer {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 12px 28px 16px;
-      font-size: .72rem;
-      color: var(--muted);
+    .modal-footer-note {
+      padding: 10px 22px 14px;
+      font-size: .65rem; color: var(--muted);
+      text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;
     }
 
-    .btn-close-modal {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-      background: rgba(255,255,255,.2);
-      border: none;
-      color: #fff;
-      font-size: 1.1rem;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-header { position: relative; }
-
-    /* Success state */
     .success-screen {
-      padding: 40px 28px;
+      padding: 36px 22px;
       text-align: center;
       display: none;
     }
-    .success-screen .s-icon { font-size: 3.5rem; margin-bottom: 12px; }
-    .success-screen h3 { font-size: 1.2rem; font-weight: 800; color: var(--green); margin-bottom: 6px; }
-    .success-screen p { font-size: .85rem; color: var(--muted); line-height: 1.5; }
+    .success-icon {
+      width: 56px; height: 56px;
+      background: var(--green-bg);
+      border: 2px solid var(--green-bd);
+      border-radius: 50%;
+      margin: 0 auto 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--green);
+    }
+    .success-screen h3 { font-size: 1.1rem; font-weight: 800; color: var(--green); }
+    .success-screen p { font-size: .82rem; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+    .success-screen .proto-note {
+      margin-top: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-size: .7rem;
+      color: var(--muted);
+    }
 
-    /* Responsive */
-    @media (max-width: 700px) {
-      :root { --sidebar-w: 100%; --bottom-h: 120px; }
+    @media (max-width: 680px) {
+      :root { --sidebar-w: 100%; --bottom-h: 110px; }
       .main { flex-direction: column; }
-      aside { width: 100%; max-height: 260px; }
-      .report-area { padding: 16px; }
+      aside { max-height: 240px; width: 100%; }
+      .report-area { padding: 14px; }
       .bottom-bar { flex-wrap: wrap; height: auto; padding: 12px 16px; gap: 8px; }
-      .bottom-bar .bb-inputs { flex-direction: column; }
+      .bb-inputs { flex-direction: column; max-width: 100%; }
+      .vehicle-info { grid-template-columns: 1fr; }
+      .report-meta { text-align: left; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
+<!-- ─ Header ─────────────────────────────────────────── -->
 <header>
-  <div>
-    <div class="logo">Vehicle<span>Check</span></div>
-    <div class="tagline">Comprehensive Australian Vehicle History Reports</div>
+  <div class="logo-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <path d="M9 12l2 2 4-4" stroke-width="2.5"/>
+    </svg>
   </div>
-  <div class="spacer"></div>
-  <div class="badge">🔒 Secure &amp; Instant</div>
+  <div>
+    <div class="logo-text">Vehicle<span>Check</span></div>
+  </div>
+  <div class="hdr-divider"></div>
+  <div class="hdr-tagline">Australian Vehicle History Reports</div>
+  <div class="hdr-spacer"></div>
+  <div class="hdr-badge">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    PPSR Accredited
+  </div>
 </header>
 
-<!-- ── Main ── -->
+<!-- ─ Main ────────────────────────────────────────────── -->
 <div class="main">
 
-  <!-- ── Sidebar ── -->
+  <!-- Sidebar -->
   <aside>
-    <div class="sidebar-header">
+    <div class="sb-head">
       <h2>Build Your Report</h2>
-      <p>Select the checks you need</p>
+      <p>Select the checks you require</p>
     </div>
 
-    <div class="sidebar-price">
-      <div class="total-label">ESTIMATED TOTAL</div>
-      <div class="total-amount" id="total-display">$0.00</div>
-      <div class="total-sub">AUD · Instant delivery</div>
+    <div class="sb-total">
+      <div class="lbl">Estimated Total</div>
+      <div class="amt" id="total-display">$0.00</div>
+      <div class="sub">AUD · incl. GST · instant delivery</div>
     </div>
 
     <!-- Core -->
-    <div class="section-group">
-      <div class="group-label">Core Checks</div>
-
-      <label class="check-item checked" data-key="vehicle_details" data-price="4.95">
+    <div class="sb-group">
+      <div class="sb-group-label">Core</div>
+      <label class="cb-item on" data-key="vehicle_details" data-price="4.95">
         <input type="checkbox" checked />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Vehicle Details</div>
-          <div class="check-desc">Make, model, specs & compliance</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Vehicle Details</div>
+          <div class="cb-desc">Make, model, specs & compliance</div>
         </div>
-        <div class="check-price">$4.95</div>
+        <div class="cb-price">$4.95</div>
       </label>
-
-      <label class="check-item checked" data-key="ppsr" data-price="2.00">
+      <label class="cb-item on" data-key="ppsr" data-price="2.00">
         <input type="checkbox" checked />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">PPSR Check</div>
-          <div class="check-desc">Encumbrances, stolen, write-off</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">PPSR Check</div>
+          <div class="cb-desc">Finance, encumbrances & write-off</div>
         </div>
-        <div class="check-price">$2.00</div>
+        <div class="cb-price">$2.00</div>
       </label>
-
-      <label class="check-item checked" data-key="registration" data-price="1.95">
+      <label class="cb-item on" data-key="registration" data-price="1.95">
         <input type="checkbox" checked />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Registration Status</div>
-          <div class="check-desc">Current rego & expiry</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Registration Status</div>
+          <div class="cb-desc">Current rego & expiry date</div>
         </div>
-        <div class="check-price">$1.95</div>
+        <div class="cb-price">$1.95</div>
       </label>
     </div>
 
     <!-- History -->
-    <div class="section-group">
-      <div class="group-label">History</div>
-
-      <label class="check-item checked" data-key="odometer" data-price="3.95">
+    <div class="sb-group">
+      <div class="sb-group-label">History</div>
+      <label class="cb-item on" data-key="odometer" data-price="3.95">
         <input type="checkbox" checked />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Odometer History</div>
-          <div class="check-desc">Service records & readings</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Odometer History</div>
+          <div class="cb-desc">Service readings & rollback check</div>
         </div>
-        <div class="check-price">$3.95</div>
+        <div class="cb-price">$3.95</div>
       </label>
-
-      <label class="check-item" data-key="ownership" data-price="2.95">
+      <label class="cb-item" data-key="ownership" data-price="2.95">
         <input type="checkbox" />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Ownership History</div>
-          <div class="check-desc">Previous owners & states</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Ownership History</div>
+          <div class="cb-desc">Previous owners & state transfers</div>
         </div>
-        <div class="check-price">$2.95</div>
+        <div class="cb-price">$2.95</div>
       </label>
-
-      <label class="check-item" data-key="accident" data-price="3.50">
+      <label class="cb-item" data-key="accident" data-price="3.50">
         <input type="checkbox" />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Accident & Damage</div>
-          <div class="check-desc">Reported incidents & repairs</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Accident & Damage</div>
+          <div class="cb-desc">Reported incidents & claims</div>
         </div>
-        <div class="check-price">$3.50</div>
+        <div class="cb-price">$3.50</div>
       </label>
     </div>
 
-    <!-- Pricing -->
-    <div class="section-group">
-      <div class="group-label">Market & Pricing</div>
-
-      <label class="check-item" data-key="market_value" data-price="4.50">
+    <!-- Market & Pricing -->
+    <div class="sb-group">
+      <div class="sb-group-label">Market & Pricing</div>
+      <label class="cb-item" data-key="market_value" data-price="4.50">
         <input type="checkbox" />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Market Valuation</div>
-          <div class="check-desc">Current market value estimate</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Market Valuation</div>
+          <div class="cb-desc">Current value estimate</div>
         </div>
-        <div class="check-price">$4.50</div>
+        <div class="cb-price">$4.50</div>
       </label>
-
-      <label class="check-item" data-key="price_history" data-price="3.95">
+      <label class="cb-item" data-key="price_history" data-price="3.95">
         <input type="checkbox" />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Price History</div>
-          <div class="check-desc">Listing trends over time</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Price History</div>
+          <div class="cb-desc">Listing price trends over time</div>
         </div>
-        <div class="check-price">$3.95</div>
+        <div class="cb-price">$3.95</div>
       </label>
-
-      <label class="check-item" data-key="market_overlay" data-price="4.95">
+      <label class="cb-item" data-key="market_overlay" data-price="4.95">
         <input type="checkbox" />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Market Overlay</div>
-          <div class="check-desc">Comparable sales & insights</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Market Overlay</div>
+          <div class="cb-desc">Comparable sales & demand</div>
         </div>
-        <div class="check-price">$4.95</div>
+        <div class="cb-price">$4.95</div>
       </label>
     </div>
 
     <!-- Finance & Safety -->
-    <div class="section-group">
-      <div class="group-label">Finance & Safety</div>
-
-      <label class="check-item" data-key="finance" data-price="2.50">
+    <div class="sb-group">
+      <div class="sb-group-label">Finance & Safety</div>
+      <label class="cb-item" data-key="finance" data-price="2.50">
         <input type="checkbox" />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Finance Owing</div>
-          <div class="check-desc">Outstanding loans & liens</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Finance Owing</div>
+          <div class="cb-desc">Outstanding loans & security interests</div>
         </div>
-        <div class="check-price">$2.50</div>
+        <div class="cb-price">$2.50</div>
       </label>
-
-      <label class="check-item" data-key="safety_recalls" data-price="1.95">
+      <label class="cb-item" data-key="safety_recalls" data-price="1.95">
         <input type="checkbox" />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Safety Recalls</div>
-          <div class="check-desc">Open recall notices</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Safety Recalls</div>
+          <div class="cb-desc">Open manufacturer recall notices</div>
         </div>
-        <div class="check-price">$1.95</div>
+        <div class="cb-price">$1.95</div>
       </label>
-
-      <label class="check-item" data-key="stolen" data-price="1.50">
+      <label class="cb-item" data-key="stolen" data-price="1.50">
         <input type="checkbox" />
-        <div class="check-box"></div>
-        <div class="check-info">
-          <div class="check-name">Stolen Check</div>
-          <div class="check-desc">NEVDIS stolen vehicle register</div>
+        <div class="cb-box"></div>
+        <div class="cb-info">
+          <div class="cb-name">Stolen Vehicle Check</div>
+          <div class="cb-desc">NEVDIS stolen register</div>
         </div>
-        <div class="check-price">$1.50</div>
+        <div class="cb-price">$1.50</div>
       </label>
     </div>
 
   </aside>
 
-  <!-- ── Report preview ── -->
-  <div class="report-area" id="report-area">
-    <!-- populated by JS -->
-  </div>
+  <!-- Report area -->
+  <div class="report-area" id="report-area"></div>
 
 </div>
 
-<!-- ── Bottom bar ── -->
+<!-- ─ Bottom bar ──────────────────────────────────────── -->
 <div class="bottom-bar">
-  <div>
-    <div class="bb-label">Enter Vehicle Details</div>
-    <div class="bb-sub">Australian registration or 17-digit VIN</div>
+  <div class="bb-label">
+    <strong>Run a Report</strong>
+    <span>Australian rego or 17-digit VIN</span>
   </div>
   <div class="bb-inputs">
-    <input type="text" id="rego-input" placeholder="Rego (e.g. ABC123 VIC)" maxlength="12" />
-    <input type="text" id="vin-input" placeholder="VIN (e.g. JN1GNBT30U0001234)" maxlength="17" />
+    <input type="text" id="rego-input" placeholder="Registration  e.g. ABC123 VIC" maxlength="12" />
+    <input type="text" id="vin-input"  placeholder="VIN  e.g. MR0FB3CD200123456" maxlength="17" />
   </div>
-  <button class="btn-lookup" id="lookup-btn" disabled>Get Report →</button>
+  <button class="btn-run" id="lookup-btn" disabled>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    Get Report
+  </button>
 </div>
 
-<!-- ── Payment modal ── -->
+<!-- ─ Payment modal ───────────────────────────────────── -->
 <div class="modal-overlay hidden" id="modal-overlay">
   <div class="modal">
-    <div class="modal-header">
-      <button class="btn-close-modal" id="close-modal">✕</button>
-      <h2>Unlock Your Report</h2>
-      <div class="vehicle-id" id="modal-vehicle-id">—</div>
+    <div class="modal-hdr">
+      <button class="btn-close" id="close-modal">✕</button>
+      <h2>Unlock Report</h2>
+      <div class="m-vid" id="modal-vid">—</div>
     </div>
 
     <div id="modal-main">
       <div class="modal-body">
-        <div class="report-line-items" id="line-items"></div>
-        <div class="total-row">
-          <span class="t-label">Total (AUD, inc. GST)</span>
-          <span class="t-amount" id="modal-total">$0.00</span>
+        <div class="line-items" id="line-items"></div>
+        <div class="total-strip">
+          <span class="tl">Total (AUD, incl. GST)</span>
+          <span class="ta" id="modal-total">$0.00</span>
         </div>
-
-        <div class="payment-methods">
-          <div class="pay-method selected" data-method="card">
-            <span class="pm-icon">💳</span>Card
+        <div class="pay-methods">
+          <div class="pay-method sel" data-method="card">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span class="pm-lbl">Card</span>
           </div>
           <div class="pay-method" data-method="payid">
-            <span class="pm-icon">🏦</span>PayID
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            <span class="pm-lbl">PayID</span>
           </div>
           <div class="pay-method" data-method="paypal">
-            <span class="pm-icon"></span>PayPal
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11C7 11 6.5 16 12 16h1c4 0 5-3 5-3M7 11H5l1-8h7c4 0 5 2 4.5 4.5C17 10 15 11 12 11H7z"/></svg>
+            <span class="pm-lbl">PayPal</span>
           </div>
         </div>
-
         <div class="card-fields" id="card-fields">
           <input type="text" placeholder="Cardholder name" />
           <input type="text" placeholder="Card number" maxlength="19" id="cc-num" />
@@ -754,395 +880,592 @@
             <input type="text" placeholder="CVV" maxlength="4" />
           </div>
         </div>
-
-        <button class="btn-pay" id="pay-btn">🔒 Pay &amp; Unlock Report</button>
+        <button class="btn-pay" id="pay-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Pay & Unlock Report
+        </button>
       </div>
-      <div class="modal-footer">
-        🔒 256-bit SSL encrypted · Instant report delivery · Powered by VehicleCheck
+      <div class="modal-footer-note">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        256-bit SSL · Instant delivery · Powered by VehicleCheck
       </div>
     </div>
 
     <div class="success-screen" id="success-screen">
-      <div class="s-icon">✅</div>
-      <h3>Payment Successful!</h3>
-      <p>Your report is being compiled and will be ready in seconds.<br/>
-         In production, this would pull live data from our API.</p>
-      <br/>
-      <p style="font-size:.78rem;color:var(--muted)">This is a prototype — no real payment was processed.</p>
+      <div class="success-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h3>Payment Successful</h3>
+      <p>Your report has been compiled and is ready to view.<br/>In production, this pulls live data from our API.</p>
+      <div class="proto-note">Prototype only — no real payment was processed.</div>
     </div>
   </div>
 </div>
 
 <script>
-// ── Sample data ──────────────────────────────────────────────
-const SAMPLE = {
-  vehicle_details: {
-    make: 'Toyota', model: 'HiLux SR5', year: '2021',
-    colour: 'Glacier White', body: 'Dual Cab Ute',
-    engine: '2.8L 4cyl Turbo Diesel', trans: '6-speed Automatic',
-    drive: '4WD', seats: '5', vin: 'MR0FB3CD200123456',
-    compliance: 'Jun 2021', country: 'Thailand',
-    cylinders: '4', capacity: '2755cc', fuel: 'Diesel',
-    rego: 'ABC123 VIC', rego_expiry: '31 Jul 2026',
-  },
-  ppsr: {
-    finance: false, stolen: false, write_off: false,
-    encumbrance: false, reported_damaged: false, import_flag: false,
-  },
-  registration: {
-    state: 'VIC', plate: 'ABC123', status: 'Current',
-    expiry: '31 Jul 2026', category: 'Light Vehicle',
-    tare: '2065 kg', gvm: '3200 kg',
-  },
-  odometer: [
-    { date: 'Jun 2021', km: 12,    source: 'Dealer Delivery' },
-    { date: 'Nov 2021', km: 8420,  source: 'Toyota Service' },
-    { date: 'May 2022', km: 22310, source: 'Toyota Service' },
-    { date: 'Oct 2022', km: 35780, source: 'Roadside Check' },
-    { date: 'Apr 2023', km: 51200, source: 'Toyota Service' },
-    { date: 'Oct 2023', km: 67450, source: 'Toyota Service' },
-    { date: 'Mar 2024', km: 80100, source: 'RWC Inspection' },
-    { date: 'Oct 2024', km: 93220, source: 'Toyota Service' },
-  ],
-  ownership: [
-    { owner: '1st Owner', state: 'VIC', from: 'Jun 2021', to: 'Mar 2024', duration: '2y 9m' },
-    { owner: '2nd Owner', state: 'VIC', from: 'Mar 2024', to: 'Present', duration: '14 months' },
-  ],
-  accident: {
-    incidents: 0,
-    airbag: 'No deployment recorded',
-    structural: 'No structural damage recorded',
-    insurance: 'No insurance claims found',
-  },
-  market_value: {
-    low: '$42,500', mid: '$48,200', high: '$54,000',
-    estimate: '$48,200', confidence: 'High',
-    based_on: '127 comparable sales',
-  },
-  price_history: [
-    { month: 'Nov 24', price: 52000 },
-    { month: 'Dec 24', price: 51200 },
-    { month: 'Jan 25', price: 50500 },
-    { month: 'Feb 25', price: 49800 },
-    { month: 'Mar 25', price: 49100 },
-    { month: 'Apr 25', price: 48500 },
-    { month: 'May 25', price: 48200 },
-  ],
-  market_overlay: {
-    days_on_market: '18 days avg',
-    similar_listed: 34,
-    demand: 'High',
-    vs_market: '-3.4% below avg',
-    region: 'Victoria',
-  },
-  finance: {
-    secured_interests: 0,
-    gst_applicable: 'No',
-    ppsr_cert: 'Clear',
-  },
-  safety_recalls: {
-    open_recalls: 0,
-    completed: 2,
-    last_checked: 'May 2025',
-    details: ['Recall #RC-21-0045 — Fuel pump (completed 14 Aug 2021)', 'Recall #RC-22-0112 — Seatbelt (completed 3 Mar 2022)'],
-  },
-  stolen: {
-    result: 'Clear',
-    nevdis: 'Not recorded as stolen',
-    checked: 'May 2025',
-  },
+// ── SVG icon helper ───────────────────────────────────────────
+const ICONS = {
+  shield:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  check:     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+  x:         `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+  gauge:     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2C6.48 2 2 6.48 2 12"/><path d="M22 12c0-5.52-4.48-10-10-10"/><path d="M12 12l3.5-3.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>`,
+  doc:       `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  trending:  `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
+  map:       `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`,
+  dollar:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+  user:      `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  wrench:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
+  alert:     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  car:       `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`,
+  clipboard: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`,
+  star:      `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
 };
 
-// ── Section renderers ────────────────────────────────────────
+// ── Vehicle SVG illustration ──────────────────────────────────
+const CAR_SVG = `
+<svg viewBox="0 0 860 245" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="svgBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bfccda"/>
+      <stop offset="55%" stop-color="#dae4ed"/>
+      <stop offset="100%" stop-color="#c8d4e0"/>
+    </linearGradient>
+    <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7f9fb"/>
+      <stop offset="40%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#bcc8d4"/>
+    </linearGradient>
+    <linearGradient id="hoodGrad" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#dce6f0"/>
+      <stop offset="100%" stop-color="#b0beca"/>
+    </linearGradient>
+    <linearGradient id="trayGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8d4de"/>
+      <stop offset="100%" stop-color="#a8b4c0"/>
+    </linearGradient>
+    <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8ab8d8" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#5a90b8" stop-opacity="0.85"/>
+    </linearGradient>
+    <radialGradient id="tireGrad" cx="38%" cy="33%" r="60%">
+      <stop offset="0%" stop-color="#3c4850"/>
+      <stop offset="100%" stop-color="#141c22"/>
+    </radialGradient>
+    <radialGradient id="rimGrad" cx="38%" cy="33%" r="60%">
+      <stop offset="0%" stop-color="#ccd8e4"/>
+      <stop offset="100%" stop-color="#7888a0"/>
+    </radialGradient>
+    <filter id="carShadow">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#0a1830" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Studio background -->
+  <rect width="860" height="245" fill="url(#svgBg)"/>
+
+  <!-- Floor -->
+  <rect x="0" y="218" width="860" height="27" fill="#b4c2d0" opacity="0.45"/>
+  <line x1="0" y1="218" x2="860" y2="218" stroke="#a0b0c0" stroke-width="1"/>
+
+  <!-- Shadow under vehicle -->
+  <ellipse cx="428" cy="224" rx="340" ry="9" fill="#7090a8" opacity="0.22"/>
+
+  <!-- ==== VEHICLE ==== -->
+  <g filter="url(#carShadow)">
+
+  <!-- Main body silhouette -->
+  <path d="M72,218 L72,192 L85,178 L140,160 L264,148 L292,105 L308,97 L532,97 L555,116 L558,145 L745,142 L755,158 L758,218 Z"
+    fill="url(#bodyGrad)" stroke="#a4b0be" stroke-width="1.5"/>
+
+  <!-- Hood highlight panel -->
+  <path d="M85,178 L140,160 L264,148 L267,153 L142,165 L90,182 Z"
+    fill="url(#hoodGrad)"/>
+
+  <!-- Roof highlight -->
+  <path d="M308,97 L532,97 L531,103 L309,103 Z" fill="#ffffff" opacity="0.55"/>
+
+  <!-- Windshield glass -->
+  <path d="M245,148 L291,106 L308,99 L272,148 Z" fill="url(#glassGrad)" stroke="#6898b8" stroke-width="0.8"/>
+
+  <!-- Front door window -->
+  <rect x="313" y="100" width="100" height="40" rx="1" fill="url(#glassGrad)" stroke="#6898b8" stroke-width="0.8"/>
+
+  <!-- Rear door window -->
+  <path d="M415,100 L531,100 L553,115 L536,140 L415,140 Z" fill="url(#glassGrad)" stroke="#6898b8" stroke-width="0.8"/>
+
+  <!-- Quarter glass -->
+  <path d="M534,100 L553,116 L554,140 L536,140 Z" fill="url(#glassGrad)" stroke="#6898b8" stroke-width="0.8"/>
+
+  <!-- B-pillar -->
+  <rect x="412" y="100" width="5" height="42" fill="#8898a8"/>
+
+  <!-- Headlight -->
+  <path d="M74,188 Q87,165 108,162 L110,167 Q92,170 79,191 Z" fill="#e4f0ff" stroke="#b0cce0" stroke-width="0.8"/>
+  <path d="M77,188 Q88,167 107,164 L109,168 Q92,171 82,190 Z" fill="#aacce8" opacity="0.65"/>
+  <line x1="80" y1="192" x2="104" y2="184" stroke="#c0daf0" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Taillight -->
+  <path d="M753,156 L758,156 L758,180 L752,178 Z" fill="#c81010"/>
+  <path d="M753,182 L758,182 L758,196 L752,195 Z" fill="#b80e0e" opacity="0.75"/>
+
+  <!-- Side mirror -->
+  <path d="M285,146 L298,142 L300,151 L283,155 Z" fill="#ccd4e0" stroke="#aab4c0" stroke-width="0.5"/>
+
+  <!-- Door handles -->
+  <rect x="345" y="181" width="24" height="5" rx="2.5" fill="#8898a8"/>
+  <rect x="450" y="181" width="24" height="5" rx="2.5" fill="#8898a8"/>
+
+  <!-- Door line -->
+  <line x1="414" y1="141" x2="414" y2="218" stroke="#94a4b2" stroke-width="1.5"/>
+
+  <!-- Running board -->
+  <rect x="96" y="216" width="450" height="7" rx="3" fill="#7888a0"/>
+
+  <!-- Tray panel -->
+  <path d="M558,145 L745,142 L755,158 L758,218 L558,218 Z" fill="url(#trayGrad)" stroke="#94a4b2" stroke-width="0.8"/>
+  <!-- Tray rail -->
+  <rect x="558" y="140" width="190" height="8" rx="1" fill="#a8b4be" stroke="#8898a4" stroke-width="0.5"/>
+  <!-- Tray ribs -->
+  <line x1="605" y1="148" x2="605" y2="218" stroke="#98a8b4" stroke-width="1"/>
+  <line x1="652" y1="148" x2="652" y2="218" stroke="#98a8b4" stroke-width="1"/>
+  <line x1="699" y1="148" x2="699" y2="218" stroke="#98a8b4" stroke-width="1"/>
+  <line x1="744" y1="148" x2="744" y2="218" stroke="#98a8b4" stroke-width="1"/>
+
+  <!-- Front wheel arch -->
+  <path d="M100,218 C102,168 136,154 182,154 C228,154 262,168 264,218 Z"
+    fill="url(#bodyGrad)" stroke="#a4b0be" stroke-width="1.5"/>
+  <!-- Rear wheel arch -->
+  <path d="M600,218 C602,168 634,154 678,154 C722,154 754,168 756,218 Z"
+    fill="url(#trayGrad)" stroke="#a4b0be" stroke-width="1.5"/>
+
+  </g>
+
+  <!-- Front wheel -->
+  <circle cx="182" cy="190" r="41" fill="url(#tireGrad)"/>
+  <circle cx="182" cy="190" r="40.5" fill="none" stroke="#18222a" stroke-width="0.8"/>
+  <circle cx="182" cy="190" r="35" fill="none" stroke="#242e38" stroke-width="1" stroke-dasharray="4,7"/>
+  <circle cx="182" cy="190" r="25" fill="url(#rimGrad)"/>
+  <g transform="translate(182,190)" stroke="#607890" stroke-width="3" stroke-linecap="round">
+    <line x1="0" y1="-23" x2="0" y2="-12"/><line x1="0" y1="23" x2="0" y2="12"/>
+    <line x1="19.9" y1="-11.5" x2="10.4" y2="-6"/><line x1="-19.9" y1="-11.5" x2="-10.4" y2="-6"/>
+    <line x1="19.9" y1="11.5" x2="10.4" y2="6"/><line x1="-19.9" y1="11.5" x2="-10.4" y2="6"/>
+  </g>
+  <circle cx="182" cy="190" r="7" fill="#b8c8d8"/>
+  <circle cx="182" cy="190" r="3" fill="#7888a0"/>
+
+  <!-- Rear wheel -->
+  <circle cx="678" cy="190" r="41" fill="url(#tireGrad)"/>
+  <circle cx="678" cy="190" r="40.5" fill="none" stroke="#18222a" stroke-width="0.8"/>
+  <circle cx="678" cy="190" r="35" fill="none" stroke="#242e38" stroke-width="1" stroke-dasharray="4,7"/>
+  <circle cx="678" cy="190" r="25" fill="url(#rimGrad)"/>
+  <g transform="translate(678,190)" stroke="#607890" stroke-width="3" stroke-linecap="round">
+    <line x1="0" y1="-23" x2="0" y2="-12"/><line x1="0" y1="23" x2="0" y2="12"/>
+    <line x1="19.9" y1="-11.5" x2="10.4" y2="-6"/><line x1="-19.9" y1="-11.5" x2="-10.4" y2="-6"/>
+    <line x1="19.9" y1="11.5" x2="10.4" y2="6"/><line x1="-19.9" y1="11.5" x2="-10.4" y2="6"/>
+  </g>
+  <circle cx="678" cy="190" r="7" fill="#b8c8d8"/>
+  <circle cx="678" cy="190" r="3" fill="#7888a0"/>
+
+  <!-- Wheel ground reflections -->
+  <ellipse cx="182" cy="227" rx="42" ry="5" fill="#7090a8" opacity="0.2"/>
+  <ellipse cx="678" cy="227" rx="42" ry="5" fill="#7090a8" opacity="0.2"/>
+</svg>`;
+
+// ── Sample data ───────────────────────────────────────────────
+const D = {
+  vehicle_details: {
+    make:'Toyota', model:'HiLux SR5', year:'2021', colour:'Glacier White',
+    body:'Dual Cab Ute', engine:'2.8L 4-cyl Turbo Diesel', trans:'6-speed Automatic',
+    drive:'4WD', seats:'5', vin:'MR0FB3CD200123456', compliance:'Jun 2021',
+    country:'Thailand', cylinders:'4', capacity:'2755cc', fuel:'Diesel',
+    rego:'ABC123', state:'VIC', rego_expiry:'31 Jul 2026',
+  },
+  ppsr: { finance:false, stolen:false, write_off:false, encumbrance:false, damaged:false, import_flag:false },
+  registration: { plate:'ABC123', state:'VIC', status:'Current', expiry:'31 Jul 2026', category:'Light Motor Vehicle', tare:'2065 kg', gvm:'3200 kg' },
+  odometer: [
+    { date:'Jun 2021', km:12,    source:'Dealer Delivery' },
+    { date:'Nov 2021', km:8420,  source:'Toyota Service' },
+    { date:'May 2022', km:22310, source:'Toyota Service' },
+    { date:'Oct 2022', km:35780, source:'Roadside Inspection' },
+    { date:'Apr 2023', km:51200, source:'Toyota Service' },
+    { date:'Oct 2023', km:67450, source:'Toyota Service' },
+    { date:'Mar 2024', km:80100, source:'RWC Inspection' },
+    { date:'Oct 2024', km:93220, source:'Toyota Service' },
+  ],
+  ownership: [
+    { owner:'1st Owner', state:'VIC', from:'Jun 2021', to:'Mar 2024', duration:'2 yrs 9 mths', type:'Private' },
+    { owner:'2nd Owner', state:'VIC', from:'Mar 2024', to:'Present',  duration:'14 months',   type:'Private' },
+  ],
+  accident: { incidents:0, airbag:'No deployment recorded', structural:'No structural damage recorded', insurance:'No insurance claims found' },
+  market_value: { low:42500, mid:48200, high:54000, confidence:'High', based_on:127 },
+  price_history: [
+    { month:'Nov 24', price:52000 },{ month:'Dec 24', price:51200 },
+    { month:'Jan 25', price:50500 },{ month:'Feb 25', price:49800 },
+    { month:'Mar 25', price:49100 },{ month:'Apr 25', price:48500 },
+    { month:'May 25', price:48200 },
+  ],
+  market_overlay: { similar:34, avg_days:18, demand:'High', vs_market:'-3.4%', region:'Victoria' },
+  finance: { interests:0, ppsr_cert:'Clear', gst:'Not applicable' },
+  safety_recalls: {
+    open:0, completed:2, checked:'May 2025',
+    list:['RC-21-0045 — Fuel pump assembly (completed 14 Aug 2021)', 'RC-22-0112 — Seatbelt pre-tensioner (completed 3 Mar 2022)'],
+  },
+  stolen: { result:'Clear', nevdis:'Not recorded as stolen', checked:'May 2025' },
+};
+
+const REPORT_ID = 'VCR-2025-' + Math.random().toString(36).substr(2,8).toUpperCase();
+const REPORT_TS = new Date().toLocaleString('en-AU', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+
+// ── Section renderers ─────────────────────────────────────────
+function kv(label, val, mono = false) {
+  return `<div class="kv"><div class="k">${label}</div><div class="v${mono?' mono':''}">${val}</div></div>`;
+}
+
+function statusVal(ok, okText = 'Clear', failText = 'Recorded') {
+  return ok
+    ? `<span style="color:var(--green);display:flex;align-items:center;gap:4px">${ICONS.check.replace('16','14').replace('16','14')} ${okText}</span>`
+    : `<span style="color:var(--red);display:flex;align-items:center;gap:4px">${ICONS.x.replace('16','14').replace('16','14')} ${failText}</span>`;
+}
+
+function srcTag(label) { return `<span class="src-tag">${label}</span>`; }
+
+const SECTION_ORDER = [
+  'vehicle_details','registration','ppsr','stolen','finance',
+  'safety_recalls','odometer','ownership','accident',
+  'market_value','price_history','market_overlay'
+];
+
 function renderSection(key) {
-  const d = SAMPLE;
   switch (key) {
+
     case 'vehicle_details': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">🚗</span>
-          <h3>Vehicle Details</h3>
-          <span class="status-pill pill-blue">NEVDIS Verified</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon navy">${ICONS.car}</div>
+          <span class="rs-title">Vehicle Details</span>
+          <span class="rs-pill pill-b">NEVDIS Verified</span>
+          <span class="rs-src">NEVDIS</span>
         </div>
-        <div class="section-body">
+        <div class="rs-body">
           <div class="kv-grid">
-            ${kv('Make', d.vehicle_details.make)}
-            ${kv('Model', d.vehicle_details.model)}
-            ${kv('Year', d.vehicle_details.year)}
-            ${kv('Colour', d.vehicle_details.colour)}
-            ${kv('Body Type', d.vehicle_details.body)}
-            ${kv('Engine', d.vehicle_details.engine)}
-            ${kv('Transmission', d.vehicle_details.trans)}
-            ${kv('Drive Type', d.vehicle_details.drive)}
-            ${kv('Seats', d.vehicle_details.seats)}
-            ${kv('VIN', d.vehicle_details.vin)}
-            ${kv('Compliance Date', d.vehicle_details.compliance)}
-            ${kv('Country of Manufacture', d.vehicle_details.country)}
-            ${kv('Cylinders', d.vehicle_details.cylinders)}
-            ${kv('Capacity', d.vehicle_details.capacity)}
-            ${kv('Fuel Type', d.vehicle_details.fuel)}
+            ${kv('Make', D.vehicle_details.make)}
+            ${kv('Model', D.vehicle_details.model)}
+            ${kv('Year', D.vehicle_details.year)}
+            ${kv('Colour', D.vehicle_details.colour)}
+            ${kv('Body Type', D.vehicle_details.body)}
+            ${kv('Engine', D.vehicle_details.engine)}
+            ${kv('Transmission', D.vehicle_details.trans)}
+            ${kv('Drive Type', D.vehicle_details.drive)}
+            ${kv('Seats', D.vehicle_details.seats)}
+            ${kv('Fuel Type', D.vehicle_details.fuel)}
+            ${kv('Cylinders', D.vehicle_details.cylinders)}
+            ${kv('Capacity', D.vehicle_details.capacity)}
+            ${kv('Compliance Date', D.vehicle_details.compliance)}
+            ${kv('Country of Manufacture', D.vehicle_details.country)}
+            ${kv('VIN', `<span class="mono">${D.vehicle_details.vin}</span>`)}
           </div>
         </div>
       </div>`;
 
     case 'registration': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">📋</span>
-          <h3>Registration Status</h3>
-          <span class="status-pill pill-green">CURRENT</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon green">${ICONS.doc}</div>
+          <span class="rs-title">Registration Status</span>
+          <span class="rs-pill pill-g">CURRENT</span>
+          <span class="rs-src">VicRoads</span>
         </div>
-        <div class="section-body">
+        <div class="rs-body">
           <div class="kv-grid">
-            ${kv('Plate', d.vehicle_details.rego)}
-            ${kv('State', d.registration.state)}
-            ${kv('Status', '<span style="color:var(--green);font-weight:700">Current ✓</span>')}
-            ${kv('Expiry', d.registration.expiry)}
-            ${kv('Category', d.registration.category)}
-            ${kv('Tare Weight', d.registration.tare)}
-            ${kv('GVM', d.registration.gvm)}
+            ${kv('Plate', `<span class="mono">${D.registration.plate} ${D.registration.state}</span>`)}
+            ${kv('Status', statusVal(true, 'Current & Active'))}
+            ${kv('Expiry', D.registration.expiry)}
+            ${kv('Category', D.registration.category)}
+            ${kv('Tare Weight', D.registration.tare)}
+            ${kv('GVM', D.registration.gvm)}
           </div>
         </div>
       </div>`;
 
     case 'ppsr': {
       const checks = [
-        { label: 'Finance Encumbrance', pass: !d.ppsr.finance, icon: '💰' },
-        { label: 'Stolen Vehicle',      pass: !d.ppsr.stolen,  icon: '🚨' },
-        { label: 'Written Off',         pass: !d.ppsr.write_off, icon: '🛑' },
-        { label: 'Security Interest',   pass: !d.ppsr.encumbrance, icon: '🔒' },
-        { label: 'Reported Damaged',    pass: !d.ppsr.reported_damaged, icon: '⚠️' },
-        { label: 'Import Flag',         pass: !d.ppsr.import_flag, icon: '🌏' },
+        { label:'Finance Encumbrance', ok:!D.ppsr.finance },
+        { label:'Stolen Vehicle',      ok:!D.ppsr.stolen },
+        { label:'Written Off',         ok:!D.ppsr.write_off },
+        { label:'Security Interest',   ok:!D.ppsr.encumbrance },
+        { label:'Reported Damaged',    ok:!D.ppsr.damaged },
+        { label:'Import Flag',         ok:!D.ppsr.import_flag },
       ];
+      const allClear = checks.every(c => c.ok);
       return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">🛡️</span>
-          <h3>PPSR Check</h3>
-          <span class="status-pill pill-green">ALL CLEAR</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon ${allClear?'green':'red'}">${ICONS.shield}</div>
+          <span class="rs-title">PPSR Check</span>
+          <span class="rs-pill ${allClear?'pill-g':'pill-r'}">${allClear?'ALL CLEAR':'ISSUES FOUND'}</span>
+          <span class="rs-src">PPSR / NEVDIS</span>
         </div>
-        <div class="section-body">
+        <div class="rs-body">
           <div class="ppsr-grid">
             ${checks.map(c => `
-              <div class="ppsr-card ${c.pass ? 'pass' : 'fail'}">
-                <div class="p-icon">${c.icon}</div>
-                <div class="p-label">${c.label}</div>
-                <div class="p-result">${c.pass ? '✓ Clear' : '✗ Found'}</div>
+              <div class="ppsr-card ${c.ok?'pass':'fail'}">
+                <div class="pp-lbl">${c.label}</div>
+                <div class="pp-res">
+                  <span class="pp-icon">${c.ok ? ICONS.check : ICONS.x}</span>
+                  ${c.ok ? 'Clear' : 'Recorded'}
+                </div>
               </div>`).join('')}
+          </div>
+          <div class="src-attr">
+            ${srcTag('PPSR — Personal Property Securities Register')}
+            ${srcTag('NEVDIS — National Exchange of Vehicle & Driver Info')}
+            ${srcTag('WOVR — Written Off Vehicle Register')}
           </div>
         </div>
       </div>`;
     }
 
-    case 'odometer': {
-      const rows = d.odometer;
-      const max = rows[rows.length - 1].km;
-      return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">📍</span>
-          <h3>Odometer History</h3>
-          <span class="status-pill pill-green">CONSISTENT</span>
+    case 'stolen': return `
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon green">${ICONS.shield}</div>
+          <span class="rs-title">Stolen Vehicle Check</span>
+          <span class="rs-pill pill-g">NOT RECORDED</span>
+          <span class="rs-src">NEVDIS</span>
         </div>
-        <div class="section-body">
-          <div class="odo-chart">
+        <div class="rs-body">
+          <div class="kv-grid">
+            ${kv('NEVDIS Result', statusVal(true, 'Not recorded as stolen'))}
+            ${kv('Database', 'National Stolen Vehicle Register')}
+            ${kv('Last Checked', D.stolen.checked)}
+          </div>
+          <div class="src-attr">${srcTag('NEVDIS Stolen Vehicle Register')}</div>
+        </div>
+      </div>`;
+
+    case 'odometer': {
+      const rows = D.odometer;
+      const max = rows[rows.length-1].km;
+      return `
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon blue">${ICONS.gauge}</div>
+          <span class="rs-title">Odometer History</span>
+          <span class="rs-pill pill-g">CONSISTENT</span>
+          <span class="rs-src">Service Records</span>
+        </div>
+        <div class="rs-body">
+          <div class="odo-rows">
             ${rows.map(r => `
               <div class="odo-row">
                 <span class="odo-date">${r.date}</span>
-                <div class="odo-bar-wrap">
-                  <div class="odo-bar" style="width:${Math.max(8, Math.round(r.km/max*100))}%">
-                    ${r.km.toLocaleString()} km
+                <div class="odo-bar-bg">
+                  <div class="odo-bar" style="width:${Math.max(7,Math.round(r.km/max*100))}%">
+                    <span>${r.km.toLocaleString()} km</span>
                   </div>
                 </div>
                 <span class="odo-src">${r.source}</span>
               </div>`).join('')}
           </div>
+          <div class="src-attr">${srcTag('Toyota Service Records')}${srcTag('NEVDIS')}</div>
         </div>
       </div>`;
     }
 
     case 'ownership': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">👤</span>
-          <h3>Ownership History</h3>
-          <span class="status-pill pill-blue">2 OWNERS</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon blue">${ICONS.user}</div>
+          <span class="rs-title">Ownership History</span>
+          <span class="rs-pill pill-b">2 OWNERS</span>
+          <span class="rs-src">NEVDIS</span>
         </div>
-        <div class="section-body">
-          <table class="data-table">
-            <thead><tr>
-              <th>Owner</th><th>State</th><th>From</th><th>To</th><th>Duration</th>
-            </tr></thead>
-            <tbody>
-              ${d.ownership.map(o => `<tr>
-                <td><strong>${o.owner}</strong></td>
-                <td>${o.state}</td><td>${o.from}</td><td>${o.to}</td>
-                <td>${o.duration}</td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
+        <div class="rs-body">
+          <div class="ow-timeline">
+            ${D.ownership.map(o => `
+              <div class="ow-item">
+                <div class="ow-line-col">
+                  <div class="ow-dot"></div>
+                  <div class="ow-connector"></div>
+                </div>
+                <div class="ow-card">
+                  <h4>${o.owner}</h4>
+                  <div class="ow-detail">${o.from} — ${o.to} &nbsp;·&nbsp; ${o.duration} &nbsp;·&nbsp; ${o.state} &nbsp;·&nbsp; ${o.type}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+          <div class="src-attr">${srcTag('NEVDIS — State Transfer History')}</div>
         </div>
       </div>`;
 
     case 'accident': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">🔧</span>
-          <h3>Accident &amp; Damage History</h3>
-          <span class="status-pill pill-green">NO INCIDENTS</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon green">${ICONS.wrench}</div>
+          <span class="rs-title">Accident & Damage History</span>
+          <span class="rs-pill pill-g">NO INCIDENTS</span>
+          <span class="rs-src">Insurance Data</span>
         </div>
-        <div class="section-body">
+        <div class="rs-body">
           <div class="kv-grid">
-            ${kv('Reported Incidents', '<span style="color:var(--green);font-weight:700">0 ✓</span>')}
-            ${kv('Airbag Deployment', d.accident.airbag)}
-            ${kv('Structural Damage', d.accident.structural)}
-            ${kv('Insurance Claims', d.accident.insurance)}
+            ${kv('Reported Incidents', statusVal(true, '0 incidents found'))}
+            ${kv('Airbag Deployment', D.accident.airbag)}
+            ${kv('Structural Damage', D.accident.structural)}
+            ${kv('Insurance Claims', D.accident.insurance)}
           </div>
         </div>
       </div>`;
 
-    case 'market_value': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">💰</span>
-          <h3>Market Valuation</h3>
-          <span class="status-pill pill-blue">CONFIDENCE: HIGH</span>
+    case 'market_value': {
+      const { low, mid, high } = D.market_value;
+      const range = high - low;
+      const midPct = Math.round((mid - low) / range * 100);
+      return `
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon navy">${ICONS.dollar}</div>
+          <span class="rs-title">Market Valuation</span>
+          <span class="rs-pill pill-b">CONFIDENCE: HIGH</span>
+          <span class="rs-src">RedBook / Carsales</span>
         </div>
-        <div class="section-body">
-          <div class="gauge-row">
-            <div class="gauge-wrap">
-              <svg viewBox="0 0 130 70">
-                <path d="M15,65 A55,55 0 0,1 115,65" fill="none" stroke="#fee2e2" stroke-width="12" stroke-linecap="round"/>
-                <path d="M15,65 A55,55 0 0,1 115,65" fill="none" stroke="#fde68a" stroke-width="12" stroke-linecap="round" stroke-dasharray="110 173" />
-                <path d="M15,65 A55,55 0 0,1 115,65" fill="none" stroke="#86efac" stroke-width="12" stroke-linecap="round" stroke-dasharray="60 173" stroke-dashoffset="-110"/>
-                <!-- needle at ~middle-high -->
-                <line x1="65" y1="65" x2="105" y2="28" stroke="#1a56db" stroke-width="3" stroke-linecap="round"/>
-                <circle cx="65" cy="65" r="5" fill="#1a56db"/>
-              </svg>
-              <div class="gauge-val">$48.2k</div>
-              <div class="gauge-label">Fair Market Value</div>
+        <div class="rs-body">
+          <div class="mv-row">
+            <div class="mv-estimate">
+              <div class="lbl">Estimated Market Value</div>
+              <div class="val">$${mid.toLocaleString()}</div>
+              <div class="sub">Based on ${D.market_value.based_on} comparable sales</div>
             </div>
-            <div class="gauge-info" style="margin-top:16px">
-              <h4>Estimated Value: <span style="color:var(--brand)">$48,200</span></h4>
-              <p>Range: ${d.market_value.low} – ${d.market_value.high}<br/>
-                 Based on ${d.market_value.based_on}</p>
+            <div class="mv-range">
+              <div class="mv-range-bar">
+                <span class="rl">Low</span>
+                <div class="rb"><div class="rf" style="width:40%;background:#94a3b8"></div></div>
+                <span class="rv">$${(low/1000).toFixed(0)}k</span>
+              </div>
+              <div class="mv-range-bar">
+                <span class="rl">Mid</span>
+                <div class="rb"><div class="rf" style="width:${midPct}%;background:#1d6fcd"></div></div>
+                <span class="rv" style="color:var(--blue)">$${(mid/1000).toFixed(0)}k</span>
+              </div>
+              <div class="mv-range-bar">
+                <span class="rl">High</span>
+                <div class="rb"><div class="rf" style="width:85%;background:#4ade80"></div></div>
+                <span class="rv">$${(high/1000).toFixed(0)}k</span>
+              </div>
             </div>
           </div>
-          <div class="kv-grid" style="margin-top:18px">
-            ${kv('Low', d.market_value.low)}
-            ${kv('Mid (Estimate)', d.market_value.mid)}
-            ${kv('High', d.market_value.high)}
-            ${kv('Confidence', d.market_value.confidence)}
-          </div>
+          <div class="src-attr">${srcTag('RedBook')}${srcTag('Carsales Market Data')}${srcTag('Glass\'s Guide')}</div>
         </div>
       </div>`;
+    }
 
     case 'price_history': {
-      const ph = d.price_history;
-      const min = Math.min(...ph.map(p => p.price)) - 2000;
-      const max2 = Math.max(...ph.map(p => p.price)) + 2000;
-      const W = 400, H = 120, padL = 40, padR = 10, padT = 10, padB = 24;
-      const xScale = i => padL + i * ((W - padL - padR) / (ph.length - 1));
-      const yScale = v => padT + (1 - (v - min) / (max2 - min)) * (H - padT - padB);
-      const pts = ph.map((p, i) => `${xScale(i)},${yScale(p.price)}`).join(' ');
-      const area = `${padL},${H - padB} ` + pts + ` ${xScale(ph.length-1)},${H - padB}`;
+      const ph = D.price_history;
+      const pMin = Math.min(...ph.map(p=>p.price)) - 1500;
+      const pMax = Math.max(...ph.map(p=>p.price)) + 1500;
+      const W = 500, H = 120, pL = 42, pR = 14, pT = 10, pB = 26;
+      const xS = i => pL + i * ((W-pL-pR) / (ph.length-1));
+      const yS = v => pT + (1-(v-pMin)/(pMax-pMin)) * (H-pT-pB);
+      const pts = ph.map((p,i) => `${xS(i)},${yS(p.price)}`).join(' ');
+      const area = `${pL},${H-pB} ${pts} ${xS(ph.length-1)},${H-pB}`;
+      const chg = (((ph[0].price-ph[ph.length-1].price)/ph[0].price)*100).toFixed(1);
       return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">📈</span>
-          <h3>Price History</h3>
-          <span class="status-pill pill-amber">SOFTENING</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon amber">${ICONS.trending}</div>
+          <span class="rs-title">Price History</span>
+          <span class="rs-pill pill-a">SOFTENING</span>
+          <span class="rs-src">Carsales</span>
         </div>
-        <div class="section-body">
-          <div class="price-chart">
+        <div class="rs-body">
+          <div class="price-chart-wrap">
             <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#1a56db" stop-opacity=".18"/>
-                  <stop offset="100%" stop-color="#1a56db" stop-opacity=".01"/>
+                <linearGradient id="priceArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1d6fcd" stop-opacity=".16"/>
+                  <stop offset="100%" stop-color="#1d6fcd" stop-opacity=".01"/>
                 </linearGradient>
               </defs>
-              <polygon points="${area}" fill="url(#pg)"/>
-              <polyline points="${pts}" fill="none" stroke="#1a56db" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-              ${ph.map((p, i) => `<circle cx="${xScale(i)}" cy="${yScale(p.price)}" r="4" fill="#1a56db"/>`).join('')}
-              ${ph.map((p, i) => `<text x="${xScale(i)}" y="${H}" text-anchor="middle" font-size="9" fill="#94a3b8">${p.month}</text>`).join('')}
+              <polygon points="${area}" fill="url(#priceArea)"/>
+              <polyline points="${pts}" fill="none" stroke="#1d6fcd" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+              ${ph.map((p,i)=>`<circle cx="${xS(i)}" cy="${yS(p.price)}" r="3.5" fill="#1d6fcd"/>`).join('')}
+              ${ph.map((p,i)=>`<text x="${xS(i)}" y="${H}" text-anchor="middle" font-size="8.5" fill="#8898a8" font-family="sans-serif">${p.month}</text>`).join('')}
+              <text x="${pL}" y="${pT+6}" font-size="8" fill="#8898a8" font-family="monospace">$${(pMax/1000).toFixed(0)}k</text>
+              <text x="${pL}" y="${H-pB-4}" font-size="8" fill="#8898a8" font-family="monospace">$${(pMin/1000).toFixed(0)}k</text>
             </svg>
           </div>
-          <div class="kv-grid" style="margin-top:8px">
-            ${kv('6m ago', '$' + ph[0].price.toLocaleString())}
-            ${kv('Current listing', '$' + ph[ph.length-1].price.toLocaleString())}
-            ${kv('Change', '<span style="color:var(--amber)">▼ -' + (((ph[0].price - ph[ph.length-1].price)/ph[0].price)*100).toFixed(1) + '%</span>')}
+          <div class="kv-grid" style="margin-top:10px">
+            ${kv('6 months ago', '$' + ph[0].price.toLocaleString())}
+            ${kv('Current', '$' + ph[ph.length-1].price.toLocaleString())}
+            ${kv('Change', `<span style="color:var(--amber);font-weight:700">▼ ${chg}%</span>`)}
           </div>
+          <div class="src-attr">${srcTag('Carsales Listing History')}</div>
         </div>
       </div>`;
     }
 
     case 'market_overlay': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">🗺️</span>
-          <h3>Market Overlay</h3>
-          <span class="status-pill pill-blue">VICTORIA</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon blue">${ICONS.map}</div>
+          <span class="rs-title">Market Overlay</span>
+          <span class="rs-pill pill-b">VIC</span>
+          <span class="rs-src">Carsales / Drive</span>
         </div>
-        <div class="section-body">
+        <div class="rs-body">
           <div class="kv-grid">
-            ${kv('Similar Listed (VIC)', d.market_overlay.similar_listed + ' vehicles')}
-            ${kv('Avg. Days on Market', d.market_overlay.days_on_market)}
-            ${kv('Buyer Demand', '<span style="color:var(--green);font-weight:700">' + d.market_overlay.demand + '</span>')}
-            ${kv('vs. Market Average', '<span style="color:var(--green)">' + d.market_overlay.vs_market + '</span>')}
-            ${kv('Region', d.market_overlay.region)}
+            ${kv('Similar Listed (VIC)', D.market_overlay.similar + ' vehicles')}
+            ${kv('Avg. Days on Market', D.market_overlay.avg_days + ' days')}
+            ${kv('Buyer Demand', `<span style="color:var(--green);font-weight:700">${D.market_overlay.demand}</span>`)}
+            ${kv('vs. Market Average', `<span style="color:var(--green);font-weight:700">${D.market_overlay.vs_market} below avg</span>`)}
+            ${kv('Region', D.market_overlay.region)}
           </div>
+          <div class="src-attr">${srcTag('Carsales Market Intelligence')}${srcTag('Drive Data')}</div>
         </div>
       </div>`;
 
     case 'finance': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">🏦</span>
-          <h3>Finance &amp; Security Interests</h3>
-          <span class="status-pill pill-green">CLEAR</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon green">${ICONS.dollar}</div>
+          <span class="rs-title">Finance & Security Interests</span>
+          <span class="rs-pill pill-g">CLEAR</span>
+          <span class="rs-src">PPSR</span>
         </div>
-        <div class="section-body">
+        <div class="rs-body">
           <div class="kv-grid">
-            ${kv('Secured Interests', '<span style="color:var(--green);font-weight:700">0 ✓</span>')}
-            ${kv('PPSR Certificate', d.finance.ppsr_cert)}
-            ${kv('GST Applicable', d.finance.gst_applicable)}
+            ${kv('Secured Interests', statusVal(true, '0 interests found'))}
+            ${kv('PPSR Certificate', D.finance.ppsr_cert)}
+            ${kv('GST Status', D.finance.gst)}
           </div>
+          <div style="margin-top:12px;padding:10px 12px;background:#fafbfc;border:1px solid var(--border);border-radius:7px;font-size:.76rem;color:var(--muted);line-height:1.6">
+            No financial institutions hold a security interest over this vehicle. Safe to purchase without further finance investigation.
+          </div>
+          <div class="src-attr">${srcTag('PPSR — Personal Property Securities Register')}</div>
         </div>
       </div>`;
 
     case 'safety_recalls': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">⚠️</span>
-          <h3>Safety Recalls</h3>
-          <span class="status-pill pill-green">ALL CLEAR</span>
+      <div class="rs">
+        <div class="rs-head">
+          <div class="rs-icon green">${ICONS.alert}</div>
+          <span class="rs-title">Safety Recalls</span>
+          <span class="rs-pill pill-g">ALL RESOLVED</span>
+          <span class="rs-src">DIRTIA</span>
         </div>
-        <div class="section-body">
-          <div class="kv-grid" style="margin-bottom:14px">
-            ${kv('Open Recalls', '<span style="color:var(--green);font-weight:700">0 ✓</span>')}
-            ${kv('Completed Recalls', d.safety_recalls.completed)}
-            ${kv('Last Checked', d.safety_recalls.last_checked)}
+        <div class="rs-body">
+          <div class="kv-grid" style="margin-bottom:12px">
+            ${kv('Open Recalls', statusVal(true, '0 open recalls'))}
+            ${kv('Completed Recalls', D.safety_recalls.completed)}
+            ${kv('Last Checked', D.safety_recalls.checked)}
           </div>
-          <div style="font-size:.82rem;color:var(--muted)">
-            ${d.safety_recalls.details.map(x => `<div style="padding:4px 0;border-bottom:1px dashed var(--border)">✅ ${x}</div>`).join('')}
+          <div style="display:flex;flex-direction:column;gap:6px">
+            ${D.safety_recalls.list.map(r=>`
+              <div style="display:flex;align-items:flex-start;gap:8px;font-size:.76rem;padding:8px 10px;background:var(--green-bg);border:1px solid var(--green-bd);border-radius:7px;color:var(--green)">
+                <span style="flex-shrink:0;margin-top:1px">${ICONS.check}</span>
+                <span>${r}</span>
+              </div>`).join('')}
           </div>
-        </div>
-      </div>`;
-
-    case 'stolen': return `
-      <div class="report-section">
-        <div class="section-head">
-          <span class="s-icon">🚨</span>
-          <h3>Stolen Vehicle Check</h3>
-          <span class="status-pill pill-green">NOT STOLEN</span>
-        </div>
-        <div class="section-body">
-          <div class="kv-grid">
-            ${kv('NEVDIS Result', '<span style="color:var(--green);font-weight:700">' + d.stolen.result + ' ✓</span>')}
-            ${kv('Status', d.stolen.nevdis)}
-            ${kv('Checked', d.stolen.checked)}
-          </div>
+          <div class="src-attr">${srcTag('DIRTIA — Product Safety Australia')}${srcTag('Manufacturer VIN Recall Database')}</div>
         </div>
       </div>`;
 
@@ -1150,165 +1473,174 @@ function renderSection(key) {
   }
 }
 
-function kv(label, value) {
-  return `<div class="kv"><div class="k">${label}</div><div class="v">${value}</div></div>`;
-}
-
-// Section order for display
-const SECTION_ORDER = [
-  'vehicle_details','registration','ppsr','stolen','finance',
-  'safety_recalls','odometer','ownership','accident',
-  'market_value','price_history','market_overlay'
-];
-
-// ── State ────────────────────────────────────────────────────
-const selected = new Set(
-  [...document.querySelectorAll('.check-item.checked')].map(el => el.dataset.key)
-);
-
-// ── Update total display ──────────────────────────────────────
-function updateTotal() {
-  let total = 0;
-  document.querySelectorAll('.check-item').forEach(el => {
-    if (selected.has(el.dataset.key)) total += parseFloat(el.dataset.price);
-  });
-  document.getElementById('total-display').textContent =
-    '$' + total.toFixed(2);
+// ── Health cards for selected sections ────────────────────────
+function healthCards(selectedKeys) {
+  const items = [];
+  if (selectedKeys.has('ppsr'))         items.push({ lbl:'PPSR',         val:'All Clear',   cls:'pass' });
+  if (selectedKeys.has('stolen'))       items.push({ lbl:'Stolen',       val:'Not Recorded',cls:'pass' });
+  if (selectedKeys.has('finance'))      items.push({ lbl:'Finance',      val:'No Interests', cls:'pass' });
+  if (selectedKeys.has('registration')) items.push({ lbl:'Registration', val:'Current',      cls:'pass' });
+  if (selectedKeys.has('accident'))     items.push({ lbl:'Accidents',    val:'0 Found',      cls:'pass' });
+  if (selectedKeys.has('odometer'))     items.push({ lbl:'Odometer',     val:'Consistent',   cls:'pass' });
+  if (selectedKeys.has('safety_recalls')) items.push({ lbl:'Recalls',   val:'0 Open',        cls:'pass' });
+  if (selectedKeys.has('ownership'))    items.push({ lbl:'Owners',       val:'2 Owners',     cls:'info' });
+  if (items.length === 0) return '';
+  return `<div class="health-grid">${items.map(i=>`
+    <div class="health-card ${i.cls}">
+      <div class="hc-label">${i.lbl}</div>
+      <div class="hc-value">${i.val}</div>
+    </div>`).join('')}</div>`;
 }
 
 // ── Render report ─────────────────────────────────────────────
+const selected = new Set(
+  [...document.querySelectorAll('.cb-item.on')].map(el => el.dataset.key)
+);
+
 function renderReport() {
   const area = document.getElementById('report-area');
   if (selected.size === 0) {
-    area.innerHTML = `<div class="report-placeholder">
-      <div class="icon">📄</div>
-      <h3>Your report preview will appear here</h3>
-      <p>Select one or more report sections from the left to see a live preview of what you'll receive.</p>
-    </div>`;
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon">${ICONS.doc}</div>
+        <h3>Select report sections</h3>
+        <p>Tick the checks you need on the left to preview your report in real time.</p>
+      </div>`;
     return;
   }
 
   const hero = `
-    <div class="report-hero">
-      <div class="car-icon">🚙</div>
-      <div>
-        <h1>2021 Toyota HiLux SR5</h1>
-        <div class="sub">VIN: MR0FB3CD200123456 · Glacier White · 93,220 km</div>
-        <div class="badges">
-          ${[...selected].map(k => {
-            const el = document.querySelector(`.check-item[data-key="${k}"]`);
-            return el ? `<span class="hero-badge">${el.querySelector('.check-name').textContent}</span>` : '';
-          }).join('')}
+    <div class="vehicle-hero">
+      <div class="car-photo-wrap">
+        <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=900&q=80"
+          alt="2021 Toyota HiLux SR5 — Glacier White"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div class="car-svg-fallback" style="display:none">${CAR_SVG}</div>
+        <div class="photo-badge">2021 Toyota HiLux SR5</div>
+      </div>
+      <div class="vehicle-info">
+        <div>
+          <div class="vi-title">2021 Toyota HiLux SR5</div>
+          <div class="vi-sub">VIN: MR0FB3CD200123456 &nbsp;·&nbsp; 93,220 km &nbsp;·&nbsp; Glacier White</div>
+          <div class="vi-specs">
+            <span class="spec-chip">4WD</span>
+            <span class="spec-chip">2.8L Turbo Diesel</span>
+            <span class="spec-chip">Auto</span>
+            <span class="spec-chip">Dual Cab</span>
+            <span class="spec-chip">VIC Registered</span>
+          </div>
+        </div>
+        <div class="report-meta">
+          <div class="report-id">Report ID: ${REPORT_ID}</div>
+          <div class="report-ts">Generated: ${REPORT_TS}</div>
+          <div class="report-status-pill"><div class="dot"></div> SAMPLE REPORT</div>
         </div>
       </div>
     </div>`;
 
-  const sections = SECTION_ORDER
-    .filter(k => selected.has(k))
-    .map(k => renderSection(k))
-    .join('');
+  const cards = healthCards(selected);
+  const sections = SECTION_ORDER.filter(k => selected.has(k)).map(renderSection).join('');
 
-  area.innerHTML = hero + sections;
+  const footer = `
+    <div class="report-footer">
+      <div class="rf-left">
+        <div class="rf-id">Certificate ID: ${REPORT_ID} &nbsp;·&nbsp; Generated ${REPORT_TS}</div>
+        <div class="rf-note">This report contains sample data. All checks are sourced from official Australian government and industry databases.</div>
+      </div>
+      <div class="rf-sources">
+        ${srcTag('PPSR')}${srcTag('NEVDIS')}${srcTag('WOVR')}${srcTag('VicRoads')}${srcTag('DIRTIA')}${srcTag('RedBook')}
+      </div>
+    </div>`;
+
+  area.innerHTML = hero + cards + sections + footer;
 }
 
 // ── Checkbox interaction ──────────────────────────────────────
-document.querySelectorAll('.check-item').forEach(el => {
+function updateTotal() {
+  let total = 0;
+  document.querySelectorAll('.cb-item').forEach(el => {
+    if (selected.has(el.dataset.key)) total += parseFloat(el.dataset.price);
+  });
+  document.getElementById('total-display').textContent = '$' + total.toFixed(2);
+}
+
+document.querySelectorAll('.cb-item').forEach(el => {
   el.addEventListener('click', () => {
     const key = el.dataset.key;
-    if (selected.has(key)) {
-      selected.delete(key);
-      el.classList.remove('checked');
-      el.querySelector('input').checked = false;
-    } else {
-      selected.add(key);
-      el.classList.add('checked');
-      el.querySelector('input').checked = true;
-    }
+    if (selected.has(key)) { selected.delete(key); el.classList.remove('on'); el.querySelector('input').checked = false; }
+    else { selected.add(key); el.classList.add('on'); el.querySelector('input').checked = true; }
     updateTotal();
     renderReport();
+    checkInputs();
   });
 });
 
-// ── Lookup button ─────────────────────────────────────────────
+// ── Input / button ────────────────────────────────────────────
 const regoInput = document.getElementById('rego-input');
 const vinInput  = document.getElementById('vin-input');
 const lookupBtn = document.getElementById('lookup-btn');
 
 function checkInputs() {
-  const hasVal = regoInput.value.trim().length >= 4 || vinInput.value.trim().length >= 5;
-  lookupBtn.disabled = !hasVal || selected.size === 0;
+  lookupBtn.disabled = !(
+    (regoInput.value.trim().length >= 4 || vinInput.value.trim().length >= 5) && selected.size > 0
+  );
 }
 regoInput.addEventListener('input', checkInputs);
 vinInput.addEventListener('input', checkInputs);
 
-// Also re-check when selection changes
-const origRender = renderReport;
-window.renderReport = function() { origRender(); checkInputs(); };
-
 // ── Modal ─────────────────────────────────────────────────────
-const overlay   = document.getElementById('modal-overlay');
-const closeBtn  = document.getElementById('close-modal');
-const payBtn    = document.getElementById('pay-btn');
-
 lookupBtn.addEventListener('click', () => {
-  if (selected.size === 0) return;
-  const id = regoInput.value.trim() || vinInput.value.trim();
+  const idStr = regoInput.value.trim()
+    ? 'Registration: ' + regoInput.value.trim().toUpperCase()
+    : 'VIN: ' + vinInput.value.trim().toUpperCase();
+  document.getElementById('modal-vid').textContent = idStr;
 
-  // Vehicle ID display
-  document.getElementById('modal-vehicle-id').textContent =
-    regoInput.value.trim()
-      ? 'Registration: ' + regoInput.value.trim().toUpperCase()
-      : 'VIN: ' + vinInput.value.trim().toUpperCase();
-
-  // Line items
   let total = 0;
-  const lines = [...document.querySelectorAll('.check-item')]
+  const lines = [...document.querySelectorAll('.cb-item')]
     .filter(el => selected.has(el.dataset.key))
     .map(el => {
       const price = parseFloat(el.dataset.price);
       total += price;
-      return `<div class="line-item">
-        <span class="li-name">${el.querySelector('.check-name').textContent}</span>
-        <span class="li-price">$${price.toFixed(2)}</span>
-      </div>`;
+      return `<div class="li"><span>${el.querySelector('.cb-name').textContent}</span><span class="lp">$${price.toFixed(2)}</span></div>`;
     }).join('');
 
   document.getElementById('line-items').innerHTML = lines;
   document.getElementById('modal-total').textContent = '$' + total.toFixed(2);
-
-  // Reset to payment view
   document.getElementById('modal-main').style.display = '';
   document.getElementById('success-screen').style.display = 'none';
-
-  overlay.classList.remove('hidden');
+  const payBtn = document.getElementById('pay-btn');
+  payBtn.textContent = '';
+  payBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Pay & Unlock Report`;
+  payBtn.disabled = false;
+  document.getElementById('modal-overlay').classList.remove('hidden');
 });
 
-closeBtn.addEventListener('click', () => overlay.classList.add('hidden'));
-overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.add('hidden'); });
+document.getElementById('close-modal').addEventListener('click', () =>
+  document.getElementById('modal-overlay').classList.add('hidden'));
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.add('hidden');
+});
 
-// Payment method toggle
 document.querySelectorAll('.pay-method').forEach(el => {
   el.addEventListener('click', () => {
-    document.querySelectorAll('.pay-method').forEach(x => x.classList.remove('selected'));
-    el.classList.add('selected');
-    document.getElementById('card-fields').style.display =
-      el.dataset.method === 'card' ? '' : 'none';
+    document.querySelectorAll('.pay-method').forEach(x => x.classList.remove('sel'));
+    el.classList.add('sel');
+    document.getElementById('card-fields').style.display = el.dataset.method === 'card' ? '' : 'none';
   });
 });
 
-// Format card number
 document.getElementById('cc-num').addEventListener('input', function() {
-  this.value = this.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19);
+  this.value = this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,19);
 });
 
-// Pay button — prototype success
-payBtn.addEventListener('click', () => {
-  payBtn.textContent = 'Processing…';
-  payBtn.disabled = true;
+document.getElementById('pay-btn').addEventListener('click', function() {
+  this.innerHTML = 'Processing…';
+  this.disabled = true;
   setTimeout(() => {
     document.getElementById('modal-main').style.display = 'none';
     document.getElementById('success-screen').style.display = 'block';
-  }, 1400);
+  }, 1500);
 });
 
 // ── Init ──────────────────────────────────────────────────────
