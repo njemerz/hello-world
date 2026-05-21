@@ -19,455 +19,224 @@
 html{scroll-behavior:smooth}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;color:var(--txt);background:var(--bg);min-height:100vh}
 
-/* ─────────────────────────────────────
-   SCREEN MANAGEMENT
-───────────────────────────────────── */
 .screen{display:none}
 .screen.active{display:block}
-#screen-loading.active{display:flex}
-#screen-hero.active{display:flex}
+#screen-loading.active,#screen-hero.active{display:flex}
 
-/* ═══════════════════════════════════════
-   SCREEN 1 — HERO
-═══════════════════════════════════════ */
+/* ═══ HERO ═══ */
 #screen-hero{
   min-height:100vh;flex-direction:column;
   background:linear-gradient(160deg,var(--navy) 0%,#0f3560 55%,#1a4f8a 100%);
   position:relative;overflow:hidden;
 }
-/* subtle grid overlay */
 #screen-hero::before{
   content:'';position:absolute;inset:0;pointer-events:none;
   background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
   background-size:48px 48px;
 }
-/* bottom glow */
 #screen-hero::after{
   content:'';position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);
   width:900px;height:400px;border-radius:50%;
   background:radial-gradient(ellipse,rgba(29,111,205,.18) 0%,transparent 70%);
   pointer-events:none;
 }
-
 .hero-nav{
   position:relative;z-index:5;
   display:flex;align-items:center;justify-content:space-between;
   padding:18px 48px;border-bottom:1px solid rgba(255,255,255,.07);
 }
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-logo-mark{
-  width:36px;height:36px;background:var(--blue);border-radius:9px;
-  display:flex;align-items:center;justify-content:center;
-}
+.nav-logo-mark{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center}
 .nav-logo-mark svg{width:19px;height:19px}
 .nav-logo-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px}
 .nav-logo-name em{color:#7dc4ff;font-style:normal}
 .nav-links{display:flex;align-items:center;gap:32px}
 .nav-links a{color:rgba(255,255,255,.55);font-size:13.5px;text-decoration:none;transition:color .2s}
 .nav-links a:hover{color:#fff}
-.nav-links .nav-btn{
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
-  color:rgba(255,255,255,.85)!important;padding:8px 18px;border-radius:7px;
-  font-weight:600;transition:all .2s!important;
-}
+.nav-links .nav-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85)!important;padding:8px 18px;border-radius:7px;font-weight:600;transition:all .2s!important}
 .nav-links .nav-btn:hover{background:rgba(255,255,255,.18)!important;color:#fff!important}
-
-.hero-main{
-  position:relative;z-index:4;
-  flex:1;display:flex;flex-direction:column;align-items:center;
-  padding:64px 24px 48px;text-align:center;
-}
-.hero-pill{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(125,196,255,.12);border:1px solid rgba(125,196,255,.25);
-  color:#7dc4ff;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
-  padding:5px 15px;border-radius:20px;margin-bottom:28px;
-}
+.hero-main{position:relative;z-index:4;flex:1;display:flex;flex-direction:column;align-items:center;padding:64px 24px 48px;text-align:center}
+.hero-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(125,196,255,.12);border:1px solid rgba(125,196,255,.25);color:#7dc4ff;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:5px 15px;border-radius:20px;margin-bottom:28px}
 .hero-pill svg{width:13px;height:13px;flex-shrink:0}
-.hero-h1{
-  font-size:clamp(34px,5.5vw,62px);font-weight:900;color:#fff;
-  line-height:1.1;letter-spacing:-1.5px;margin-bottom:18px;
-  max-width:760px;
-}
-.hero-h1 .hl{
-  background:linear-gradient(90deg,#7dc4ff,#5ab2ff);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-sub{
-  font-size:clamp(15px,1.8vw,18px);color:rgba(255,255,255,.6);
-  max-width:540px;line-height:1.65;margin-bottom:48px;
-}
-
-/* ── SEARCH BOX ── */
-.search-box{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.14);
-  backdrop-filter:blur(16px);
-  border-radius:18px;padding:28px 32px 24px;
-  width:100%;max-width:540px;
-}
-.search-tabs{
-  display:flex;background:rgba(0,0,0,.3);border-radius:8px;padding:3px;
-  margin-bottom:22px;
-}
-.stab{
-  flex:1;padding:8px 12px;border-radius:6px;
-  font-size:13px;font-weight:600;letter-spacing:.2px;
-  color:rgba(255,255,255,.45);cursor:pointer;text-align:center;
-  transition:all .2s;user-select:none;
-}
+.hero-h1{font-size:clamp(34px,5.5vw,62px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1.5px;margin-bottom:18px;max-width:760px}
+.hero-h1 .hl{background:linear-gradient(90deg,#7dc4ff,#5ab2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.8vw,18px);color:rgba(255,255,255,.6);max-width:540px;line-height:1.65;margin-bottom:48px}
+.search-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(16px);border-radius:18px;padding:28px 32px 24px;width:100%;max-width:540px}
+.search-tabs{display:flex;background:rgba(0,0,0,.3);border-radius:8px;padding:3px;margin-bottom:22px}
+.stab{flex:1;padding:8px 12px;border-radius:6px;font-size:13px;font-weight:600;letter-spacing:.2px;color:rgba(255,255,255,.45);cursor:pointer;text-align:center;transition:all .2s;user-select:none}
 .stab.on{background:#fff;color:var(--navy)}
-
-/* Rego plate input */
-.plate-wrap{
-  display:flex;border-radius:11px;overflow:hidden;
-  border:2.5px solid rgba(255,255,255,.2);
-  transition:border-color .2s;margin-bottom:14px;
-}
+.plate-wrap{display:flex;border-radius:11px;overflow:hidden;border:2.5px solid rgba(255,255,255,.2);transition:border-color .2s;margin-bottom:14px}
 .plate-wrap:focus-within{border-color:#7dc4ff}
-.plate-state-btn{
-  background:#ffd700;border:none;
-  color:#003399;font-size:11px;font-weight:900;letter-spacing:.8px;
-  padding:0 14px;min-width:52px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  cursor:pointer;position:relative;line-height:1;gap:2px;
-  border-right:2px solid rgba(0,0,0,.12);
-}
+.plate-state-btn{background:#ffd700;border:none;color:#003399;font-size:11px;font-weight:900;letter-spacing:.8px;padding:0 14px;min-width:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;line-height:1;gap:2px;border-right:2px solid rgba(0,0,0,.12)}
 .plate-state-btn .psb-state{font-size:13px;font-weight:900}
 .plate-state-btn .psb-label{font-size:8px;font-weight:700;opacity:.6;letter-spacing:.5px}
-.plate-state-btn select{
-  position:absolute;inset:0;opacity:0;cursor:pointer;font-size:16px;
-}
-.plate-input{
-  flex:1;background:rgba(255,255,255,.95);border:none;outline:none;
-  font-size:30px;font-weight:900;letter-spacing:5px;text-transform:uppercase;
-  color:var(--navy);padding:13px 18px;text-align:center;
-  font-family:'Courier New',Courier,monospace;
-}
+.plate-state-btn select{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:16px}
+.plate-input{flex:1;background:rgba(255,255,255,.95);border:none;outline:none;font-size:30px;font-weight:900;letter-spacing:5px;text-transform:uppercase;color:var(--navy);padding:13px 18px;text-align:center;font-family:'Courier New',Courier,monospace}
 .plate-input::placeholder{font-size:22px;letter-spacing:3px;color:#b0bbc8}
-
 .vin-wrap{margin-bottom:14px}
-.vin-input{
-  width:100%;background:rgba(255,255,255,.95);border:2.5px solid rgba(255,255,255,.2);
-  outline:none;border-radius:11px;padding:14px 18px;
-  font-size:15px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--navy);font-family:'Courier New',Courier,monospace;transition:border-color .2s;
-}
+.vin-input{width:100%;background:rgba(255,255,255,.95);border:2.5px solid rgba(255,255,255,.2);outline:none;border-radius:11px;padding:14px 18px;font-size:15px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);font-family:'Courier New',Courier,monospace;transition:border-color .2s}
 .vin-input:focus{border-color:#7dc4ff}
 .vin-input::placeholder{font-family:inherit;font-size:13px;letter-spacing:.3px;font-weight:400;color:#999}
-
-.search-btn{
-  width:100%;padding:16px;border:none;border-radius:10px;
-  background:linear-gradient(135deg,#1d6fcd,#1558a8);
-  color:#fff;font-size:17px;font-weight:800;letter-spacing:-.2px;
-  cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  box-shadow:0 4px 24px rgba(29,111,205,.45);
-}
+.search-btn{width:100%;padding:16px;border:none;border-radius:10px;background:linear-gradient(135deg,#1d6fcd,#1558a8);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.2px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 24px rgba(29,111,205,.45)}
 .search-btn:hover{background:linear-gradient(135deg,#2278d9,#1a66be);transform:translateY(-1px);box-shadow:0 6px 28px rgba(29,111,205,.55)}
 .search-btn:active{transform:none}
 .search-btn svg{width:19px;height:19px}
 .search-note{font-size:11px;color:rgba(255,255,255,.35);text-align:center;margin-top:11px}
-
-/* ── TRUST ROW ── */
-.trust-row{
-  display:flex;align-items:center;gap:28px;flex-wrap:wrap;
-  justify-content:center;padding-top:32px;
-}
+.trust-row{display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center;padding-top:32px}
 .ti{display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.5)}
 .ti strong{color:rgba(255,255,255,.82)}
 .ti svg{width:15px;height:15px;color:#7dc4ff;flex-shrink:0}
 .tsep{width:1px;height:20px;background:rgba(255,255,255,.12)}
-
-/* ── HERO STATS BAR ── */
-.hero-stats{
-  position:relative;z-index:4;
-  border-top:1px solid rgba(255,255,255,.07);
-  padding:18px 48px;
-  display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;
-}
+.hero-stats{position:relative;z-index:4;border-top:1px solid rgba(255,255,255,.07);padding:18px 48px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
 .hs-item{text-align:center}
 .hs-num{font-size:22px;font-weight:900;color:#fff;letter-spacing:-.5px;display:block}
 .hs-label{font-size:11px;color:rgba(255,255,255,.38);letter-spacing:.2px}
 
-/* ═══════════════════════════════════════
-   SCREEN 2 — LOADING
-═══════════════════════════════════════ */
-#screen-loading{
-  min-height:100vh;flex-direction:column;align-items:center;justify-content:center;
-  background:linear-gradient(160deg,var(--navy) 0%,#0f3560 100%);
-  padding:40px 24px;text-align:center;
-}
-.ld-plate{
-  display:inline-flex;align-items:center;gap:10px;
-  background:#ffd700;color:#003399;
-  border-radius:9px;padding:10px 24px 10px 18px;
-  margin-bottom:40px;box-shadow:0 8px 32px rgba(0,0,0,.3);
-}
+/* ═══ LOADING ═══ */
+#screen-loading{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--navy) 0%,#0f3560 100%);padding:40px 24px;text-align:center}
+.ld-plate{display:inline-flex;align-items:center;gap:10px;background:#ffd700;color:#003399;border-radius:9px;padding:10px 24px 10px 18px;margin-bottom:40px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
 .ld-plate-state{display:flex;flex-direction:column;align-items:center;line-height:1;gap:2px}
 .ld-plate-state .s{font-size:10px;font-weight:900;letter-spacing:.5px}
 .ld-plate-state .l{font-size:7px;font-weight:700;opacity:.55;letter-spacing:.4px}
-.ld-plate-num{
-  font-family:'Courier New',Courier,monospace;
-  font-size:34px;font-weight:900;letter-spacing:5px;
-}
-.ld-spinner{
-  width:52px;height:52px;margin:0 auto 28px;
-  border:4px solid rgba(255,255,255,.1);
-  border-top-color:#7dc4ff;border-radius:50%;
-  animation:spin .75s linear infinite;
-}
+.ld-plate-num{font-family:'Courier New',Courier,monospace;font-size:34px;font-weight:900;letter-spacing:5px}
+.ld-spinner{width:52px;height:52px;margin:0 auto 28px;border:4px solid rgba(255,255,255,.1);border-top-color:#7dc4ff;border-radius:50%;animation:spin .75s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .ld-headline{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px}
 .ld-sub{font-size:14px;color:rgba(255,255,255,.45);margin-bottom:36px}
-.ld-steps{
-  display:flex;flex-direction:column;gap:9px;
-  width:100%;max-width:360px;margin:0 auto;
-}
-.ls-row{
-  display:flex;align-items:center;gap:12px;
-  padding:10px 14px;border-radius:9px;
-  background:rgba(255,255,255,.05);font-size:13px;
-  color:rgba(255,255,255,.4);transition:all .35s;
-}
+.ld-steps{display:flex;flex-direction:column;gap:9px;width:100%;max-width:360px;margin:0 auto}
+.ls-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:9px;background:rgba(255,255,255,.05);font-size:13px;color:rgba(255,255,255,.4);transition:all .35s}
 .ls-row.active{background:rgba(29,111,205,.25);color:#fff}
 .ls-row.done{background:rgba(10,110,68,.22);color:rgba(255,255,255,.8)}
-.ls-dot{
-  width:20px;height:20px;flex-shrink:0;border-radius:50%;
-  background:rgba(255,255,255,.12);
-  display:flex;align-items:center;justify-content:center;
-  transition:all .35s;
-}
+.ls-dot{width:20px;height:20px;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;transition:all .35s}
 .ls-row.done .ls-dot{background:var(--green2)}
 .ls-row.active .ls-dot{background:var(--blue);animation:pp .9s ease infinite}
 .ls-dot svg{width:11px;height:11px;color:#fff}
 @keyframes pp{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* ═══════════════════════════════════════
-   SCREEN 3 — RESULTS
-═══════════════════════════════════════ */
+/* ═══ RESULTS ═══ */
 #screen-results{background:var(--bg)}
-.res-topbar{
-  background:var(--navy2);
-  display:flex;align-items:center;gap:16px;
-  padding:12px 32px;
-  position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 12px rgba(0,0,0,.2);
-  flex-wrap:wrap;
-}
+.res-topbar{background:var(--navy2);display:flex;align-items:center;gap:16px;padding:12px 32px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);flex-wrap:wrap}
 .rtb-logo{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px}
 .rtb-logo em{color:#7dc4ff;font-style:normal}
 .rtb-sep{width:1px;height:20px;background:rgba(255,255,255,.18)}
-.rtb-plate{
-  background:#ffd700;color:#003399;
-  font-family:'Courier New',Courier,monospace;
-  font-size:14px;font-weight:900;letter-spacing:3px;
-  padding:4px 12px;border-radius:5px;
-}
+.rtb-plate{background:#ffd700;color:#003399;font-family:'Courier New',Courier,monospace;font-size:14px;font-weight:900;letter-spacing:3px;padding:4px 12px;border-radius:5px}
 .rtb-vehicle{font-size:14px;font-weight:600;color:rgba(255,255,255,.75)}
 .rtb-spacer{flex:1}
-.rtb-new-btn{
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
-  color:rgba(255,255,255,.7);font-size:13px;font-weight:600;
-  padding:7px 14px;border-radius:7px;cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;gap:7px;
-}
+.rtb-new-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-size:13px;font-weight:600;padding:7px 14px;border-radius:7px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px}
 .rtb-new-btn:hover{background:rgba(255,255,255,.18);color:#fff}
 .rtb-new-btn svg{width:14px;height:14px}
-
-.res-body{
-  display:flex;align-items:flex-start;
-  max-width:1260px;margin:0 auto;width:100%;
-}
+.res-body{display:flex;align-items:flex-start;max-width:1260px;margin:0 auto;width:100%}
 
 /* LEFT SIDEBAR */
-.res-left{
-  width:350px;flex-shrink:0;
-  position:sticky;top:56px;height:calc(100vh - 56px);
-  overflow-y:auto;padding:22px 18px;
-  background:var(--surf);border-right:1px solid var(--bdr);
-}
+.res-left{width:330px;flex-shrink:0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;padding:20px 16px;background:var(--surf);border-right:1px solid var(--bdr)}
 .res-left::-webkit-scrollbar{width:4px}
 .res-left::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
-
-/* Vehicle card */
-.veh-card{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:20px;box-shadow:var(--sh)}
-.veh-img{height:160px;background:linear-gradient(135deg,#dce4ef,#c8d4e4);position:relative;overflow:hidden}
+.veh-card{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:16px;box-shadow:var(--sh)}
+.veh-img{height:150px;background:linear-gradient(135deg,#dce4ef,#c8d4e4);position:relative;overflow:hidden}
 .veh-img img{width:100%;height:100%;object-fit:cover}
 .veh-img-svg{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-.veh-reg-chip{
-  position:absolute;top:9px;left:9px;
-  font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
-  padding:3px 9px;border-radius:4px;background:rgba(10,110,68,.88);color:#fff;
-}
-.veh-info{padding:13px 14px}
-.veh-sub{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--blue);margin-bottom:3px}
-.veh-name{font-size:15px;font-weight:800;color:var(--txt);line-height:1.3;margin-bottom:11px}
-.veh-specs{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.spec-cell{background:var(--bg);border-radius:7px;padding:7px 9px}
-.spec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px}
-.spec-val{font-size:13px;font-weight:700;color:var(--txt)}
-.veh-vin-row{
-  margin-top:9px;padding:8px 9px;background:var(--bg);border-radius:7px;
-  display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);
-}
-.veh-vin-row strong{font-family:'Courier New',Courier,monospace;font-size:11.5px;color:var(--txt);letter-spacing:.5px}
+.veh-reg-chip{position:absolute;top:9px;left:9px;font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:3px 9px;border-radius:4px;background:rgba(10,110,68,.88);color:#fff}
+.veh-info{padding:12px 13px}
+.veh-sub{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--blue);margin-bottom:2px}
+.veh-name{font-size:14px;font-weight:800;color:var(--txt);line-height:1.35;margin-bottom:9px}
+.veh-specs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.spec-cell{background:var(--bg);border-radius:7px;padding:6px 8px}
+.spec-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px}
+.spec-val{font-size:12.5px;font-weight:700;color:var(--txt)}
+.veh-vin-row{margin-top:7px;padding:7px 8px;background:var(--bg);border-radius:7px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted)}
+.veh-vin-row strong{font-family:'Courier New',Courier,monospace;font-size:11px;color:var(--txt);letter-spacing:.5px}
 
-/* Package cards */
-.pkg-head{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:11px}
-.pkg-list{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
-.pkg{
-  border:2px solid var(--bdr);border-radius:var(--r);
-  padding:13px 14px;cursor:pointer;transition:all .18s;
-  position:relative;background:var(--surf);
-}
-.pkg:hover{border-color:var(--blue);background:#f7faff}
-.pkg.sel{border-color:var(--blue);background:#f0f6ff}
-.pkg.pop{border-color:#b8d4f5}
-.pkg-badge{
-  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
-  background:var(--blue);color:#fff;
-  font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
-  padding:2px 11px;border-radius:10px;white-space:nowrap;
-}
-.pkg-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.pkg-radio-name{display:flex;align-items:center;gap:9px}
-.pkg-radio{
-  width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);
-  flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  transition:all .18s;
-}
-.pkg.sel .pkg-radio{border-color:var(--blue);background:var(--blue)}
-.pkg.sel .pkg-radio::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
-.pkg-name{font-size:14px;font-weight:800;color:var(--txt)}
-.pkg-pricing{text-align:right}
-.pkg-price{font-size:19px;font-weight:900;color:var(--txt)}
-.pkg-save{
-  font-size:10px;font-weight:700;
-  background:var(--green-lt);color:var(--green);
-  padding:1px 6px;border-radius:4px;display:inline-block;margin-top:2px;
-}
-.pkg-includes{display:flex;flex-wrap:wrap;gap:5px}
-.pkg-inc-item{
-  display:flex;align-items:center;gap:4px;
-  font-size:11px;color:var(--muted);
-}
-.pkg-inc-item svg{width:11px;height:11px;color:var(--green);flex-shrink:0}
+/* Sidebar report summary card */
+.sb-summary{border:1.5px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.sb-sum-hd{background:var(--bg);padding:10px 13px;display:flex;align-items:center;justify-content:space-between}
+.sb-sum-hd-left{font-size:11.5px;font-weight:800;color:var(--txt)}
+.sb-sum-hd-left span{font-size:10px;font-weight:600;color:var(--muted);margin-left:4px}
+.sb-edit-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;padding:4px 9px;border-radius:5px;border:1px solid var(--blue-lt);background:var(--blue-lt);transition:all .18s}
+.sb-edit-btn:hover{background:#d8ecff}
+.sb-edit-btn svg{width:12px;height:12px}
+.sb-sum-rows{padding:8px 13px}
+.sb-sec-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--bdr);font-size:12px}
+.sb-sec-row:last-child{border-bottom:none}
+.sb-sec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-sec-dot.on{background:var(--green2)}
+.sb-sec-dot.off{background:#d0d7e2}
+.sb-sec-name{flex:1;color:var(--txt)}
+.sb-sec-name.off{color:var(--muted);text-decoration:line-through}
+.sb-sec-price{font-size:11px;font-weight:700;color:var(--muted)}
+.sb-sum-foot{padding:9px 13px;background:var(--bg);border-top:1px solid var(--bdr)}
+.sb-price-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.sb-price-lbl{font-size:11px;color:var(--muted)}
+.sb-price-val{font-size:11px;font-weight:700;color:var(--muted)}
+.sb-price-row.main .sb-price-lbl{font-size:14px;font-weight:800;color:var(--txt)}
+.sb-price-row.main .sb-price-val{font-size:20px;font-weight:900;color:var(--txt)}
+.sb-bundle-tag{font-size:10px;font-weight:800;background:var(--green-lt);color:var(--green);padding:2px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;margin-bottom:7px}
+.sb-bundle-tag svg{width:10px;height:10px}
+.sb-nobudnle-hint{font-size:10.5px;color:var(--amber);background:var(--amber-lt);padding:6px 9px;border-radius:6px;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.sb-nobudnle-hint svg{width:11px;height:11px;flex-shrink:0}
 
-.cta-btn{
-  width:100%;padding:15px;border:none;border-radius:var(--r);
-  background:linear-gradient(135deg,#0c7a4c,#0a6e44);
-  color:#fff;font-size:15px;font-weight:800;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;
-  transition:all .2s;box-shadow:0 4px 18px rgba(10,110,68,.28);
-}
+.cta-btn{width:100%;padding:14px;border:none;border-radius:var(--r);background:linear-gradient(135deg,#0c7a4c,#0a6e44);color:#fff;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s;box-shadow:0 4px 18px rgba(10,110,68,.28)}
 .cta-btn:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(10,110,68,.38)}
 .cta-btn:active{transform:none}
 .cta-btn svg{width:17px;height:17px}
-.cta-sub{
-  text-align:center;font-size:11px;color:var(--muted);
-  margin-top:8px;display:flex;align-items:center;justify-content:center;gap:5px;
-}
+.cta-sub{text-align:center;font-size:11px;color:var(--muted);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:5px}
 .cta-sub svg{width:11px;height:11px;color:var(--green)}
 
-/* RIGHT — Report preview */
-.res-right{flex:1;min-width:0;padding:26px 26px 72px}
-
-.rpt-intro{
-  background:linear-gradient(135deg,var(--navy2),var(--navy3,#1a3d6b));
-  border-radius:var(--r);padding:18px 22px;margin-bottom:22px;
-  display:flex;align-items:center;gap:14px;
-  box-shadow:var(--sh);
-}
-.rpt-intro-icon{
-  width:44px;height:44px;background:rgba(125,196,255,.15);border-radius:10px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.rpt-intro-icon svg{width:22px;height:22px;color:#7dc4ff}
-.rpt-intro-text{flex:1}
-.rpt-intro-text h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px}
+/* RIGHT report */
+.res-right{flex:1;min-width:0;padding:24px 24px 72px}
+.rpt-intro{background:linear-gradient(135deg,var(--navy2),var(--navy3,#1a3d6b));border-radius:var(--r);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:13px;box-shadow:var(--sh)}
+.rpt-intro-icon{width:42px;height:42px;background:rgba(125,196,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rpt-intro-icon svg{width:20px;height:20px;color:#7dc4ff}
+.rpt-intro-text h3{font-size:14px;font-weight:800;color:#fff;margin-bottom:3px}
 .rpt-intro-text p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
-
-/* Section cards */
-.sec-wrap{margin-bottom:18px}
-.sec-card{
-  background:var(--surf);border-radius:var(--r);
-  border:1px solid var(--bdr);overflow:hidden;
-  box-shadow:var(--sh);position:relative;
-}
-.sec-hd{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:13px 18px;border-bottom:1px solid var(--bdr);
-}
+.sec-wrap{margin-bottom:16px}
+.sec-card{background:var(--surf);border-radius:var(--r);border:1px solid var(--bdr);overflow:hidden;box-shadow:var(--sh);position:relative;transition:border-color .3s}
+.sec-card.excluded{border-color:#e5e9f0;opacity:.7}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bdr)}
 .sec-hd-l{display:flex;align-items:center;gap:10px}
-.sec-ico{
-  width:34px;height:34px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.sec-ico svg{width:17px;height:17px}
+.sec-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-ico svg{width:16px;height:16px}
 .sec-ico.green{background:var(--green-lt);color:var(--green)}
 .sec-ico.blue{background:var(--blue-lt);color:var(--blue)}
 .sec-ico.red{background:var(--red-lt);color:var(--red)}
 .sec-ico.amber{background:var(--amber-lt);color:var(--amber)}
-.sec-title{font-size:14px;font-weight:800;color:var(--txt)}
+.sec-title{font-size:13.5px;font-weight:800;color:var(--txt)}
 .sec-source{font-size:10.5px;color:var(--muted)}
-.sec-api-tag{font-size:10px;color:var(--muted);background:var(--bg);padding:2px 8px;border-radius:4px;font-family:'Courier New',Courier,monospace;white-space:nowrap}
-.sec-body{padding:16px 18px;position:relative}
-.sec-body.blurred{filter:blur(5px);pointer-events:none;user-select:none}
+.sec-hd-right{display:flex;align-items:center;gap:8px}
+.sec-status-tag{font-size:10px;font-weight:800;letter-spacing:.3px;padding:3px 9px;border-radius:10px;white-space:nowrap}
+.sec-status-tag.inc{background:var(--green-lt);color:var(--green)}
+.sec-status-tag.exc{background:var(--bg);color:var(--muted)}
+.sec-add-btn{font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-lt);border:none;border-radius:5px;padding:4px 9px;cursor:pointer;transition:background .18s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.sec-add-btn:hover{background:#d8ecff}
+.sec-add-btn svg{width:11px;height:11px}
+.sec-body{padding:16px;position:relative}
+.sec-body.blurred{filter:blur(5px);pointer-events:none;user-select:none;opacity:.6}
+.sec-excl-overlay{display:none;position:absolute;inset:0;background:rgba(248,249,252,.8);backdrop-filter:blur(3px);align-items:center;justify-content:center;flex-direction:column;gap:8px;z-index:10;border-radius:0 0 var(--r) var(--r)}
+.sec-excl-overlay.show{display:flex}
+.excl-chip{background:#edf2f8;border:1px solid var(--bdr);color:var(--muted);font-size:12px;font-weight:700;padding:8px 15px;border-radius:7px;display:flex;align-items:center;gap:7px}
+.excl-add-btn{font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;display:flex;align-items:center;gap:5px;padding:6px 14px;background:var(--blue-lt);border-radius:7px;border:none;transition:background .18s}
+.excl-add-btn:hover{background:#d8ecff}
+.excl-add-btn svg{width:13px;height:13px}
 
-/* Lock gate overlay */
-.sec-gate{
-  display:none;
-  position:absolute;inset:0;
-  background:rgba(255,255,255,.65);backdrop-filter:blur(2px);
-  align-items:center;justify-content:center;flex-direction:column;gap:10px;
-  z-index:10;border-radius:0 0 var(--r) var(--r);
-}
-.sec-gate.show{display:flex}
-.gate-chip{
-  background:var(--navy2);color:#fff;
-  font-size:13px;font-weight:700;
-  padding:10px 18px;border-radius:8px;
-  display:flex;align-items:center;gap:8px;
-  cursor:pointer;transition:background .18s;
-}
-.gate-chip:hover{background:var(--navy3)}
-.gate-chip svg{width:14px;height:14px}
-.gate-pkg-hint{font-size:11px;color:var(--muted)}
-
-/* ── Content helpers ── */
-.badge{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:11.5px;font-weight:800;letter-spacing:.2px;
-  padding:3px 10px;border-radius:20px;
-}
+/* content helpers */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;letter-spacing:.2px;padding:3px 10px;border-radius:20px}
 .badge.pass{background:var(--green-lt);color:var(--green)}
 .badge.warn{background:var(--amber-lt);color:var(--amber)}
 .badge.fail{background:var(--red-lt);color:var(--red)}
 .badge svg{width:12px;height:12px}
-
 .data-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px}
 .dc{padding:11px 12px;background:var(--bg);border-radius:8px}
 .dc-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px}
 .dc-v{font-size:13.5px;font-weight:800;color:var(--txt)}
 .dc-v.mono{font-family:'Courier New',Courier,monospace;font-size:12px}
-
 .check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
-.ck{
-  display:flex;align-items:flex-start;gap:9px;
-  padding:11px 12px;background:var(--bg);border-radius:8px;
-}
-.ck-ico{
-  width:24px;height:24px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-}
+.ck{display:flex;align-items:flex-start;gap:9px;padding:11px 12px;background:var(--bg);border-radius:8px}
+.ck-ico{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .ck-ico svg{width:12px;height:12px}
 .ck-ico.pass{background:var(--green-lt);color:var(--green)}
 .ck-ico.fail{background:var(--red-lt);color:var(--red)}
 .ck-ico.warn{background:var(--amber-lt);color:var(--amber)}
 .ck-lbl{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:1px}
 .ck-val{font-size:11px;color:var(--muted)}
-
 .val-cards{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .vc2{flex:1;min-width:120px;padding:14px;background:var(--bg);border-radius:9px;text-align:center}
 .vc2.hi{background:linear-gradient(135deg,var(--blue-lt),#d8ecff);border:1px solid #b8d8f8}
@@ -475,7 +244,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
 .vc2-val{font-size:22px;font-weight:900;color:var(--txt)}
 .vc2-val.blue{color:var(--blue)}
 .vc2-sub{font-size:11px;color:var(--muted);margin-top:3px}
-
 .odo-tl{padding-left:24px;position:relative;margin-top:6px}
 .odo-tl::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--bdr)}
 .odo-ev{position:relative;padding-bottom:16px}
@@ -484,118 +252,135 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
 .odo-date{font-size:10.5px;color:var(--muted);margin-bottom:1px}
 .odo-km{font-size:15px;font-weight:900;color:var(--txt)}
 .odo-det{font-size:11px;color:var(--muted);margin-top:1px}
-
 .mkt-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
 .msc{padding:11px;background:var(--bg);border-radius:8px;text-align:center}
 .msc-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
 .msc-v{font-size:15px;font-weight:900;color:var(--txt)}
-
 .tbl{width:100%;border-collapse:collapse;font-size:12px}
 .tbl th{background:var(--bg);font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.5px;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--bdr)}
 .tbl td{padding:9px 10px;border-bottom:1px solid var(--bdr)}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:#f9fbfd}
 .state-chip{font-size:10px;font-weight:700;background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--muted)}
-
-.ppsr-cert{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:13px 14px;background:var(--bg);border-radius:8px;margin-top:13px;
-}
+.ppsr-cert{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:var(--bg);border-radius:8px;margin-top:13px}
 .ppsr-cert-info{font-size:13px;font-weight:700;color:var(--txt)}
 .ppsr-cert-info small{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:1px}
-.ppsr-cert-link{
-  font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;
-  display:flex;align-items:center;gap:5px;
-}
+.ppsr-cert-link{font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:5px}
 .ppsr-cert-link:hover{text-decoration:underline}
-
-.ph-ev{
-  display:flex;align-items:center;gap:11px;
-  padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:8px;
-}
+.ph-ev{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:8px}
 .ph-type{font-size:10px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap}
 .ph-type.sale{background:var(--blue-lt);color:var(--blue)}
 .ph-type.listed{background:var(--green-lt);color:var(--green)}
 .ph-type.inspection{background:var(--amber-lt);color:var(--amber)}
 .ph-km{font-size:14px;font-weight:800;color:var(--txt)}
 .ph-det{font-size:11px;color:var(--muted);flex:1;text-align:right}
-
 .bf-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .bf{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:12px}
 .bf-code{font-family:'Courier New',Courier,monospace;font-size:10.5px;font-weight:800;color:var(--blue);background:var(--blue-lt);padding:1px 6px;border-radius:3px}
 .bf-val{font-weight:700;color:var(--txt);font-size:11px;text-align:right;max-width:150px;line-height:1.3}
 
-/* ═══════════════════════════════════════
-   PAYMENT MODAL
-═══════════════════════════════════════ */
-.modal-bg{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
-  z-index:500;align-items:center;justify-content:center;padding:20px;
-}
+/* ═══ BUILDER MODAL ═══ */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center;padding:20px}
 .modal-bg.open{display:flex}
-.modal{
-  background:#fff;border-radius:16px;width:100%;max-width:460px;
-  box-shadow:0 28px 80px rgba(0,0,0,.3);overflow:hidden;
-  animation:mu .22s ease;
-}
+
+/* Builder */
+.builder{background:#fff;border-radius:16px;width:100%;max-width:800px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.35);animation:mu .22s ease;overflow:hidden}
 @keyframes mu{from{transform:translateY(18px);opacity:0}}
-.modal-hd{
-  background:var(--navy2);padding:20px 24px;
-  display:flex;align-items:flex-start;justify-content:space-between;
-}
+.bm-hd{background:var(--navy2);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.bm-hd-left h2{font-size:17px;font-weight:800;color:#fff;margin-bottom:2px}
+.bm-hd-plate{display:inline-flex;align-items:center;gap:7px}
+.bm-hd-plate-tag{background:#ffd700;color:#003399;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:900;letter-spacing:2px;padding:3px 10px;border-radius:4px}
+.bm-hd-veh{font-size:12px;color:rgba(255,255,255,.5)}
+.bm-close{background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bm-close:hover{background:rgba(255,255,255,.2)}
+.bm-close svg{width:15px;height:15px}
+.bm-body{display:flex;flex:1;overflow:hidden}
+.bm-left{flex:1;overflow-y:auto;padding:0}
+.bm-left::-webkit-scrollbar{width:4px}
+.bm-left::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.bm-notice{padding:11px 20px;display:flex;align-items:center;gap:10px;font-size:12.5px;border-bottom:1px solid var(--bdr);transition:all .3s}
+.bm-notice.bundle{background:var(--green-lt);color:var(--green)}
+.bm-notice.broken{background:var(--amber-lt);color:var(--amber)}
+.bm-notice svg{width:15px;height:15px;flex-shrink:0}
+.bm-notice strong{font-weight:800}
+.bm-notice .restore-link{margin-left:auto;font-size:11.5px;font-weight:700;text-decoration:underline;cursor:pointer;white-space:nowrap}
+
+/* Section rows in builder */
+.bm-sec-list{padding:4px 0}
+.bm-sec{display:flex;align-items:center;gap:0;padding:12px 20px;border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .15s;user-select:none}
+.bm-sec:last-child{border-bottom:none}
+.bm-sec:hover{background:#f8fafd}
+.bm-sec.off{opacity:.55}
+.bm-checkbox{width:20px;height:20px;border:2px solid var(--bdr);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s;margin-right:13px}
+.bm-checkbox svg{width:11px;height:11px;color:#fff;opacity:0;transition:opacity .15s}
+.bm-sec.on .bm-checkbox{background:var(--green2);border-color:var(--green2)}
+.bm-sec.on .bm-checkbox svg{opacity:1}
+.bm-sec-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:11px}
+.bm-sec-ico svg{width:15px;height:15px}
+.bm-sec-ico.green{background:var(--green-lt);color:var(--green)}
+.bm-sec-ico.blue{background:var(--blue-lt);color:var(--blue)}
+.bm-sec-ico.red{background:var(--red-lt);color:var(--red)}
+.bm-sec-ico.amber{background:var(--amber-lt);color:var(--amber)}
+.bm-sec-info{flex:1;min-width:0}
+.bm-sec-name{font-size:13.5px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.bm-sec-desc{font-size:11.5px;color:var(--muted)}
+.bm-sec-price{text-align:right;flex-shrink:0;margin-left:12px}
+.bm-sec-price-val{font-size:14px;font-weight:800;color:var(--txt)}
+.bm-sec-price-lbl{font-size:10px;color:var(--muted);margin-top:1px}
+.bm-sec.on .bm-sec-price-lbl{color:var(--green)}
+
+/* Right summary panel */
+.bm-right{width:230px;flex-shrink:0;background:var(--bg);border-left:1px solid var(--bdr);display:flex;flex-direction:column;padding:20px 18px}
+.bm-sum-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:14px}
+.bm-line{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;margin-bottom:8px;gap:8px}
+.bm-line-n{color:var(--muted)}
+.bm-line-v{font-weight:700;color:var(--txt);text-align:right}
+.bm-line-v.strike{text-decoration:line-through;color:var(--muted);font-weight:400}
+.bm-sep{border:none;border-top:1px solid var(--bdr);margin:10px 0}
+.bm-saving{background:var(--green-lt);color:var(--green);border-radius:7px;padding:8px 10px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:12px;transition:opacity .3s}
+.bm-saving svg{width:13px;height:13px;flex-shrink:0}
+.bm-saving.hidden{opacity:0;pointer-events:none}
+.bm-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.bm-total-lbl{font-size:13px;font-weight:800;color:var(--txt)}
+.bm-total-val{font-size:24px;font-weight:900;color:var(--txt);letter-spacing:-.5px}
+.bm-count{font-size:11px;color:var(--muted);margin-bottom:16px}
+.bm-cta{width:100%;padding:13px;border:none;border-radius:9px;background:linear-gradient(135deg,#0c7a4c,#0a6e44);color:#fff;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;box-shadow:0 4px 14px rgba(10,110,68,.28);margin-bottom:8px}
+.bm-cta:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(10,110,68,.38)}
+.bm-cta:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.bm-cta svg{width:16px;height:16px}
+.bm-sec-note{font-size:10.5px;color:var(--muted);text-align:center;line-height:1.4}
+.bm-spacer{flex:1}
+
+/* Payment modal */
+.pay-modal{background:#fff;border-radius:16px;width:100%;max-width:440px;box-shadow:0 28px 80px rgba(0,0,0,.3);overflow:hidden;animation:mu .22s ease}
+.modal-hd{background:var(--navy2);padding:20px 24px;display:flex;align-items:flex-start;justify-content:space-between}
 .modal-hd-title{color:#fff;font-size:17px;font-weight:800}
 .modal-hd-sub{color:rgba(255,255,255,.5);font-size:12px;margin-top:3px}
-.modal-close{
-  background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;
-  width:29px;height:29px;border-radius:7px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
+.modal-close{background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;width:29px;height:29px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .modal-close:hover{background:rgba(255,255,255,.2)}
 .modal-close svg{width:15px;height:15px}
 .modal-body{padding:22px 24px}
 .modal-plate-area{text-align:center;margin-bottom:18px}
-.modal-plate-tag{
-  display:inline-block;background:#ffd700;color:#003399;
-  font-family:'Courier New',Courier,monospace;
-  font-size:20px;font-weight:900;letter-spacing:4px;
-  padding:7px 20px;border-radius:7px;
-}
+.modal-plate-tag{display:inline-block;background:#ffd700;color:#003399;font-family:'Courier New',Courier,monospace;font-size:20px;font-weight:900;letter-spacing:4px;padding:7px 20px;border-radius:7px}
 .modal-veh{font-size:13px;color:var(--muted);margin-top:6px}
 .line-items{margin-bottom:18px}
-.li{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:9px 0;border-bottom:1px solid var(--bdr);font-size:13px;
-}
+.li{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bdr);font-size:13px}
 .li.tot{font-size:15px;font-weight:900;padding-top:11px;border-bottom:2px solid var(--txt)}
 .li-n{color:var(--txt);font-weight:500}
 .li-p{font-weight:800;color:var(--txt)}
 .pay-form{display:flex;flex-direction:column;gap:11px}
 .ff{display:flex;flex-direction:column;gap:4px}
 .ff label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
-.ff input{
-  border:1.5px solid var(--bdr);border-radius:8px;
-  padding:10px 12px;font-size:14px;outline:none;transition:border-color .18s;
-}
+.ff input{border:1.5px solid var(--bdr);border-radius:8px;padding:10px 12px;font-size:14px;outline:none;transition:border-color .18s}
 .ff input:focus{border-color:var(--blue)}
 .frow{display:flex;gap:9px}
 .frow .ff{flex:1}
-.pay-btn{
-  width:100%;padding:14px;border:none;border-radius:9px;
-  background:linear-gradient(135deg,#0c7a4c,#0a6e44);
-  color:#fff;font-size:15px;font-weight:800;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;
-  transition:all .2s;box-shadow:0 4px 16px rgba(10,110,68,.28);margin-top:2px;
-}
+.pay-btn{width:100%;padding:14px;border:none;border-radius:9px;background:linear-gradient(135deg,#0c7a4c,#0a6e44);color:#fff;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s;box-shadow:0 4px 16px rgba(10,110,68,.28);margin-top:2px}
 .pay-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(10,110,68,.38)}
 .pay-btn svg{width:17px;height:17px}
-.pay-sec{
-  text-align:center;font-size:11px;color:var(--muted);
-  display:flex;align-items:center;justify-content:center;gap:5px;margin-top:7px;
-}
+.pay-sec{text-align:center;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:5px;margin-top:7px}
 .pay-sec svg{width:11px;height:11px;color:var(--green)}
 
-/* ── Responsive ── */
 @media(max-width:960px){
   .res-body{flex-direction:column}
   .res-left{width:100%;position:static;height:auto;border-right:none;border-bottom:1px solid var(--bdr)}
@@ -603,6 +388,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
   .mkt-stats{grid-template-columns:1fr 1fr}
   .check-grid{grid-template-columns:1fr}
   .bf-grid{grid-template-columns:1fr}
+  .bm-body{flex-direction:column}
+  .bm-right{width:100%;border-left:none;border-top:1px solid var(--bdr)}
 }
 @media(max-width:640px){
   .hero-nav{padding:14px 20px}
@@ -615,16 +402,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
   .trust-row{gap:14px}
   .val-cards{flex-direction:column}
   .data-grid{grid-template-columns:1fr 1fr}
+  .builder{max-height:95vh}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════
-     SCREEN 1 — HERO SEARCH
-═══════════════════════════════════════ -->
+<!-- ═══ HERO ═══ -->
 <div id="screen-hero" class="screen active">
-
   <nav class="hero-nav">
     <a class="nav-logo" href="#">
       <div class="nav-logo-mark">
@@ -639,33 +424,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
       <a href="#" class="nav-btn">Run a free search</a>
     </div>
   </nav>
-
   <div class="hero-main">
     <div class="hero-pill">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       Official Government PPSR Data
     </div>
-
-    <h1 class="hero-h1">
-      Don't buy a used car<br>without <span class="hl">checking it first</span>
-    </h1>
+    <h1 class="hero-h1">Don't buy a used car<br>without <span class="hl">checking it first</span></h1>
     <p class="hero-sub">Enter the rego plate and instantly see PPSR records, odometer history, write-off status, factory build data and real market pricing — before you hand over a dollar.</p>
-
     <div class="search-box">
       <div class="search-tabs">
         <div class="stab on" onclick="setSearchMode('rego',this)">Rego Plate</div>
         <div class="stab" onclick="setSearchMode('vin',this)">VIN Number</div>
       </div>
-
       <div id="sw-rego">
         <div class="plate-wrap">
           <button class="plate-state-btn" tabindex="-1">
             <span class="psb-state" id="psb-txt">VIC</span>
             <span class="psb-label">STATE</span>
             <select id="state-sel" onchange="document.getElementById('psb-txt').textContent=this.value">
-              <option>VIC</option><option>NSW</option><option>QLD</option>
-              <option>WA</option><option>SA</option><option>TAS</option>
-              <option>ACT</option><option>NT</option>
+              <option>VIC</option><option>NSW</option><option>QLD</option><option>WA</option><option>SA</option><option>TAS</option><option>ACT</option><option>NT</option>
             </select>
           </button>
           <input id="rego-inp" class="plate-input" placeholder="ABC 123" maxlength="8" spellcheck="false" autocomplete="off" onkeydown="if(event.key==='Enter')doSearch()">
@@ -674,7 +451,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
       <div id="sw-vin" style="display:none" class="vin-wrap">
         <input id="vin-inp" class="vin-input" placeholder="Enter 17-character VIN (e.g. MR0FB3CD200123456)" maxlength="17" spellcheck="false" autocomplete="off" onkeydown="if(event.key==='Enter')doSearch()">
       </div>
-
       <button class="search-btn" onclick="doSearch()">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/></svg>
         Check This Vehicle
@@ -682,30 +458,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
       </button>
       <div class="search-note">All Australian states &amp; territories &nbsp;·&nbsp; Instant results &nbsp;·&nbsp; Secure checkout</div>
     </div>
-
     <div class="trust-row">
-      <div class="ti">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        <span>Official <strong>PPSR</strong> data</span>
-      </div>
+      <div class="ti"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg><span>Official <strong>PPSR</strong> data</span></div>
       <div class="tsep"></div>
-      <div class="ti">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-        <span>Trusted by <strong>1,000+</strong> dealers</span>
-      </div>
+      <div class="ti"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg><span>Trusted by <strong>1,000+</strong> dealers</span></div>
       <div class="tsep"></div>
-      <div class="ti">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        <span><strong>ML-powered</strong> valuations</span>
-      </div>
+      <div class="ti"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span><strong>ML-powered</strong> valuations</span></div>
       <div class="tsep"></div>
-      <div class="ti">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span>Results in <strong>60 seconds</strong></span>
-      </div>
+      <div class="ti"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Results in <strong>60 seconds</strong></span></div>
     </div>
   </div>
-
   <div class="hero-stats">
     <div class="hs-item"><span class="hs-num">400,000+</span><span class="hs-label">Reports run</span></div>
     <div class="hs-item"><span class="hs-num">9 / 10</span><span class="hs-label">Insurers use our data</span></div>
@@ -714,9 +476,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCREEN 2 — LOADING
-═══════════════════════════════════════ -->
+<!-- ═══ LOADING ═══ -->
 <div id="screen-loading" class="screen" style="display:none">
   <div class="ld-plate" id="ld-plate-display">
     <div class="ld-plate-state" id="ld-state-col">
@@ -737,11 +497,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCREEN 3 — RESULTS
-═══════════════════════════════════════ -->
+<!-- ═══ RESULTS ═══ -->
 <div id="screen-results" class="screen" style="display:none">
-
   <div class="res-topbar">
     <span class="rtb-logo">Car<em>Check</em></span>
     <div class="rtb-sep"></div>
@@ -753,27 +510,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
       New search
     </button>
   </div>
-
   <div class="res-body">
+    <!-- LEFT -->
     <div class="res-left">
-      <!-- vehicle card -->
       <div class="veh-card">
         <div class="veh-img">
-          <img id="veh-photo" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop" alt=""
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <img id="veh-photo" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
           <div class="veh-img-svg" style="display:none">
-            <svg viewBox="0 0 420 180" width="300" xmlns="http://www.w3.org/2000/svg">
-              <rect width="420" height="180" fill="#d0d8e4"/>
-              <rect x="28" y="90" width="265" height="58" rx="7" fill="#8fa5c0"/>
-              <rect x="293" y="90" width="100" height="58" rx="5" fill="#7a91ab"/>
-              <path d="M58 90 L85 58 L200 58 L228 90Z" fill="#a8bed4"/>
-              <rect x="90" y="61" width="54" height="24" rx="3" fill="#c8e0f4" opacity=".75"/>
-              <rect x="152" y="61" width="54" height="24" rx="3" fill="#c8e0f4" opacity=".75"/>
-              <circle cx="92" cy="150" r="22" fill="#3a4a5c"/><circle cx="92" cy="150" r="13" fill="#5a6a7c"/><circle cx="92" cy="150" r="5" fill="#8a9aac"/>
-              <circle cx="316" cy="150" r="22" fill="#3a4a5c"/><circle cx="316" cy="150" r="13" fill="#5a6a7c"/><circle cx="316" cy="150" r="5" fill="#8a9aac"/>
-              <rect x="294" y="95" width="2" height="53" fill="#6a7e94"/>
-              <rect x="304" y="95" width="84" height="9" rx="2" fill="#9ab0c4" opacity=".5"/>
-            </svg>
+            <svg viewBox="0 0 420 180" width="300" xmlns="http://www.w3.org/2000/svg"><rect width="420" height="180" fill="#d0d8e4"/><rect x="28" y="90" width="265" height="58" rx="7" fill="#8fa5c0"/><rect x="293" y="90" width="100" height="58" rx="5" fill="#7a91ab"/><path d="M58 90 L85 58 L200 58 L228 90Z" fill="#a8bed4"/><rect x="90" y="61" width="54" height="24" rx="3" fill="#c8e0f4" opacity=".75"/><rect x="152" y="61" width="54" height="24" rx="3" fill="#c8e0f4" opacity=".75"/><circle cx="92" cy="150" r="22" fill="#3a4a5c"/><circle cx="92" cy="150" r="13" fill="#5a6a7c"/><circle cx="92" cy="150" r="5" fill="#8a9aac"/><circle cx="316" cy="150" r="22" fill="#3a4a5c"/><circle cx="316" cy="150" r="13" fill="#5a6a7c"/><circle cx="316" cy="150" r="5" fill="#8a9aac"/><rect x="294" y="95" width="2" height="53" fill="#6a7e94"/><rect x="304" y="95" width="84" height="9" rx="2" fill="#9ab0c4" opacity=".5"/></svg>
           </div>
           <div class="veh-reg-chip" id="veh-reg-chip">REG: CURRENT</div>
         </div>
@@ -781,20 +525,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
           <div class="veh-sub" id="veh-sub"></div>
           <div class="veh-name" id="veh-name"></div>
           <div class="veh-specs" id="veh-specs"></div>
-          <div class="veh-vin-row">
-            <span>VIN</span>
-            <strong id="veh-vin"></strong>
+          <div class="veh-vin-row"><span>VIN</span><strong id="veh-vin"></strong></div>
+        </div>
+      </div>
+
+      <!-- Selection summary -->
+      <div class="sb-summary">
+        <div class="sb-sum-hd">
+          <div class="sb-sum-hd-left">Your report <span id="sb-count"></span></div>
+          <div class="sb-edit-btn" onclick="openBuilder()">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Edit
+          </div>
+        </div>
+        <div class="sb-sum-rows" id="sb-rows"></div>
+        <div class="sb-sum-foot">
+          <div id="sb-bundle-tag"></div>
+          <div id="sb-nobundle-hint"></div>
+          <div class="sb-price-row main">
+            <span class="sb-price-lbl">Total</span>
+            <span class="sb-price-val" id="sb-total"></span>
           </div>
         </div>
       </div>
 
-      <!-- Package selection -->
-      <div class="pkg-head">Choose your report</div>
-      <div class="pkg-list" id="pkg-list"></div>
-
-      <button class="cta-btn" id="cta-main" onclick="openModal()">
+      <button class="cta-btn" id="cta-main" onclick="openPayment()">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        Get Full Report
+        Get Report
       </button>
       <div class="cta-sub">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -802,14 +559,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
       </div>
     </div>
 
+    <!-- RIGHT -->
     <div class="res-right">
       <div class="rpt-intro">
-        <div class="rpt-intro-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        </div>
+        <div class="rpt-intro-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
         <div class="rpt-intro-text">
-          <h3>Vehicle found — select a package to unlock your report</h3>
-          <p>Preview sections below. Locked sections are included in Standard and Full packages. Upgrade anytime by selecting a package on the left.</p>
+          <h3>Report preview — customise what's included</h3>
+          <p>All sections shown below. Untick any section in your report builder to remove it. Purchase unlocks your full PDF instantly.</p>
         </div>
       </div>
       <div id="report-sections"></div>
@@ -817,19 +573,60 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     PAYMENT MODAL
-═══════════════════════════════════════ -->
-<div class="modal-bg" id="modal">
-  <div class="modal">
+<!-- ═══ BUILDER MODAL ═══ -->
+<div class="modal-bg" id="builder-modal">
+  <div class="builder">
+    <div class="bm-hd">
+      <div class="bm-hd-left">
+        <h2>Build Your Report</h2>
+        <div class="bm-hd-plate">
+          <span class="bm-hd-plate-tag" id="bm-plate"></span>
+          <span class="bm-hd-veh" id="bm-veh"></span>
+        </div>
+      </div>
+      <button class="bm-close" onclick="closeBuilder()"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="bm-body">
+      <div class="bm-left">
+        <div class="bm-notice bundle" id="bm-notice">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span id="bm-notice-text"><strong>Bundle price applied</strong> — all 9 sections for $39.65 (save $12.90 vs individual)</span>
+        </div>
+        <div class="bm-sec-list" id="bm-sec-list"></div>
+      </div>
+      <div class="bm-right">
+        <div class="bm-sum-title">Order Summary</div>
+        <div id="bm-lines"></div>
+        <hr class="bm-sep">
+        <div class="bm-saving" id="bm-saving">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span id="bm-saving-text">Bundle saving: $12.90</span>
+        </div>
+        <div class="bm-total-row">
+          <span class="bm-total-lbl">Total</span>
+          <span class="bm-total-val" id="bm-total"></span>
+        </div>
+        <div class="bm-count" id="bm-count"></div>
+        <div class="bm-spacer"></div>
+        <button class="bm-cta" id="bm-cta" onclick="closeBuilderAndPay()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          Continue to payment
+        </button>
+        <div class="bm-sec-note">Secure checkout &nbsp;·&nbsp; Instant PDF delivery</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAYMENT MODAL ═══ -->
+<div class="modal-bg" id="pay-modal">
+  <div class="pay-modal">
     <div class="modal-hd">
       <div>
         <div class="modal-hd-title">Complete your order</div>
         <div class="modal-hd-sub">Instant delivery to your email</div>
       </div>
-      <button class="modal-close" onclick="closeModal()">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
+      <button class="modal-close" onclick="closePayment()"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="modal-plate-area">
@@ -844,7 +641,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
           <div class="ff"><label>Expiry</label><input type="text" placeholder="MM / YY" maxlength="7"></div>
           <div class="ff"><label>CVC</label><input type="text" placeholder="123" maxlength="3"></div>
         </div>
-        <button class="pay-btn" id="pay-btn" onclick="closeModal()">
+        <button class="pay-btn" id="pay-final-btn" onclick="closePayment()">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
           Pay &amp; Get Report
         </button>
@@ -858,114 +655,67 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════
-   MOCK DATA — AutoGrab API field names
-   Endpoints annotated per section below
-═══════════════════════════════════════════════ */
+/* ── MOCK DATA ── */
 const MOCK = {
-  // GET /v2/vehicles/registrations/{PLATE}?region=au&state=vic&features=writeoff_info,registration_status
   plate:'ABC 123', state:'VIC',
-  upstream_vehicle:'2021 TOYOTA HILUX SR5 AUTO 4WD DIESEL DUAL CAB UTILITY',
-  confidence:'standard',
   vin:'MR0FB3CD200123456',
   colour:'040 Glacier White',
-  vehicle:{
-    id:'ag_2021_toyota_hilux_sr5_4wd_auto',
-    year:2021,make:'Toyota',model:'HiLux',badge:'SR5',
-    series:'GUN126R',body_type:'Utility',body_config:'Dual Cab',
-    transmission:'Automatic',wheelbase:'Long',fuel:'Diesel',
-    engine:'2.8L 4cyl Turbo',drive:'4WD',num_doors:4,
-    title:'2021 Toyota HiLux SR5',
-  },
-  registration:{
-    status:'current',expiry:'2025-03-18',state:'VIC',
-    plate:'ABC123',category:'Passenger',tare_mass:'2,070 kg',gvm:'3,200 kg',
-  },
+  vehicle:{year:2021,make:'Toyota',model:'HiLux',badge:'SR5',series:'GUN126R',body_type:'Utility',body_config:'Dual Cab',transmission:'Automatic',wheelbase:'Long',fuel:'Diesel',engine:'2.8L 4cyl Turbo',drive:'4WD',num_doors:4,title:'2021 Toyota HiLux SR5'},
+  registration:{status:'current',expiry:'2025-03-18',state:'VIC',plate:'ABC123',category:'Passenger',tare_mass:'2,070 kg',gvm:'3,200 kg'},
   incident_list:[],
-  // POST /v2/reports/ppsr
-  ppsr:{
-    id:'ppsr_abc123vic_20240315',vin:'MR0FB3CD200123456',rego:'ABC123',rego_state:'VIC',
-    url:'https://ppsr.gov.au/certificate/abc123',
-    certificate_created_at:'2024-03-15T09:22:11Z',
-    has_safety_recalls:false,has_secured_parties:false,
-    has_stolen_records:false,has_written_off_records:false,
-  },
-  // GET /v2/vehicles/vins/{VIN}/history
+  ppsr:{id:'ppsr_abc123vic_20240315',vin:'MR0FB3CD200123456',rego:'ABC123',rego_state:'VIC',url:'https://ppsr.gov.au/certificate/abc123',certificate_created_at:'2024-03-15T09:22:11Z',has_safety_recalls:false,has_secured_parties:false,has_stolen_records:false,has_written_off_records:false},
   history:{events:[
-    {type:'sale',      odometer:41200,price:56900,marketplace:'carsales',    seller_type:'dealer', timestamp:'2024-01-12T00:00:00Z'},
-    {type:'listed',    odometer:41000,price:59500,marketplace:'carsales',    seller_type:'dealer', timestamp:'2023-12-28T00:00:00Z'},
-    {type:'inspection',odometer:38750,price:null, marketplace:null,          seller_type:null,     timestamp:'2023-06-05T00:00:00Z'},
-    {type:'sale',      odometer:22100,price:68500,marketplace:'autotrader',  seller_type:'dealer', timestamp:'2022-04-20T00:00:00Z'},
-    {type:'listed',    odometer:21800,price:71990,marketplace:'drive.com.au',seller_type:'dealer', timestamp:'2022-03-14T00:00:00Z'},
-    {type:'sale',      odometer:1800, price:64990,marketplace:null,          seller_type:'private',timestamp:'2021-09-03T00:00:00Z'},
+    {type:'sale',odometer:41200,price:56900,marketplace:'carsales',seller_type:'dealer',timestamp:'2024-01-12T00:00:00Z'},
+    {type:'listed',odometer:41000,price:59500,marketplace:'carsales',seller_type:'dealer',timestamp:'2023-12-28T00:00:00Z'},
+    {type:'inspection',odometer:38750,price:null,marketplace:null,seller_type:null,timestamp:'2023-06-05T00:00:00Z'},
+    {type:'sale',odometer:22100,price:68500,marketplace:'autotrader',seller_type:'dealer',timestamp:'2022-04-20T00:00:00Z'},
+    {type:'listed',odometer:21800,price:71990,marketplace:'drive.com.au',seller_type:'dealer',timestamp:'2022-03-14T00:00:00Z'},
+    {type:'sale',odometer:1800,price:64990,marketplace:null,seller_type:'private',timestamp:'2021-09-03T00:00:00Z'},
   ]},
-  // POST /v2/valuations/predict
-  valuation:{prediction:{
-    id:'val_abc123_20240315',vehicle_id:'ag_2021_toyota_hilux_sr5_4wd_auto',
-    price:54200,score:0.87,retail_price:58500,trade_price:48900,
-  }},
-  // GET /v2/sourcing/market_overlay/{vehicle_id}
-  market_overlay:{
-    sample_size:47,days_checked:30,avg_days_to_sell:18,
-    avg_price:55640,min_price:44900,max_price:67990,
-    avg_odometer:39200,outlier_count:3,days_supply:28,
-    leads:[
-      {year:2021,state:'VIC',price:58900,drive_away_price:60990,kms:39100,seller_type:'dealer', color:'White', listed_at:'2024-03-10',is_outlier:false},
-      {year:2021,state:'NSW',price:56500,drive_away_price:58700,kms:44200,seller_type:'dealer', color:'Silver',listed_at:'2024-03-08',is_outlier:false},
-      {year:2021,state:'QLD',price:54900,drive_away_price:56200,kms:48000,seller_type:'private',color:'Grey',  listed_at:'2024-03-05',is_outlier:false},
-      {year:2022,state:'VIC',price:62000,drive_away_price:64500,kms:28900,seller_type:'dealer', color:'Black', listed_at:'2024-03-12',is_outlier:false},
-      {year:2021,state:'WA', price:44900,drive_away_price:46000,kms:71000,seller_type:'private',color:'White', listed_at:'2024-02-28',is_outlier:true},
-    ],
-  },
-  // GET /v2/vehicles/{id}/build-data
-  build_data:{vehicle:{
-    vin:'MR0FB3CD200123456',build_date:'2021-07-14',make:'Toyota',model:'HiLux',
-    features:[
-      {code:'TR1',value:'Glacier White (040)'},{code:'TP3',value:'Black Cloth Interior'},
-      {code:'TE1',value:'2GD-FTV 2.8L Turbo Diesel'},{code:'TG5',value:'6-speed Automatic'},
-      {code:'TD4',value:'Part-time 4WD w/diff lock'},{code:'TX2',value:'18" Alloy Wheels'},
-      {code:'TF1',value:'Bull Bar — Genuine Toyota'},{code:'TH2',value:'Tow Bar — Class IV 3500kg'},
-      {code:'TS3',value:'Rear Diff Lock'},{code:'TV1',value:'Genuine Nudge Bar'},
-      {code:'TN2',value:'Cargo Divider (tub liner)'},{code:'TW1',value:'Reverse Camera — Factory'},
-    ],
-  }},
+  valuation:{prediction:{id:'val_abc123_20240315',vehicle_id:'ag_2021_toyota_hilux_sr5_4wd_auto',price:54200,score:0.87,retail_price:58500,trade_price:48900}},
+  market_overlay:{sample_size:47,days_checked:30,avg_days_to_sell:18,avg_price:55640,min_price:44900,max_price:67990,avg_odometer:39200,outlier_count:3,days_supply:28,leads:[
+    {year:2021,state:'VIC',price:58900,drive_away_price:60990,kms:39100,seller_type:'dealer',color:'White',listed_at:'2024-03-10',is_outlier:false},
+    {year:2021,state:'NSW',price:56500,drive_away_price:58700,kms:44200,seller_type:'dealer',color:'Silver',listed_at:'2024-03-08',is_outlier:false},
+    {year:2021,state:'QLD',price:54900,drive_away_price:56200,kms:48000,seller_type:'private',color:'Grey',listed_at:'2024-03-05',is_outlier:false},
+    {year:2022,state:'VIC',price:62000,drive_away_price:64500,kms:28900,seller_type:'dealer',color:'Black',listed_at:'2024-03-12',is_outlier:false},
+    {year:2021,state:'WA',price:44900,drive_away_price:46000,kms:71000,seller_type:'private',color:'White',listed_at:'2024-02-28',is_outlier:true},
+  ]},
+  build_data:{vehicle:{vin:'MR0FB3CD200123456',build_date:'2021-07-14',make:'Toyota',model:'HiLux',features:[
+    {code:'TR1',value:'Glacier White (040)'},{code:'TP3',value:'Black Cloth Interior'},
+    {code:'TE1',value:'2GD-FTV 2.8L Turbo Diesel'},{code:'TG5',value:'6-speed Automatic'},
+    {code:'TD4',value:'Part-time 4WD w/diff lock'},{code:'TX2',value:'18" Alloy Wheels'},
+    {code:'TF1',value:'Bull Bar — Genuine Toyota'},{code:'TH2',value:'Tow Bar — Class IV 3500kg'},
+    {code:'TS3',value:'Rear Diff Lock'},{code:'TV1',value:'Genuine Nudge Bar'},
+    {code:'TN2',value:'Cargo Divider (tub liner)'},{code:'TW1',value:'Reverse Camera — Factory'},
+  ]}},
 };
 
-/* ── PACKAGES ── */
-const PKGS = {
-  basic:{id:'basic',name:'Basic',price:9.90,save:null,popular:false,
-    sections:['vehicle_details','ppsr'],
-    includes:['Vehicle details','PPSR check']},
-  standard:{id:'standard',name:'Standard',price:22.80,save:'Save 15%',popular:true,
-    sections:['vehicle_details','ppsr','registration','odometer','valuation'],
-    includes:['Vehicle details','PPSR check','Registration status','Odometer history','Market valuation']},
-  full:{id:'full',name:'Full Report',price:39.65,save:'Save 22%',popular:false,
-    sections:['vehicle_details','ppsr','registration','writeoff','odometer','build_data','valuation','market_overlay','price_history'],
-    includes:['All sections','Factory build data','Write-off check','Market overlay','Price history']},
+/* ── SECTION DEFINITIONS ── */
+const SECTIONS = {
+  vehicle_details:{title:'Vehicle Details',    desc:'NEVDIS lookup — make, model, colour, VIN',           price:4.95, icon:'car',  col:'blue'},
+  ppsr:           {title:'PPSR Report',        desc:'Finance check, stolen, write-off, safety recalls',   price:7.95, icon:'shld', col:'green'},
+  registration:   {title:'Registration Status',desc:'Current RTA status, expiry, category, GVM',          price:3.95, icon:'doc',  col:'blue'},
+  writeoff:       {title:'Write-off & Incidents',desc:'WOVR + all 8 state RTA incident databases',        price:4.95, icon:'warn', col:'red'},
+  odometer:       {title:'Odometer History',   desc:'Rollback detection across 6 marketplaces',           price:6.95, icon:'clk',  col:'amber'},
+  build_data:     {title:'Factory Build Data', desc:'OEM factory option codes from manufacturer',         price:5.95, icon:'code', col:'blue'},
+  valuation:      {title:'Market Valuation',   desc:'ML-powered retail, trade & midpoint pricing',        price:5.95, icon:'bar',  col:'green'},
+  market_overlay: {title:'Market Overlay',     desc:'Live comparable listings & days-to-sell stats',      price:7.95, icon:'glob', col:'blue'},
+  price_history:  {title:'Price History',      desc:'Historical sale & listing transactions',             price:3.95, icon:'clk2', col:'amber'},
 };
+const ALL_KEYS = Object.keys(SECTIONS);
+const INDIVIDUAL_TOTAL = ALL_KEYS.reduce((s,k)=>s+SECTIONS[k].price,0); // 52.55
+const BUNDLE_PRICE = 39.65;
 
-const SEC_META = {
-  vehicle_details:{title:'Vehicle Details',    source:'NEVDIS Registration Lookup',          icon:'car',   col:'blue', api:'/v2/vehicles/registrations/{PLATE}'},
-  ppsr:           {title:'PPSR Report',        source:'Personal Property Securities Register',icon:'shld',  col:'green',api:'/v2/reports/ppsr'},
-  registration:   {title:'Registration Status',source:'State RTA / NEVDIS',                  icon:'doc',   col:'blue', api:'/v2/vehicles/registrations/{PLATE}'},
-  writeoff:       {title:'Write-off & Incidents',source:'WOVR / State incident databases',   icon:'warn',  col:'red',  api:'features=writeoff_info'},
-  odometer:       {title:'Odometer History',   source:'Rollback detection across marketplaces',icon:'clk', col:'amber',api:'/v2/vehicles/vins/{VIN}/history'},
-  build_data:     {title:'Factory Build Data', source:'OEM factory specification codes',       icon:'code',  col:'blue', api:'/v2/vehicles/{id}/build-data'},
-  valuation:      {title:'Market Valuation',   source:'ML-powered price prediction',           icon:'bar',   col:'green',api:'/v2/valuations/predict'},
-  market_overlay: {title:'Market Overlay',     source:'Live listings — competitive analysis',  icon:'glob',  col:'blue', api:'/v2/sourcing/market_overlay/{vehicle_id}'},
-  price_history:  {title:'Price History',      source:'Historical transactions from marketplaces',icon:'clk2',col:'amber',api:'/v2/vehicles/vins/{VIN}/history'},
-};
-
-const ALL_SECS = ['vehicle_details','ppsr','registration','writeoff','odometer','build_data','valuation','market_overlay','price_history'];
-let activePkg = 'standard';
+let selectedSecs = new Set(ALL_KEYS); // start with everything ticked
 let searchMode = 'rego';
 
 /* ── UTILS ── */
-const $c = (n,v)=>`$${v.toLocaleString('en-AU',{minimumFractionDigits:n?2:0})}`;
-const fmtCur = v => $c(0,v);
-const fmtKm  = v => v.toLocaleString('en-AU')+' km';
-const fmtDt  = s => new Date(s).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-const cap    = s => s?s[0].toUpperCase()+s.slice(1):'';
+const fmtCur = v=>'$'+v.toFixed(2);
+const fmtKm  = v=>v.toLocaleString('en-AU')+' km';
+const fmtDt  = s=>new Date(s).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+const cap    = s=>s?s[0].toUpperCase()+s.slice(1):'';
+const isBundle = ()=>selectedSecs.size===ALL_KEYS.length;
+const calcPrice = ()=>isBundle()?BUNDLE_PRICE:[...selectedSecs].reduce((s,k)=>s+SECTIONS[k].price,0);
 
 function ico(k){
   const M={
@@ -982,6 +732,8 @@ function ico(k){
     x:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`,
     lock:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>`,
     ext:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>`,
+    plus:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>`,
+    warn2:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`,
   };
   return M[k]||M.doc;
 }
@@ -991,8 +743,8 @@ function setSearchMode(m,el){
   searchMode=m;
   document.querySelectorAll('.stab').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
-  document.getElementById('sw-rego').style.display = m==='rego'?'':'none';
-  document.getElementById('sw-vin').style.display  = m==='vin' ?'':'none';
+  document.getElementById('sw-rego').style.display=m==='rego'?'':'none';
+  document.getElementById('sw-vin').style.display=m==='vin'?'':'none';
 }
 
 /* ── FLOW ── */
@@ -1006,17 +758,16 @@ function doSearch(){
     state='';
   }
   MOCK.plate=plate; MOCK.state=state;
+  selectedSecs=new Set(ALL_KEYS); // reset to all ticked
 
-  // loading screen
   document.getElementById('ld-plate-num').textContent=plate;
   document.getElementById('ld-state-txt').textContent=state||'VIN';
   document.getElementById('ld-state-col').style.display=state?'':'none';
   showScreen('loading');
 
-  // animate steps
   const ids=['ls1','ls2','ls3','ls4','ls5'];
   const delays=[0,560,1060,1520,1940];
-  ids.forEach(id=>{ const el=document.getElementById(id); el.className='ls-row'; el.querySelector('.ls-dot').innerHTML=''; });
+  ids.forEach(id=>{const el=document.getElementById(id);el.className='ls-row';el.querySelector('.ls-dot').innerHTML='';});
   document.getElementById('ls1').classList.add('active');
   ids.forEach((id,i)=>{
     setTimeout(()=>{
@@ -1027,7 +778,12 @@ function doSearch(){
     },delays[i]+480);
   });
 
-  setTimeout(()=>{ buildResults(); showScreen('results'); }, 2600);
+  setTimeout(()=>{
+    buildResults();
+    showScreen('results');
+    // Auto-open builder after short delay
+    setTimeout(openBuilder, 500);
+  },2600);
 }
 
 function goHero(){
@@ -1039,10 +795,10 @@ function goHero(){
 function showScreen(name){
   ['hero','loading','results'].forEach(n=>{
     const s=document.getElementById('screen-'+n);
-    s.style.display='none'; s.classList.remove('active');
+    s.style.display='none';s.classList.remove('active');
   });
   const s=document.getElementById('screen-'+name);
-  s.style.display=''; s.classList.add('active');
+  s.style.display='';s.classList.add('active');
   if(name==='results') window.scrollTo(0,0);
 }
 
@@ -1051,8 +807,6 @@ function buildResults(){
   const v=MOCK.vehicle;
   document.getElementById('rtb-plate').textContent=MOCK.plate;
   document.getElementById('rtb-vehicle').textContent=v.title;
-
-  // vehicle card
   document.getElementById('veh-sub').textContent=v.year+' · '+v.make.toUpperCase();
   document.getElementById('veh-name').textContent=v.model+' '+v.badge+' '+v.transmission+' '+v.drive+' '+v.fuel+' '+v.body_config;
   document.getElementById('veh-vin').textContent=MOCK.vin;
@@ -1066,82 +820,212 @@ function buildResults(){
     ['Engine',v.engine],['Colour',MOCK.colour.split(' ').slice(1).join(' ')],
   ].map(([l,val])=>`<div class="spec-cell"><div class="spec-lbl">${l}</div><div class="spec-val">${val}</div></div>`).join('');
 
-  renderPkgList();
+  renderSidebar();
   renderReport();
 }
 
-function renderPkgList(){
-  document.getElementById('pkg-list').innerHTML=Object.values(PKGS).map(p=>`
-    <div class="pkg${p.popular?' pop':''}${p.id===activePkg?' sel':''}" onclick="pickPkg('${p.id}')">
-      ${p.popular?'<div class="pkg-badge">Most Popular</div>':''}
-      <div class="pkg-row1">
-        <div class="pkg-radio-name">
-          <div class="pkg-radio"></div>
-          <span class="pkg-name">${p.name}</span>
-        </div>
-        <div class="pkg-pricing">
-          <div class="pkg-price">${fmtCur(p.price)}</div>
-          ${p.save?`<div class="pkg-save">${p.save}</div>`:''}
-        </div>
-      </div>
-      <div class="pkg-includes">
-        ${p.includes.map(i=>`<div class="pkg-inc-item">${ico('chk')}<span>${i}</span></div>`).join('')}
-      </div>
-    </div>`).join('');
+/* ── SIDEBAR ── */
+function renderSidebar(){
+  const price=calcPrice();
+  const count=selectedSecs.size;
 
-  const p=PKGS[activePkg];
-  document.getElementById('cta-main').innerHTML=`${ico('shld')} Get ${p.name} — ${fmtCur(p.price)}`;
+  document.getElementById('sb-count').textContent='('+count+' of '+ALL_KEYS.length+' sections)';
+
+  // rows — show all sections, crossed out if excluded
+  document.getElementById('sb-rows').innerHTML=ALL_KEYS.map(k=>{
+    const s=SECTIONS[k];
+    const on=selectedSecs.has(k);
+    return `<div class="sb-sec-row">
+      <div class="sb-sec-dot ${on?'on':'off'}"></div>
+      <div class="sb-sec-name${on?'':' off'}">${s.title}</div>
+      <div class="sb-sec-price">${on?(isBundle()?'—':fmtCur(s.price)):''}</div>
+    </div>`;
+  }).join('');
+
+  // bundle tag or warning
+  const bundleEl=document.getElementById('sb-bundle-tag');
+  const noBundleEl=document.getElementById('sb-nobundle-hint');
+  if(isBundle()){
+    const saving=(INDIVIDUAL_TOTAL-BUNDLE_PRICE).toFixed(2);
+    bundleEl.innerHTML=`<div class="sb-bundle-tag">${ico('chk')} Bundle — saving $${saving}</div>`;
+    noBundleEl.innerHTML='';
+  } else {
+    bundleEl.innerHTML='';
+    const diff=(INDIVIDUAL_TOTAL-BUNDLE_PRICE).toFixed(2);
+    noBundleEl.innerHTML=`<div class="sb-nobudnle-hint">${ico('warn2')} Add all sections to unlock bundle pricing — save $${diff}</div>`;
+  }
+
+  document.getElementById('sb-total').textContent=fmtCur(price);
+  const ctaBtn=document.getElementById('cta-main');
+  ctaBtn.innerHTML=`${ico('shld')} Get Report — ${fmtCur(price)}`;
 }
 
-function pickPkg(id){
-  activePkg=id;
-  renderPkgList();
-  renderReport();
-}
-
-/* ── RENDER REPORT ── */
+/* ── REPORT PREVIEW ── */
 function renderReport(){
-  const unlocked=new Set(PKGS[activePkg].sections);
-  document.getElementById('report-sections').innerHTML=ALL_SECS.map(key=>{
-    const meta=SEC_META[key];
-    const open=unlocked.has(key);
+  document.getElementById('report-sections').innerHTML=ALL_KEYS.map(key=>{
+    const meta=SECTIONS[key];
+    const included=selectedSecs.has(key);
     return `
     <div class="sec-wrap">
-      <div class="sec-card">
+      <div class="sec-card${included?'':' excluded'}">
         <div class="sec-hd">
           <div class="sec-hd-l">
             <div class="sec-ico ${meta.col}">${ico(meta.icon)}</div>
             <div>
               <div class="sec-title">${meta.title}</div>
-              <div class="sec-source">${meta.source}</div>
+              <div class="sec-source">${meta.desc}</div>
             </div>
           </div>
-          <div class="sec-api-tag">${meta.api}</div>
+          <div class="sec-hd-right">
+            <span class="sec-status-tag ${included?'inc':'exc'}">${included?'✓ Included':'Not included'}</span>
+            ${!included?`<button class="sec-add-btn" onclick="addSection('${key}')">${ico('plus')} Add ${fmtCur(meta.price)}</button>`:''}
+          </div>
         </div>
         <div style="position:relative">
-          <div class="sec-body${open?'':' blurred'}">${secBody(key)}</div>
-          <div class="sec-gate${open?'':' show'}">
-            <div class="gate-chip" onclick="upgrade('${key}')">${ico('lock')} Unlock this section</div>
-            <div class="gate-pkg-hint">${gateHint(key)}</div>
-          </div>
+          <div class="sec-body${included?'':' blurred'}">${secBody(key)}</div>
+          ${!included?`<div class="sec-excl-overlay show">
+            <div class="excl-chip">${ico('x')} Not included in your report</div>
+            <button class="excl-add-btn" onclick="addSection('${key}')">${ico('plus')} Add this section — ${fmtCur(meta.price)}</button>
+          </div>`:''}
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-function gateHint(key){
-  for(const id of['basic','standard','full']){
-    if(PKGS[id].sections.includes(key)) return 'Included in '+PKGS[id].name+' ('+fmtCur(PKGS[id].price)+')';
-  }
-  return '';
+function addSection(key){
+  selectedSecs.add(key);
+  renderSidebar();
+  renderReport();
+  renderBuilderContent();
 }
 
-function upgrade(key){
-  for(const id of['basic','standard','full']){
-    if(PKGS[id].sections.includes(key)){ pickPkg(id); break; }
+/* ── BUILDER MODAL ── */
+function openBuilder(){
+  document.getElementById('bm-plate').textContent=MOCK.plate;
+  document.getElementById('bm-veh').textContent=MOCK.vehicle.title;
+  renderBuilderContent();
+  document.getElementById('builder-modal').classList.add('open');
+}
+
+function closeBuilder(){
+  document.getElementById('builder-modal').classList.remove('open');
+  renderSidebar();
+  renderReport();
+}
+
+function renderBuilderContent(){
+  const price=calcPrice();
+  const bundle=isBundle();
+  const saving=bundle?(INDIVIDUAL_TOTAL-BUNDLE_PRICE):0;
+  const indivTotal=[...selectedSecs].reduce((s,k)=>s+SECTIONS[k].price,0);
+
+  // Notice bar
+  const notice=document.getElementById('bm-notice');
+  const noticeText=document.getElementById('bm-notice-text');
+  if(bundle){
+    notice.className='bm-notice bundle';
+    noticeText.innerHTML=`<strong>Bundle price applied</strong> — all 9 sections for ${fmtCur(BUNDLE_PRICE)} (save ${fmtCur(INDIVIDUAL_TOTAL-BUNDLE_PRICE)} vs individual)`;
+  } else {
+    notice.className='bm-notice broken';
+    const missing=ALL_KEYS.filter(k=>!selectedSecs.has(k));
+    const restoreSave=(INDIVIDUAL_TOTAL-BUNDLE_PRICE).toFixed(2);
+    noticeText.innerHTML=`${ico('warn2')} <strong>Bundle discount removed</strong> — add all sections to save $${restoreSave} <span class="restore-link" onclick="restoreAll()">Restore bundle</span>`;
   }
-  document.querySelector('.res-left').scrollIntoView({behavior:'smooth'});
+
+  // Section list
+  document.getElementById('bm-sec-list').innerHTML=ALL_KEYS.map(k=>{
+    const s=SECTIONS[k];
+    const on=selectedSecs.has(k);
+    return `<div class="bm-sec ${on?'on':'off'}" onclick="toggleSec('${k}')">
+      <div class="bm-checkbox">${ico('chk')}</div>
+      <div class="bm-sec-ico ${s.col}">${ico(s.icon)}</div>
+      <div class="bm-sec-info">
+        <div class="bm-sec-name">${s.title}</div>
+        <div class="bm-sec-desc">${s.desc}</div>
+      </div>
+      <div class="bm-sec-price">
+        <div class="bm-sec-price-val">${fmtCur(s.price)}</div>
+        <div class="bm-sec-price-lbl">${on?(bundle?'bundle rate':'added'):'not included'}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Summary panel
+  const lines=document.getElementById('bm-lines');
+  if(bundle){
+    lines.innerHTML=`
+      <div class="bm-line"><span class="bm-line-n">Individual total</span><span class="bm-line-v strike">${fmtCur(INDIVIDUAL_TOTAL)}</span></div>
+      <div class="bm-line"><span class="bm-line-n">Bundle discount</span><span class="bm-line-v" style="color:var(--green)">−${fmtCur(INDIVIDUAL_TOTAL-BUNDLE_PRICE)}</span></div>
+    `;
+  } else {
+    const selKeys=[...selectedSecs];
+    lines.innerHTML=selKeys.length
+      ? selKeys.map(k=>`<div class="bm-line"><span class="bm-line-n">${SECTIONS[k].title}</span><span class="bm-line-v">${fmtCur(SECTIONS[k].price)}</span></div>`).join('')
+      : '<div style="font-size:12px;color:var(--muted);padding:8px 0">No sections selected</div>';
+  }
+
+  const savingEl=document.getElementById('bm-saving');
+  const savingText=document.getElementById('bm-saving-text');
+  if(bundle){
+    savingEl.classList.remove('hidden');
+    savingText.textContent='Bundle saving: '+fmtCur(INDIVIDUAL_TOTAL-BUNDLE_PRICE);
+  } else {
+    savingEl.classList.add('hidden');
+  }
+
+  document.getElementById('bm-total').textContent=fmtCur(price);
+  const cnt=selectedSecs.size;
+  document.getElementById('bm-count').textContent=cnt+' section'+(cnt!==1?'s':'')+' selected';
+
+  const ctaBtn=document.getElementById('bm-cta');
+  ctaBtn.disabled=cnt===0;
+  ctaBtn.innerHTML=`${ico('lock')} Continue — ${fmtCur(price)}`;
+}
+
+function toggleSec(key){
+  if(selectedSecs.has(key)) selectedSecs.delete(key);
+  else selectedSecs.add(key);
+  renderBuilderContent();
+}
+
+function restoreAll(){
+  selectedSecs=new Set(ALL_KEYS);
+  renderBuilderContent();
+}
+
+function closeBuilderAndPay(){
+  closeBuilder();
+  setTimeout(openPayment,200);
+}
+
+/* ── PAYMENT ── */
+function openPayment(){
+  if(selectedSecs.size===0) return;
+  const price=calcPrice();
+  const bundle=isBundle();
+  document.getElementById('modal-plate').textContent=MOCK.plate;
+  document.getElementById('modal-veh').textContent=MOCK.vehicle.title;
+
+  const selKeys=[...selectedSecs];
+  const lines=document.getElementById('modal-lines');
+  if(bundle){
+    lines.innerHTML=
+      ALL_KEYS.map(k=>`<div class="li"><span class="li-n">${SECTIONS[k].title}</span><span class="li-p" style="color:var(--muted);font-weight:400">included</span></div>`).join('')+
+      `<div class="li"><span class="li-n" style="color:var(--green);font-weight:700">Bundle saving</span><span class="li-p" style="color:var(--green)">−${fmtCur(INDIVIDUAL_TOTAL-BUNDLE_PRICE)}</span></div>`+
+      `<div class="li tot"><span class="li-n">Total (9 sections)</span><span class="li-p">${fmtCur(price)}</span></div>`;
+  } else {
+    lines.innerHTML=
+      selKeys.map(k=>`<div class="li"><span class="li-n">${SECTIONS[k].title}</span><span class="li-p">${fmtCur(SECTIONS[k].price)}</span></div>`).join('')+
+      `<div class="li tot"><span class="li-n">Total (${selKeys.length} sections)</span><span class="li-p">${fmtCur(price)}</span></div>`;
+  }
+
+  document.getElementById('pay-final-btn').innerHTML=`${ico('lock')} Pay ${fmtCur(price)} — Get Report`;
+  document.getElementById('pay-modal').classList.add('open');
+}
+
+function closePayment(){
+  document.getElementById('pay-modal').classList.remove('open');
 }
 
 /* ── SECTION CONTENT ── */
@@ -1157,164 +1041,60 @@ function secBody(key){
   if(key==='price_history')   return secHistory();
   return '';
 }
-
 function secVehicle(){
   const v=MOCK.vehicle;
-  const rows=[
-    ['Year',v.year],['Make',v.make],['Model',v.model],['Badge',v.badge],
-    ['Series',v.series],['Body',v.body_type+' – '+v.body_config],
-    ['Transmission',v.transmission],['Drive',v.drive],
-    ['Fuel',v.fuel],['Engine',v.engine],
-    ['Colour',MOCK.colour],['VIN',MOCK.vin],
-  ];
-  return `<div style="margin-bottom:11px"><span class="badge pass">${ico('chk')} Match confidence: <strong>${MOCK.confidence}</strong></span></div>
-  <div class="data-grid">${rows.map(([l,val])=>`<div class="dc"><div class="dc-l">${l}</div><div class="dc-v${l==='VIN'?' mono':''}">${val}</div></div>`).join('')}</div>`;
+  const rows=[['Year',v.year],['Make',v.make],['Model',v.model],['Badge',v.badge],['Series',v.series],['Body',v.body_type+' – '+v.body_config],['Transmission',v.transmission],['Drive',v.drive],['Fuel',v.fuel],['Engine',v.engine],['Colour',MOCK.colour],['VIN',MOCK.vin]];
+  return `<div style="margin-bottom:11px"><span class="badge pass">${ico('chk')} Match confidence: <strong>standard</strong></span></div><div class="data-grid">${rows.map(([l,val])=>`<div class="dc"><div class="dc-l">${l}</div><div class="dc-v${l==='VIN'?' mono':''}">${val}</div></div>`).join('')}</div>`;
 }
-
 function secPpsr(){
   const p=MOCK.ppsr;
   const checks=[
     {lbl:'Security interest / encumbrance',pass:!p.has_secured_parties,ok:'No encumbrances',bad:'Active interest'},
-    {lbl:'Stolen vehicle register',         pass:!p.has_stolen_records, ok:'Not stolen',     bad:'Reported stolen'},
-    {lbl:'Written-off vehicle register',    pass:!p.has_written_off_records,ok:'No write-off',bad:'Write-off recorded'},
-    {lbl:'Safety recalls',                  pass:!p.has_safety_recalls, ok:'No open recalls',bad:'Open recall(s)'},
+    {lbl:'Stolen vehicle register',pass:!p.has_stolen_records,ok:'Not stolen',bad:'Reported stolen'},
+    {lbl:'Written-off vehicle register',pass:!p.has_written_off_records,ok:'No write-off',bad:'Write-off recorded'},
+    {lbl:'Safety recalls',pass:!p.has_safety_recalls,ok:'No open recalls',bad:'Open recall(s)'},
   ];
   const allOk=checks.every(c=>c.pass);
-  return `<div style="margin-bottom:13px"><span class="badge ${allOk?'pass':'fail'}">${ico(allOk?'chk':'x')} ${allOk?'All clear — no issues found':'Issues detected'}</span></div>
-  <div class="check-grid">${checks.map(c=>`
-    <div class="ck">
-      <div class="ck-ico ${c.pass?'pass':'fail'}">${ico(c.pass?'chk':'x')}</div>
-      <div><div class="ck-lbl">${c.lbl}</div><div class="ck-val">${c.pass?c.ok:c.bad}</div></div>
-    </div>`).join('')}</div>
-  <div class="ppsr-cert">
-    <div class="ppsr-cert-info">PPSR Certificate<small>Issued ${fmtDt(p.certificate_created_at)} · Cert #${p.id}</small></div>
-    <a class="ppsr-cert-link" href="${p.url}" target="_blank">${ico('ext')} View PDF</a>
-  </div>`;
+  return `<div style="margin-bottom:13px"><span class="badge ${allOk?'pass':'fail'}">${ico(allOk?'chk':'x')} ${allOk?'All clear — no issues found':'Issues detected'}</span></div><div class="check-grid">${checks.map(c=>`<div class="ck"><div class="ck-ico ${c.pass?'pass':'fail'}">${ico(c.pass?'chk':'x')}</div><div><div class="ck-lbl">${c.lbl}</div><div class="ck-val">${c.pass?c.ok:c.bad}</div></div></div>`).join('')}</div><div class="ppsr-cert"><div class="ppsr-cert-info">PPSR Certificate<small>Issued ${fmtDt(p.certificate_created_at)} · Cert #${p.id}</small></div><a class="ppsr-cert-link" href="${p.url}" target="_blank">${ico('ext')} View PDF</a></div>`;
 }
-
 function secReg(){
   const r=MOCK.registration;
   const exp=new Date(r.expiry),now=new Date(),days=Math.round((exp-now)/864e5);
-  const rows=[
-    ['Status',r.status==='current'?`<span class="badge pass">${ico('chk')} Current</span>`:`<span class="badge fail">${ico('x')} Expired</span>`],
-    ['State',r.state],['Plate',r.plate],
-    ['Expiry',fmtDt(r.expiry)+(days<0?' <span style="color:var(--red);font-size:11px">(expired)</span>':days<90?' <span style="color:var(--amber);font-size:11px">('+days+' days)</span>':'')],
-    ['Category',r.category],['Tare mass',r.tare_mass],['GVM',r.gvm],
-  ];
+  const rows=[['Status',r.status==='current'?`<span class="badge pass">${ico('chk')} Current</span>`:`<span class="badge fail">${ico('x')} Expired</span>`],['State',r.state],['Plate',r.plate],['Expiry',fmtDt(r.expiry)+(days<0?' <span style="color:var(--red);font-size:11px">(expired)</span>':days<90?' <span style="color:var(--amber);font-size:11px">('+days+' days)</span>':'')],['Category',r.category],['Tare mass',r.tare_mass],['GVM',r.gvm]];
   return `<div class="data-grid">${rows.map(([l,val])=>`<div class="dc"><div class="dc-l">${l}</div><div class="dc-v">${val}</div></div>`).join('')}</div>`;
 }
-
 function secWriteoff(){
-  const list=MOCK.incident_list;
-  if(!list.length) return `
-    <div class="ck" style="background:var(--bg);border-radius:8px;padding:15px 12px;margin-bottom:12px">
-      <div class="ck-ico pass" style="width:30px;height:30px">${ico('chk')}</div>
-      <div><div class="ck-lbl">No write-off or incident records found</div><div class="ck-val">Searched WOVR and all 8 state &amp; territory RTA databases</div></div>
-    </div>
-    <div style="padding:11px 13px;background:var(--bg);border-radius:8px;font-size:11.5px;color:var(--muted)">
-      Databases checked: VIC Roads · NSW Transport · QLD TMR · WA DoT · SA DIT · TAS DTF · ACT Access Canberra · NT MVR
-    </div>`;
-  return `<div>${list.map(i=>`<div>${cap(i.type)}</div>`).join('')}</div>`;
+  return `<div class="ck" style="background:var(--bg);border-radius:8px;padding:15px 12px;margin-bottom:12px"><div class="ck-ico pass" style="width:30px;height:30px">${ico('chk')}</div><div><div class="ck-lbl">No write-off or incident records found</div><div class="ck-val">Searched WOVR and all 8 state &amp; territory RTA databases</div></div></div><div style="padding:11px 13px;background:var(--bg);border-radius:8px;font-size:11.5px;color:var(--muted)">Databases checked: VIC Roads · NSW Transport · QLD TMR · WA DoT · SA DIT · TAS DTF · ACT Access Canberra · NT MVR</div>`;
 }
-
 function secOdo(){
   const evs=[...MOCK.history.events].sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
-  const first=evs[evs.length-1], last=evs[0];
+  const first=evs[evs.length-1],last=evs[0];
   const totalKm=last.odometer-first.odometer;
   let rollback=false;
   for(let i=1;i<evs.length;i++) if(evs[i].odometer>evs[i-1].odometer) rollback=true;
   const yrs=Math.round((new Date(last.timestamp)-new Date(first.timestamp))/3.156e10);
-  return `
-  <div style="display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap">
-    <div class="vc2"><div class="vc2-lbl">Latest reading</div><div class="vc2-val">${fmtKm(last.odometer)}</div><div class="vc2-sub">${fmtDt(last.timestamp)}</div></div>
-    <div class="vc2"><div class="vc2-lbl">Total recorded</div><div class="vc2-val">${fmtKm(totalKm)}</div><div class="vc2-sub">Over ${yrs} year${yrs!==1?'s':''}</div></div>
-    <div class="vc2${rollback?' hi':''}"><div class="vc2-lbl">Rollback check</div>
-      <div class="vc2-val${rollback?'':' blue'}" style="${rollback?'color:var(--red)':''}">${rollback?'ROLLBACK!':'No rollback'}</div>
-      <div class="vc2-sub">${evs.length} records checked</div>
-    </div>
-  </div>
-  <div class="odo-tl">${evs.map(e=>`
-    <div class="odo-ev">
-      <div class="odo-dot"></div>
-      <div class="odo-date">${fmtDt(e.timestamp)}</div>
-      <div class="odo-km">${fmtKm(e.odometer)}</div>
-      <div class="odo-det">${cap(e.type)}${e.marketplace?' · '+e.marketplace:''}${e.price?' · '+fmtCur(e.price):''}</div>
-    </div>`).join('')}</div>`;
+  return `<div style="display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap"><div class="vc2"><div class="vc2-lbl">Latest reading</div><div class="vc2-val">${fmtKm(last.odometer)}</div><div class="vc2-sub">${fmtDt(last.timestamp)}</div></div><div class="vc2"><div class="vc2-lbl">Total recorded</div><div class="vc2-val">${fmtKm(totalKm)}</div><div class="vc2-sub">Over ${yrs} year${yrs!==1?'s':''}</div></div><div class="vc2${rollback?' hi':''}"><div class="vc2-lbl">Rollback check</div><div class="vc2-val${rollback?'':' blue'}" style="${rollback?'color:var(--red)':''}">${rollback?'ROLLBACK!':'No rollback'}</div><div class="vc2-sub">${evs.length} records</div></div></div><div class="odo-tl">${evs.map(e=>`<div class="odo-ev"><div class="odo-dot"></div><div class="odo-date">${fmtDt(e.timestamp)}</div><div class="odo-km">${fmtKm(e.odometer)}</div><div class="odo-det">${cap(e.type)}${e.marketplace?' · '+e.marketplace:''}${e.price?' · '+fmtCur(e.price):''}</div></div>`).join('')}</div>`;
 }
-
 function secBuild(){
   const b=MOCK.build_data.vehicle;
-  return `
-  <div class="data-grid" style="margin-bottom:13px">
-    <div class="dc"><div class="dc-l">Build date</div><div class="dc-v">${b.build_date}</div></div>
-    <div class="dc"><div class="dc-l">VIN</div><div class="dc-v mono">${b.vin}</div></div>
-    <div class="dc"><div class="dc-l">Make / Model</div><div class="dc-v">${b.make} ${b.model}</div></div>
-  </div>
-  <div class="pkg-head" style="margin-bottom:9px">Factory option codes (${b.features.length})</div>
-  <div class="bf-grid">${b.features.map(f=>`
-    <div class="bf"><span class="bf-code">${f.code}</span><span class="bf-val">${f.value}</span></div>`).join('')}</div>`;
+  return `<div class="data-grid" style="margin-bottom:13px"><div class="dc"><div class="dc-l">Build date</div><div class="dc-v">${b.build_date}</div></div><div class="dc"><div class="dc-l">VIN</div><div class="dc-v mono">${b.vin}</div></div><div class="dc"><div class="dc-l">Make / Model</div><div class="dc-v">${b.make} ${b.model}</div></div></div><div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:9px">Factory options (${b.features.length})</div><div class="bf-grid">${b.features.map(f=>`<div class="bf"><span class="bf-code">${f.code}</span><span class="bf-val">${f.value}</span></div>`).join('')}</div>`;
 }
-
 function secVal(){
   const p=MOCK.valuation.prediction;
-  const conf=Math.round(p.score*100);
-  return `
-  <div class="val-cards">
-    <div class="vc2 hi"><div class="vc2-lbl">Private asking</div><div class="vc2-val blue">${fmtCur(p.retail_price)}</div><div class="vc2-sub">Confidence ${conf}%</div></div>
-    <div class="vc2"><div class="vc2-lbl">Trade / dealer buy</div><div class="vc2-val">${fmtCur(p.trade_price)}</div><div class="vc2-sub">Wholesale estimate</div></div>
-    <div class="vc2"><div class="vc2-lbl">Market midpoint</div><div class="vc2-val">${fmtCur(p.price)}</div><div class="vc2-sub">ML prediction</div></div>
-  </div>
-  <div style="background:var(--bg);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--muted)">Prediction ID: <code>${p.id}</code> &nbsp;·&nbsp; Vehicle: <code>${p.vehicle_id}</code></div>`;
+  return `<div class="val-cards"><div class="vc2 hi"><div class="vc2-lbl">Private asking</div><div class="vc2-val blue">${fmtCur(p.retail_price)}</div><div class="vc2-sub">Confidence ${Math.round(p.score*100)}%</div></div><div class="vc2"><div class="vc2-lbl">Trade / dealer buy</div><div class="vc2-val">${fmtCur(p.trade_price)}</div><div class="vc2-sub">Wholesale estimate</div></div><div class="vc2"><div class="vc2-lbl">Market midpoint</div><div class="vc2-val">${fmtCur(p.price)}</div><div class="vc2-sub">ML prediction</div></div></div>`;
 }
-
 function secMarket(){
   const m=MOCK.market_overlay;
-  const stats=[['Listings',m.sample_size],['Avg sell time',m.avg_days_to_sell+' days'],['Days supply',m.days_supply+' days'],['Avg odo',fmtKm(m.avg_odometer)]];
-  return `
-  <div class="mkt-stats">${stats.map(([l,v])=>`<div class="msc"><div class="msc-l">${l}</div><div class="msc-v">${v}</div></div>`).join('')}</div>
-  <div style="display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap">
-    <div class="dc"><div class="dc-l">Avg price</div><div class="dc-v">${fmtCur(m.avg_price)}</div></div>
-    <div class="dc"><div class="dc-l">Min price</div><div class="dc-v">${fmtCur(m.min_price)}</div></div>
-    <div class="dc"><div class="dc-l">Max price</div><div class="dc-v">${fmtCur(m.max_price)}</div></div>
-    <div class="dc"><div class="dc-l">Outliers</div><div class="dc-v">${m.outlier_count}</div></div>
-  </div>
-  <table class="tbl">
-    <thead><tr><th>Year</th><th>State</th><th>Price</th><th>Drive-away</th><th>Kms</th><th>Seller</th><th>Listed</th></tr></thead>
-    <tbody>${m.leads.map(l=>`<tr>
-      <td>${l.year}</td><td><span class="state-chip">${l.state}</span></td>
-      <td><strong>${fmtCur(l.price)}</strong></td><td>${fmtCur(l.drive_away_price)}</td>
-      <td>${fmtKm(l.kms)}</td><td>${cap(l.seller_type)}</td>
-      <td>${l.listed_at}${l.is_outlier?' <span style="color:var(--amber);font-size:10px;font-weight:800">OUTLIER</span>':''}</td>
-    </tr>`).join('')}</tbody>
-  </table>`;
+  return `<div class="mkt-stats"><div class="msc"><div class="msc-l">Listings</div><div class="msc-v">${m.sample_size}</div></div><div class="msc"><div class="msc-l">Avg sell time</div><div class="msc-v">${m.avg_days_to_sell}d</div></div><div class="msc"><div class="msc-l">Days supply</div><div class="msc-v">${m.days_supply}d</div></div><div class="msc"><div class="msc-l">Avg odo</div><div class="msc-v">${Math.round(m.avg_odometer/1000)}k km</div></div></div><table class="tbl"><thead><tr><th>Year</th><th>State</th><th>Price</th><th>Drive-away</th><th>Kms</th><th>Seller</th></tr></thead><tbody>${m.leads.map(l=>`<tr><td>${l.year}</td><td><span class="state-chip">${l.state}</span></td><td><strong>${fmtCur(l.price)}</strong></td><td>${fmtCur(l.drive_away_price)}</td><td>${fmtKm(l.kms)}</td><td>${cap(l.seller_type)}${l.is_outlier?' <span style="color:var(--amber);font-size:10px">⚠</span>':''}</td></tr>`).join('')}</tbody></table>`;
 }
-
 function secHistory(){
-  const evs=[...MOCK.history.events].filter(e=>e.type==='sale'||e.type==='listed')
-    .sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
-  return evs.map(e=>`
-    <div class="ph-ev">
-      <span class="ph-type ${e.type}">${cap(e.type)}</span>
-      <div><div class="ph-km">${fmtKm(e.odometer)}</div><div style="font-size:11px;color:var(--muted)">${fmtDt(e.timestamp)}</div></div>
-      <div class="ph-det">${e.price?`<strong>${fmtCur(e.price)}</strong>`:'—'}${e.marketplace?`<br><span style="color:var(--muted)">${e.marketplace}</span>`:''}</div>
-    </div>`).join('');
+  const evs=[...MOCK.history.events].filter(e=>e.type==='sale'||e.type==='listed').sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  return evs.map(e=>`<div class="ph-ev"><span class="ph-type ${e.type}">${cap(e.type)}</span><div><div class="ph-km">${fmtKm(e.odometer)}</div><div style="font-size:11px;color:var(--muted)">${fmtDt(e.timestamp)}</div></div><div class="ph-det">${e.price?`<strong>${fmtCur(e.price)}</strong>`:'—'}${e.marketplace?`<br><span>${e.marketplace}</span>`:''}</div></div>`).join('');
 }
 
-/* ── MODAL ── */
-function openModal(){
-  const p=PKGS[activePkg];
-  document.getElementById('modal-plate').textContent=MOCK.plate;
-  document.getElementById('modal-veh').textContent=MOCK.vehicle.title;
-  document.getElementById('modal-lines').innerHTML=
-    p.includes.map(i=>`<div class="li"><span class="li-n">${i}</span><span class="li-p">&nbsp;</span></div>`).join('')+
-    `<div class="li tot"><span class="li-n">${p.name} Package</span><span class="li-p">${fmtCur(p.price)}</span></div>`;
-  document.getElementById('pay-btn').innerHTML=`${ico('shld')} Pay ${fmtCur(p.price)} — Get Report`;
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal(){
-  document.getElementById('modal').classList.remove('open');
-}
-document.getElementById('modal').addEventListener('click',e=>{ if(e.target===document.getElementById('modal')) closeModal(); });
+/* ── MODAL CLOSE ON BACKDROP ── */
+document.getElementById('builder-modal').addEventListener('click',e=>{if(e.target===document.getElementById('builder-modal')){closeBuilder();}});
+document.getElementById('pay-modal').addEventListener('click',e=>{if(e.target===document.getElementById('pay-modal')){closePayment();}});
 </script>
 </body>
 </html>
