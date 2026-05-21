@@ -1,1149 +1,1320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>VehicleCheck — Australian Vehicle History Reports</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarCheck — Instant Australian Vehicle History Reports</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0d2b4e;--navy2:#1a3d6b;--blue:#1d6fcd;--blue-lt:#eef5ff;
-  --teal:#0891b2;--green:#0a6e44;--gbg:#edfaf3;--gbd:#a7d9be;
-  --red:#c0201a;--rbg:#fff0f0;--rbd:#f5b3b0;
-  --amber:#b06000;--abg:#fdf6e8;--abd:#f5d5a0;
-  --bg:#f0f4f8;--surf:#fff;--surf2:#f7f9fc;
-  --bdr:#dde3ed;--bdr2:#c4cdd9;
-  --txt:#0d1f35;--txt2:#2c405a;--muted:#5a6e86;
-  --sw:292px;--bh:78px;
+  --navy:#071e38;--navy2:#0d2b4e;--navy3:#1a3d6b;
+  --blue:#1d6fcd;--blue2:#155ba0;--blue-lt:#e8f2fd;
+  --green:#0a6e44;--green2:#0d8a55;--green-lt:#e8f7f0;
+  --red:#c0201a;--red-lt:#fde8e8;
+  --amber:#b06000;--amber-lt:#fdf3e0;
+  --bg:#f0f4f8;--surf:#fff;
+  --txt:#0d1f35;--muted:#5a6e86;--bdr:#dde4ef;
+  --r:10px;--sh:0 2px 16px rgba(13,43,78,.09);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);height:100dvh;display:flex;flex-direction:column;overflow:hidden;font-size:14px;line-height:1.5}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;color:var(--txt);background:var(--bg);min-height:100vh}
 
-/* ── Header ── */
-header{background:var(--navy);color:#fff;height:56px;padding:0 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:30;box-shadow:0 2px 12px rgba(0,0,0,.25)}
-.logo{display:flex;align-items:center;gap:9px}
-.logo-icon{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-icon svg{width:17px;height:17px}
-.logo-name{font-size:1.1rem;font-weight:800;letter-spacing:-.2px}
-.logo-name span{color:#6eb4ff}
-.hdr-sep{width:1px;height:22px;background:rgba(255,255,255,.15)}
-.hdr-tag{font-size:.72rem;color:rgba(255,255,255,.55);letter-spacing:.01em}
-.hdr-space{flex:1}
-.ag-badge{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:6px;padding:5px 11px;font-size:.7rem;font-weight:600;color:rgba(255,255,255,.8)}
-.ag-dot{width:7px;height:7px;border-radius:50%;background:#34d399;flex-shrink:0}
+/* ─────────────────────────────────────
+   SCREEN MANAGEMENT
+───────────────────────────────────── */
+.screen{display:none}
+.screen.active{display:block}
+#screen-loading.active{display:flex}
+#screen-hero.active{display:flex}
 
-/* ── Layout ── */
-.main{display:flex;flex:1;overflow:hidden}
+/* ═══════════════════════════════════════
+   SCREEN 1 — HERO
+═══════════════════════════════════════ */
+#screen-hero{
+  min-height:100vh;flex-direction:column;
+  background:linear-gradient(160deg,var(--navy) 0%,#0f3560 55%,#1a4f8a 100%);
+  position:relative;overflow:hidden;
+}
+/* subtle grid overlay */
+#screen-hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+/* bottom glow */
+#screen-hero::after{
+  content:'';position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);
+  width:900px;height:400px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(29,111,205,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
 
-/* ── Sidebar ── */
-aside{width:var(--sw);background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
-.sb-top{padding:14px 18px 12px;border-bottom:1px solid var(--bdr);background:var(--surf2)}
-.sb-top h2{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-.sb-top p{font-size:.7rem;color:var(--muted);margin-top:1px}
+.hero-nav{
+  position:relative;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 48px;border-bottom:1px solid rgba(255,255,255,.07);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-mark{
+  width:36px;height:36px;background:var(--blue);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-logo-mark svg{width:19px;height:19px}
+.nav-logo-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px}
+.nav-logo-name em{color:#7dc4ff;font-style:normal}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{color:rgba(255,255,255,.55);font-size:13.5px;text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-links .nav-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.85)!important;padding:8px 18px;border-radius:7px;
+  font-weight:600;transition:all .2s!important;
+}
+.nav-links .nav-btn:hover{background:rgba(255,255,255,.18)!important;color:#fff!important}
 
-.sb-price{padding:13px 18px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-bottom:1px solid #0a2040}
-.sb-price .pl{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#6eb4ff}
-.sb-price .pa{font-size:1.7rem;font-weight:800;letter-spacing:-.5px;line-height:1}
-.sb-price .ps{font-size:.67rem;color:rgba(255,255,255,.45);margin-top:2px}
+.hero-main{
+  position:relative;z-index:4;
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:64px 24px 48px;text-align:center;
+}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(125,196,255,.12);border:1px solid rgba(125,196,255,.25);
+  color:#7dc4ff;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+  padding:5px 15px;border-radius:20px;margin-bottom:28px;
+}
+.hero-pill svg{width:13px;height:13px;flex-shrink:0}
+.hero-h1{
+  font-size:clamp(34px,5.5vw,62px);font-weight:900;color:#fff;
+  line-height:1.1;letter-spacing:-1.5px;margin-bottom:18px;
+  max-width:760px;
+}
+.hero-h1 .hl{
+  background:linear-gradient(90deg,#7dc4ff,#5ab2ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(15px,1.8vw,18px);color:rgba(255,255,255,.6);
+  max-width:540px;line-height:1.65;margin-bottom:48px;
+}
 
-.sb-presets{display:flex;gap:5px;padding:10px 18px;border-bottom:1px solid var(--bdr)}
-.preset-btn{flex:1;padding:6px 4px;border:1.5px solid var(--bdr2);border-radius:6px;background:var(--surf2);font-size:.67rem;font-weight:700;color:var(--txt2);cursor:pointer;text-align:center;transition:all .15s;line-height:1.3}
-.preset-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
-.preset-btn.active{border-color:var(--blue);background:var(--blue-lt);color:var(--blue)}
-.preset-btn .pb-name{display:block}
-.preset-btn .pb-price{display:block;font-size:.63rem;font-weight:800;margin-top:1px}
+/* ── SEARCH BOX ── */
+.search-box{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(16px);
+  border-radius:18px;padding:28px 32px 24px;
+  width:100%;max-width:540px;
+}
+.search-tabs{
+  display:flex;background:rgba(0,0,0,.3);border-radius:8px;padding:3px;
+  margin-bottom:22px;
+}
+.stab{
+  flex:1;padding:8px 12px;border-radius:6px;
+  font-size:13px;font-weight:600;letter-spacing:.2px;
+  color:rgba(255,255,255,.45);cursor:pointer;text-align:center;
+  transition:all .2s;user-select:none;
+}
+.stab.on{background:#fff;color:var(--navy)}
 
-.sb-grp{padding:9px 0}
-.sb-grp+.sb-grp{border-top:1px solid var(--bdr)}
-.sb-grp-lbl{padding:4px 18px 5px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+/* Rego plate input */
+.plate-wrap{
+  display:flex;border-radius:11px;overflow:hidden;
+  border:2.5px solid rgba(255,255,255,.2);
+  transition:border-color .2s;margin-bottom:14px;
+}
+.plate-wrap:focus-within{border-color:#7dc4ff}
+.plate-state-btn{
+  background:#ffd700;border:none;
+  color:#003399;font-size:11px;font-weight:900;letter-spacing:.8px;
+  padding:0 14px;min-width:52px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;line-height:1;gap:2px;
+  border-right:2px solid rgba(0,0,0,.12);
+}
+.plate-state-btn .psb-state{font-size:13px;font-weight:900}
+.plate-state-btn .psb-label{font-size:8px;font-weight:700;opacity:.6;letter-spacing:.5px}
+.plate-state-btn select{
+  position:absolute;inset:0;opacity:0;cursor:pointer;font-size:16px;
+}
+.plate-input{
+  flex:1;background:rgba(255,255,255,.95);border:none;outline:none;
+  font-size:30px;font-weight:900;letter-spacing:5px;text-transform:uppercase;
+  color:var(--navy);padding:13px 18px;text-align:center;
+  font-family:'Courier New',Courier,monospace;
+}
+.plate-input::placeholder{font-size:22px;letter-spacing:3px;color:#b0bbc8}
 
-.cb{display:flex;align-items:flex-start;gap:10px;padding:7px 18px;cursor:pointer;user-select:none;transition:background .1s;position:relative}
-.cb:hover{background:var(--surf2)}
-.cb input{display:none}
-.cb-box{width:16px;height:16px;border:2px solid var(--bdr2);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .12s}
-.cb.on .cb-box{background:var(--blue);border-color:var(--blue)}
-.cb.on .cb-box::after{content:'';width:8px;height:4px;border:2px solid #fff;border-top:none;border-right:none;transform:rotate(-45deg) translateY(-1px)}
-.cb-info{flex:1;min-width:0}
-.cb-name{font-size:.82rem;font-weight:600;color:var(--txt2)}
-.cb.on .cb-name{color:var(--blue)}
-.cb-desc{font-size:.68rem;color:var(--muted);margin-top:1px}
-.cb-price{font-size:.75rem;font-weight:700;color:var(--blue);align-self:center;white-space:nowrap}
-.cb-badge{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle}
-.badge-pop{background:#fff3cd;color:#7a4f00}
-.badge-uni{background:#e0f2fe;color:#0369a1}
+.vin-wrap{margin-bottom:14px}
+.vin-input{
+  width:100%;background:rgba(255,255,255,.95);border:2.5px solid rgba(255,255,255,.2);
+  outline:none;border-radius:11px;padding:14px 18px;
+  font-size:15px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--navy);font-family:'Courier New',Courier,monospace;transition:border-color .2s;
+}
+.vin-input:focus{border-color:#7dc4ff}
+.vin-input::placeholder{font-family:inherit;font-size:13px;letter-spacing:.3px;font-weight:400;color:#999}
 
-/* ── Report area ── */
-.report-area{flex:1;overflow-y:auto;padding:20px;padding-bottom:calc(var(--bh) + 20px)}
+.search-btn{
+  width:100%;padding:16px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,#1d6fcd,#1558a8);
+  color:#fff;font-size:17px;font-weight:800;letter-spacing:-.2px;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 4px 24px rgba(29,111,205,.45);
+}
+.search-btn:hover{background:linear-gradient(135deg,#2278d9,#1a66be);transform:translateY(-1px);box-shadow:0 6px 28px rgba(29,111,205,.55)}
+.search-btn:active{transform:none}
+.search-btn svg{width:19px;height:19px}
+.search-note{font-size:11px;color:rgba(255,255,255,.35);text-align:center;margin-top:11px}
 
-/* Empty / sales state */
-.sales-state{display:flex;flex-direction:column;gap:0;max-width:680px;margin:0 auto;padding-top:8px}
-.sales-hero{text-align:center;padding:32px 24px 28px;background:var(--surf);border:1px solid var(--bdr);border-radius:14px;margin-bottom:16px;position:relative;overflow:hidden}
-.sales-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,43,78,.03),rgba(29,111,205,.06));pointer-events:none}
-.sales-hero .ag-powered{display:inline-flex;align-items:center;gap:6px;background:var(--blue-lt);border:1px solid #bdd6f8;border-radius:20px;padding:4px 12px;font-size:.7rem;font-weight:700;color:var(--blue);margin-bottom:16px}
-.sales-hero h1{font-size:1.75rem;font-weight:900;color:var(--navy);letter-spacing:-.5px;line-height:1.15;margin-bottom:10px}
-.sales-hero h1 em{font-style:normal;color:var(--blue)}
-.sales-hero p{font-size:.88rem;color:var(--muted);max-width:480px;margin:0 auto 20px;line-height:1.7}
-.stats-row{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--bdr)}
-.stat-item{text-align:center}
-.stat-item .sv{font-size:1.15rem;font-weight:800;color:var(--navy)}
-.stat-item .sl{font-size:.67rem;color:var(--muted);margin-top:1px}
+/* ── TRUST ROW ── */
+.trust-row{
+  display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+  justify-content:center;padding-top:32px;
+}
+.ti{display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.5)}
+.ti strong{color:rgba(255,255,255,.82)}
+.ti svg{width:15px;height:15px;color:#7dc4ff;flex-shrink:0}
+.tsep{width:1px;height:20px;background:rgba(255,255,255,.12)}
 
-.value-props{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.vp{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
-.vp-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center}
-.vp-icon.blue{background:var(--blue-lt);color:var(--blue)}
-.vp-icon.green{background:var(--gbg);color:var(--green)}
-.vp-icon.amber{background:var(--abg);color:var(--amber)}
-.vp-icon.navy{background:#e8eef7;color:var(--navy)}
-.vp h3{font-size:.82rem;font-weight:700;color:var(--txt)}
-.vp p{font-size:.7rem;color:var(--muted);line-height:1.5}
+/* ── HERO STATS BAR ── */
+.hero-stats{
+  position:relative;z-index:4;
+  border-top:1px solid rgba(255,255,255,.07);
+  padding:18px 48px;
+  display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;
+}
+.hs-item{text-align:center}
+.hs-num{font-size:22px;font-weight:900;color:#fff;letter-spacing:-.5px;display:block}
+.hs-label{font-size:11px;color:rgba(255,255,255,.38);letter-spacing:.2px}
 
-.sources-strip{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.sources-strip .sl-lbl{font-size:.67rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
-.src-chip{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 8px;font-size:.64rem;font-weight:600;color:var(--muted)}
+/* ═══════════════════════════════════════
+   SCREEN 2 — LOADING
+═══════════════════════════════════════ */
+#screen-loading{
+  min-height:100vh;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,var(--navy) 0%,#0f3560 100%);
+  padding:40px 24px;text-align:center;
+}
+.ld-plate{
+  display:inline-flex;align-items:center;gap:10px;
+  background:#ffd700;color:#003399;
+  border-radius:9px;padding:10px 24px 10px 18px;
+  margin-bottom:40px;box-shadow:0 8px 32px rgba(0,0,0,.3);
+}
+.ld-plate-state{display:flex;flex-direction:column;align-items:center;line-height:1;gap:2px}
+.ld-plate-state .s{font-size:10px;font-weight:900;letter-spacing:.5px}
+.ld-plate-state .l{font-size:7px;font-weight:700;opacity:.55;letter-spacing:.4px}
+.ld-plate-num{
+  font-family:'Courier New',Courier,monospace;
+  font-size:34px;font-weight:900;letter-spacing:5px;
+}
+.ld-spinner{
+  width:52px;height:52px;margin:0 auto 28px;
+  border:4px solid rgba(255,255,255,.1);
+  border-top-color:#7dc4ff;border-radius:50%;
+  animation:spin .75s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-headline{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px}
+.ld-sub{font-size:14px;color:rgba(255,255,255,.45);margin-bottom:36px}
+.ld-steps{
+  display:flex;flex-direction:column;gap:9px;
+  width:100%;max-width:360px;margin:0 auto;
+}
+.ls-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;border-radius:9px;
+  background:rgba(255,255,255,.05);font-size:13px;
+  color:rgba(255,255,255,.4);transition:all .35s;
+}
+.ls-row.active{background:rgba(29,111,205,.25);color:#fff}
+.ls-row.done{background:rgba(10,110,68,.22);color:rgba(255,255,255,.8)}
+.ls-dot{
+  width:20px;height:20px;flex-shrink:0;border-radius:50%;
+  background:rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .35s;
+}
+.ls-row.done .ls-dot{background:var(--green2)}
+.ls-row.active .ls-dot{background:var(--blue);animation:pp .9s ease infinite}
+.ls-dot svg{width:11px;height:11px;color:#fff}
+@keyframes pp{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* ── Vehicle hero ── */
-.v-hero{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;margin-bottom:14px}
-.car-img-wrap{position:relative;background:linear-gradient(160deg,#b8cce0,#cddae8 50%,#bdd0e2);height:195px;overflow:hidden}
-.car-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:center 62%}
-.car-img-wrap .svg-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-.car-img-wrap .svg-fallback svg{width:100%;height:auto;max-height:195px}
-.img-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(13,27,50,.35))}
-.img-plate{position:absolute;bottom:12px;left:14px;background:rgba(255,255,255,.95);border-radius:5px;padding:4px 10px;font-size:.72rem;font-weight:800;color:var(--navy);letter-spacing:.06em;font-family:monospace}
-.img-conf{position:absolute;top:11px;right:12px;background:rgba(10,110,68,.9);color:#fff;border-radius:5px;padding:3px 9px;font-size:.65rem;font-weight:700;letter-spacing:.04em;display:flex;align-items:center;gap:5px}
-.img-conf svg{width:11px;height:11px}
-.v-info{padding:14px 18px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;border-top:1px solid var(--bdr)}
-.vi-title{font-size:1.2rem;font-weight:900;color:var(--navy);letter-spacing:-.3px}
-.vi-raw{font-size:.68rem;color:var(--muted);font-family:monospace;margin-top:3px;letter-spacing:.02em}
-.vi-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
-.chip{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 8px;font-size:.68rem;font-weight:600;color:var(--txt2)}
-.v-meta{text-align:right;flex-shrink:0}
-.v-meta .vm-id{font-size:.62rem;font-family:monospace;color:var(--muted);letter-spacing:.04em}
-.v-meta .vm-ts{font-size:.62rem;color:var(--muted);margin-top:1px}
-.v-meta .vm-live{display:inline-flex;align-items:center;gap:4px;margin-top:6px;background:var(--gbg);border:1px solid var(--gbd);border-radius:20px;padding:3px 9px;font-size:.65rem;font-weight:700;color:var(--green)}
-.pulse{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 1.8s ease infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+/* ═══════════════════════════════════════
+   SCREEN 3 — RESULTS
+═══════════════════════════════════════ */
+#screen-results{background:var(--bg)}
+.res-topbar{
+  background:var(--navy2);
+  display:flex;align-items:center;gap:16px;
+  padding:12px 32px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,.2);
+  flex-wrap:wrap;
+}
+.rtb-logo{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.rtb-logo em{color:#7dc4ff;font-style:normal}
+.rtb-sep{width:1px;height:20px;background:rgba(255,255,255,.18)}
+.rtb-plate{
+  background:#ffd700;color:#003399;
+  font-family:'Courier New',Courier,monospace;
+  font-size:14px;font-weight:900;letter-spacing:3px;
+  padding:4px 12px;border-radius:5px;
+}
+.rtb-vehicle{font-size:14px;font-weight:600;color:rgba(255,255,255,.75)}
+.rtb-spacer{flex:1}
+.rtb-new-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.7);font-size:13px;font-weight:600;
+  padding:7px 14px;border-radius:7px;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:7px;
+}
+.rtb-new-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+.rtb-new-btn svg{width:14px;height:14px}
 
-/* Health grid */
-.health-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px;margin-bottom:14px}
-.hc{background:var(--surf);border:1.5px solid var(--bdr);border-radius:8px;padding:10px 12px}
-.hc.pass{border-color:var(--gbd);background:var(--gbg)}
-.hc.fail{border-color:var(--rbd);background:var(--rbg)}
-.hc.info{border-color:#bdd6f8;background:var(--blue-lt)}
-.hc-l{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
-.hc-v{font-size:.8rem;font-weight:700;margin-top:3px;display:flex;align-items:center;gap:4px}
-.hc.pass .hc-v{color:var(--green)}
-.hc.fail .hc-v{color:var(--red)}
-.hc.info .hc-v{color:#1552a0}
+.res-body{
+  display:flex;align-items:flex-start;
+  max-width:1260px;margin:0 auto;width:100%;
+}
 
-/* Report section */
-.rs{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;margin-bottom:12px;overflow:hidden}
-.rs-hd{display:flex;align-items:center;gap:9px;padding:11px 16px;border-bottom:1px solid var(--bdr);background:var(--surf2)}
-.rs-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ic-green{background:var(--gbg);color:var(--green)}
-.ic-blue{background:var(--blue-lt);color:var(--blue)}
-.ic-navy{background:#e8eef7;color:var(--navy)}
-.ic-amber{background:var(--abg);color:var(--amber)}
-.ic-red{background:var(--rbg);color:var(--red)}
-.rs-title{font-size:.87rem;font-weight:700;flex:1}
-.rs-pill{font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em}
-.pg{background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}
-.pr{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}
-.pa{background:var(--abg);color:var(--amber);border:1px solid var(--abd)}
-.pb{background:var(--blue-lt);color:var(--blue);border:1px solid #bdd6f8}
-.rs-ep{font-size:.6rem;color:var(--muted);background:var(--bdr);padding:2px 6px;border-radius:3px;font-family:monospace;white-space:nowrap}
-.rs-body{padding:16px}
+/* LEFT SIDEBAR */
+.res-left{
+  width:350px;flex-shrink:0;
+  position:sticky;top:56px;height:calc(100vh - 56px);
+  overflow-y:auto;padding:22px 18px;
+  background:var(--surf);border-right:1px solid var(--bdr);
+}
+.res-left::-webkit-scrollbar{width:4px}
+.res-left::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
 
-/* KV grid */
-.kvg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
-.kv{display:flex;flex-direction:column;gap:2px}
-.kk{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
-.kv-val{font-size:.84rem;font-weight:600}
-.mono{font-family:'SF Mono','Fira Mono','Roboto Mono',monospace;font-size:.78rem}
+/* Vehicle card */
+.veh-card{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:20px;box-shadow:var(--sh)}
+.veh-img{height:160px;background:linear-gradient(135deg,#dce4ef,#c8d4e4);position:relative;overflow:hidden}
+.veh-img img{width:100%;height:100%;object-fit:cover}
+.veh-img-svg{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.veh-reg-chip{
+  position:absolute;top:9px;left:9px;
+  font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
+  padding:3px 9px;border-radius:4px;background:rgba(10,110,68,.88);color:#fff;
+}
+.veh-info{padding:13px 14px}
+.veh-sub{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--blue);margin-bottom:3px}
+.veh-name{font-size:15px;font-weight:800;color:var(--txt);line-height:1.3;margin-bottom:11px}
+.veh-specs{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.spec-cell{background:var(--bg);border-radius:7px;padding:7px 9px}
+.spec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px}
+.spec-val{font-size:13px;font-weight:700;color:var(--txt)}
+.veh-vin-row{
+  margin-top:9px;padding:8px 9px;background:var(--bg);border-radius:7px;
+  display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);
+}
+.veh-vin-row strong{font-family:'Courier New',Courier,monospace;font-size:11.5px;color:var(--txt);letter-spacing:.5px}
 
-/* PPSR grid */
-.ppsr-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:9px}
-.pp{border:1.5px solid var(--bdr);border-radius:7px;padding:11px 13px}
-.pp.pass{border-color:var(--gbd);background:var(--gbg)}
-.pp.fail{border-color:var(--rbd);background:var(--rbg)}
-.pp-l{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.pp-v{font-size:.8rem;font-weight:700;margin-top:4px;display:flex;align-items:center;gap:5px}
-.pp.pass .pp-v{color:var(--green)}
-.pp.fail .pp-v{color:var(--red)}
+/* Package cards */
+.pkg-head{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:11px}
+.pkg-list{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+.pkg{
+  border:2px solid var(--bdr);border-radius:var(--r);
+  padding:13px 14px;cursor:pointer;transition:all .18s;
+  position:relative;background:var(--surf);
+}
+.pkg:hover{border-color:var(--blue);background:#f7faff}
+.pkg.sel{border-color:var(--blue);background:#f0f6ff}
+.pkg.pop{border-color:#b8d4f5}
+.pkg-badge{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:var(--blue);color:#fff;
+  font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
+  padding:2px 11px;border-radius:10px;white-space:nowrap;
+}
+.pkg-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.pkg-radio-name{display:flex;align-items:center;gap:9px}
+.pkg-radio{
+  width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  transition:all .18s;
+}
+.pkg.sel .pkg-radio{border-color:var(--blue);background:var(--blue)}
+.pkg.sel .pkg-radio::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+.pkg-name{font-size:14px;font-weight:800;color:var(--txt)}
+.pkg-pricing{text-align:right}
+.pkg-price{font-size:19px;font-weight:900;color:var(--txt)}
+.pkg-save{
+  font-size:10px;font-weight:700;
+  background:var(--green-lt);color:var(--green);
+  padding:1px 6px;border-radius:4px;display:inline-block;margin-top:2px;
+}
+.pkg-includes{display:flex;flex-wrap:wrap;gap:5px}
+.pkg-inc-item{
+  display:flex;align-items:center;gap:4px;
+  font-size:11px;color:var(--muted);
+}
+.pkg-inc-item svg{width:11px;height:11px;color:var(--green);flex-shrink:0}
 
-/* Odometer events */
-.odo-events{display:flex;flex-direction:column;gap:0}
-.ode{display:flex;align-items:stretch;gap:12px}
-.ode-line{display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0}
-.ode-dot{width:10px;height:10px;border-radius:50%;background:var(--blue);border:2px solid var(--blue-lt);flex-shrink:0;margin-top:4px}
-.ode-connector{flex:1;width:2px;background:var(--bdr);margin:2px 0}
-.ode:last-child .ode-connector{display:none}
-.ode-card{flex:1;padding:9px 12px;background:var(--surf2);border:1px solid var(--bdr);border-radius:7px;margin-bottom:7px;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px}
-.ode-type{font-size:.62rem;font-weight:700;text-transform:uppercase;padding:2px 6px;border-radius:3px}
-.type-listing{background:#dbeafe;color:#1e40af}
-.type-delisting{background:#f3f4f6;color:#4b5563}
-.ode-km{font-size:.88rem;font-weight:700}
-.ode-src{font-size:.68rem;color:var(--muted)}
-.ode-date{font-size:.67rem;color:var(--muted);white-space:nowrap}
-.rollback-flag{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--rbg);border:1px solid var(--rbd);border-radius:7px;font-size:.75rem;color:var(--red);font-weight:600;margin-bottom:10px}
+.cta-btn{
+  width:100%;padding:15px;border:none;border-radius:var(--r);
+  background:linear-gradient(135deg,#0c7a4c,#0a6e44);
+  color:#fff;font-size:15px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:all .2s;box-shadow:0 4px 18px rgba(10,110,68,.28);
+}
+.cta-btn:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(10,110,68,.38)}
+.cta-btn:active{transform:none}
+.cta-btn svg{width:17px;height:17px}
+.cta-sub{
+  text-align:center;font-size:11px;color:var(--muted);
+  margin-top:8px;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.cta-sub svg{width:11px;height:11px;color:var(--green)}
 
-/* Build data */
-.build-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:7px}
-.bf{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--surf2);border:1px solid var(--bdr);border-radius:6px}
-.bf-code{font-family:monospace;font-size:.68rem;font-weight:700;color:var(--blue);background:var(--blue-lt);padding:2px 5px;border-radius:3px;flex-shrink:0;min-width:36px;text-align:center;margin-top:1px}
-.bf-val{font-size:.75rem;color:var(--txt2);line-height:1.4}
+/* RIGHT — Report preview */
+.res-right{flex:1;min-width:0;padding:26px 26px 72px}
 
-/* Valuation */
-.val-hero{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.val-card{border-radius:9px;padding:14px 16px}
-.val-card.retail{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff}
-.val-card.trade{background:var(--surf2);border:1px solid var(--bdr)}
-.val-card .vc-l{font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
-.val-card.retail .vc-l{color:#6eb4ff;opacity:1}
-.val-card .vc-v{font-size:1.5rem;font-weight:900;letter-spacing:-.5px;margin-top:2px}
-.val-card.retail .vc-v{color:#fff}
-.val-card.trade .vc-v{color:var(--navy)}
-.val-card .vc-sub{font-size:.68rem;margin-top:3px;opacity:.65}
-.val-score{display:flex;align-items:center;gap:6px;margin-top:10px}
-.val-score-bar{flex:1;height:5px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden}
-.val-score-bar.dark{background:var(--bdr)}
-.val-score-fill{height:100%;border-radius:3px;background:#34d399}
-.val-score-fill.dark{background:var(--blue)}
-.val-score-pct{font-size:.65rem;font-weight:700;opacity:.8}
+.rpt-intro{
+  background:linear-gradient(135deg,var(--navy2),var(--navy3,#1a3d6b));
+  border-radius:var(--r);padding:18px 22px;margin-bottom:22px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:var(--sh);
+}
+.rpt-intro-icon{
+  width:44px;height:44px;background:rgba(125,196,255,.15);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.rpt-intro-icon svg{width:22px;height:22px;color:#7dc4ff}
+.rpt-intro-text{flex:1}
+.rpt-intro-text h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px}
+.rpt-intro-text p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
 
-/* Market overlay table */
-.mo-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:14px}
-.mo-stat{background:var(--surf2);border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;text-align:center}
-.mo-stat .ms-v{font-size:1.05rem;font-weight:800;color:var(--navy)}
-.mo-stat .ms-l{font-size:.63rem;color:var(--muted);margin-top:2px}
-.mo-table{width:100%;border-collapse:collapse;font-size:.78rem}
-.mo-table th{text-align:left;font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:0 10px 7px;border-bottom:2px solid var(--bdr)}
-.mo-table td{padding:8px 10px;border-bottom:1px solid var(--bdr)}
-.mo-table tr:last-child td{border-bottom:none}
-.mo-table tr:hover td{background:var(--surf2)}
-.seller-chip{font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:3px;text-transform:uppercase}
-.seller-dealer{background:#dbeafe;color:#1e40af}
-.seller-private{background:#f3f4f6;color:#4b5563}
-.outlier-flag{font-size:.6rem;color:var(--amber);font-weight:700}
+/* Section cards */
+.sec-wrap{margin-bottom:18px}
+.sec-card{
+  background:var(--surf);border-radius:var(--r);
+  border:1px solid var(--bdr);overflow:hidden;
+  box-shadow:var(--sh);position:relative;
+}
+.sec-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;border-bottom:1px solid var(--bdr);
+}
+.sec-hd-l{display:flex;align-items:center;gap:10px}
+.sec-ico{
+  width:34px;height:34px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sec-ico svg{width:17px;height:17px}
+.sec-ico.green{background:var(--green-lt);color:var(--green)}
+.sec-ico.blue{background:var(--blue-lt);color:var(--blue)}
+.sec-ico.red{background:var(--red-lt);color:var(--red)}
+.sec-ico.amber{background:var(--amber-lt);color:var(--amber)}
+.sec-title{font-size:14px;font-weight:800;color:var(--txt)}
+.sec-source{font-size:10.5px;color:var(--muted)}
+.sec-api-tag{font-size:10px;color:var(--muted);background:var(--bg);padding:2px 8px;border-radius:4px;font-family:'Courier New',Courier,monospace;white-space:nowrap}
+.sec-body{padding:16px 18px;position:relative}
+.sec-body.blurred{filter:blur(5px);pointer-events:none;user-select:none}
 
-/* Price history chart */
-.ph-wrap{position:relative}
-.ph-wrap svg{width:100%;display:block}
+/* Lock gate overlay */
+.sec-gate{
+  display:none;
+  position:absolute;inset:0;
+  background:rgba(255,255,255,.65);backdrop-filter:blur(2px);
+  align-items:center;justify-content:center;flex-direction:column;gap:10px;
+  z-index:10;border-radius:0 0 var(--r) var(--r);
+}
+.sec-gate.show{display:flex}
+.gate-chip{
+  background:var(--navy2);color:#fff;
+  font-size:13px;font-weight:700;
+  padding:10px 18px;border-radius:8px;
+  display:flex;align-items:center;gap:8px;
+  cursor:pointer;transition:background .18s;
+}
+.gate-chip:hover{background:var(--navy3)}
+.gate-chip svg{width:14px;height:14px}
+.gate-pkg-hint{font-size:11px;color:var(--muted)}
 
-/* Source attribution */
-.src-attr{display:flex;gap:5px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--bdr)}
-.src-t{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:2px 7px;font-size:.6rem;font-weight:600;color:var(--muted)}
+/* ── Content helpers ── */
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11.5px;font-weight:800;letter-spacing:.2px;
+  padding:3px 10px;border-radius:20px;
+}
+.badge.pass{background:var(--green-lt);color:var(--green)}
+.badge.warn{background:var(--amber-lt);color:var(--amber)}
+.badge.fail{background:var(--red-lt);color:var(--red)}
+.badge svg{width:12px;height:12px}
 
-/* Report footer */
-.rf{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px;flex-wrap:wrap}
-.rf-id{font-size:.64rem;font-family:monospace;color:var(--muted)}
-.rf-note{font-size:.63rem;color:var(--muted);margin-top:2px}
+.data-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px}
+.dc{padding:11px 12px;background:var(--bg);border-radius:8px}
+.dc-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px}
+.dc-v{font-size:13.5px;font-weight:800;color:var(--txt)}
+.dc-v.mono{font-family:'Courier New',Courier,monospace;font-size:12px}
 
-/* ── Bottom bar ── */
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;height:var(--bh);background:var(--surf);border-top:1px solid var(--bdr);display:flex;align-items:center;padding:0 20px;gap:14px;box-shadow:0 -4px 24px rgba(0,0,0,.08);z-index:25}
-.bb-lbl strong{display:block;font-size:.83rem}
-.bb-lbl span{font-size:.67rem;color:var(--muted)}
-.bb-inputs{display:flex;gap:8px;flex:1;max-width:480px}
-.bb-inputs input{flex:1;border:1.5px solid var(--bdr);border-radius:7px;padding:9px 12px;font-size:.85rem;outline:none;font-family:inherit;transition:border-color .15s,box-shadow .15s;text-transform:uppercase}
-.bb-inputs input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,111,205,.12)}
-.bb-inputs input::placeholder{color:#a0aab8;text-transform:none}
-.btn-run{background:var(--navy);color:#fff;border:none;border-radius:7px;padding:10px 22px;font-size:.85rem;font-weight:700;cursor:pointer;transition:background .15s,transform .1s;white-space:nowrap;display:flex;align-items:center;gap:6px}
-.btn-run:hover{background:var(--navy2)}
-.btn-run:active{transform:scale(.97)}
-.btn-run:disabled{background:#94a3b8;cursor:not-allowed;transform:none}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+.ck{
+  display:flex;align-items:flex-start;gap:9px;
+  padding:11px 12px;background:var(--bg);border-radius:8px;
+}
+.ck-ico{
+  width:24px;height:24px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.ck-ico svg{width:12px;height:12px}
+.ck-ico.pass{background:var(--green-lt);color:var(--green)}
+.ck-ico.fail{background:var(--red-lt);color:var(--red)}
+.ck-ico.warn{background:var(--amber-lt);color:var(--amber)}
+.ck-lbl{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:1px}
+.ck-val{font-size:11px;color:var(--muted)}
 
-/* ── Modal ── */
-.m-overlay{position:fixed;inset:0;background:rgba(10,20,40,.6);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:100;animation:fi .2s ease}
-.m-overlay.hidden{display:none}
-@keyframes fi{from{opacity:0}to{opacity:1}}
-.modal{background:var(--surf);border-radius:14px;width:420px;max-width:94vw;box-shadow:0 30px 80px rgba(0,0,0,.28);overflow:hidden;animation:pi .22s cubic-bezier(.34,1.4,.64,1)}
-@keyframes pi{from{opacity:0;transform:scale(.88) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.m-hdr{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:20px 22px 18px;color:#fff;position:relative}
-.m-hdr h2{font-size:1.05rem;font-weight:800}
-.m-vid{font-size:.7rem;color:rgba(255,255,255,.55);font-family:monospace;margin-top:3px}
-.m-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center}
-.m-body{padding:18px 22px}
-.li-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:.82rem;border-bottom:1px solid var(--bdr)}
-.li-row:last-child{border-bottom:none}
-.li-p{font-weight:700;color:var(--navy)}
-.total-s{display:flex;justify-content:space-between;align-items:center;background:var(--blue-lt);border:1px solid #bdd6f8;border-radius:7px;padding:10px 14px;margin:12px 0 14px}
-.total-s .tl{font-size:.82rem;font-weight:700}
-.total-s .ta{font-size:1.2rem;font-weight:900;color:var(--navy)}
-.pay-methods{display:flex;gap:6px;margin-bottom:13px}
-.pm{flex:1;border:1.5px solid var(--bdr);border-radius:7px;padding:8px 5px;text-align:center;cursor:pointer;font-size:.7rem;font-weight:600;color:var(--txt2);transition:all .15s}
-.pm:hover,.pm.sel{border-color:var(--blue);background:var(--blue-lt);color:var(--blue)}
-.pm-ico{display:block;margin:0 auto 3px}
-.cf{display:grid;gap:8px;margin-bottom:13px}
-.cf input{border:1.5px solid var(--bdr);border-radius:7px;padding:9px 12px;font-size:.85rem;outline:none;font-family:inherit}
-.cf input:focus{border-color:var(--blue)}
-.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-pay{width:100%;background:linear-gradient(135deg,#0a6e44,#0d8f5a);color:#fff;border:none;border-radius:8px;padding:13px;font-size:.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s,transform .1s}
-.btn-pay:hover{opacity:.92}
-.btn-pay:active{transform:scale(.98)}
-.m-footer{padding:9px 22px 14px;font-size:.63rem;color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:5px}
-.success-scr{padding:36px 22px;text-align:center;display:none}
-.succ-ico{width:52px;height:52px;background:var(--gbg);border:2px solid var(--gbd);border-radius:50%;margin:0 auto 13px;display:flex;align-items:center;justify-content:center;color:var(--green)}
-.success-scr h3{font-size:1.1rem;font-weight:800;color:var(--green)}
-.success-scr p{font-size:.8rem;color:var(--muted);margin-top:6px;line-height:1.6}
-.proto-note{margin-top:13px;background:var(--surf2);border:1px solid var(--bdr);border-radius:7px;padding:8px 12px;font-size:.68rem;color:var(--muted)}
+.val-cards{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.vc2{flex:1;min-width:120px;padding:14px;background:var(--bg);border-radius:9px;text-align:center}
+.vc2.hi{background:linear-gradient(135deg,var(--blue-lt),#d8ecff);border:1px solid #b8d8f8}
+.vc2-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px}
+.vc2-val{font-size:22px;font-weight:900;color:var(--txt)}
+.vc2-val.blue{color:var(--blue)}
+.vc2-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+.odo-tl{padding-left:24px;position:relative;margin-top:6px}
+.odo-tl::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--bdr)}
+.odo-ev{position:relative;padding-bottom:16px}
+.odo-ev:last-child{padding-bottom:0}
+.odo-dot{position:absolute;left:-20px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--blue);border:2px solid #fff;box-shadow:0 0 0 2px var(--bdr)}
+.odo-date{font-size:10.5px;color:var(--muted);margin-bottom:1px}
+.odo-km{font-size:15px;font-weight:900;color:var(--txt)}
+.odo-det{font-size:11px;color:var(--muted);margin-top:1px}
+
+.mkt-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+.msc{padding:11px;background:var(--bg);border-radius:8px;text-align:center}
+.msc-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.msc-v{font-size:15px;font-weight:900;color:var(--txt)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--bg);font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.5px;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--bdr)}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--bdr)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#f9fbfd}
+.state-chip{font-size:10px;font-weight:700;background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--muted)}
+
+.ppsr-cert{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 14px;background:var(--bg);border-radius:8px;margin-top:13px;
+}
+.ppsr-cert-info{font-size:13px;font-weight:700;color:var(--txt)}
+.ppsr-cert-info small{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:1px}
+.ppsr-cert-link{
+  font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;
+  display:flex;align-items:center;gap:5px;
+}
+.ppsr-cert-link:hover{text-decoration:underline}
+
+.ph-ev{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:8px;
+}
+.ph-type{font-size:10px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap}
+.ph-type.sale{background:var(--blue-lt);color:var(--blue)}
+.ph-type.listed{background:var(--green-lt);color:var(--green)}
+.ph-type.inspection{background:var(--amber-lt);color:var(--amber)}
+.ph-km{font-size:14px;font-weight:800;color:var(--txt)}
+.ph-det{font-size:11px;color:var(--muted);flex:1;text-align:right}
+
+.bf-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.bf{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:12px}
+.bf-code{font-family:'Courier New',Courier,monospace;font-size:10.5px;font-weight:800;color:var(--blue);background:var(--blue-lt);padding:1px 6px;border-radius:3px}
+.bf-val{font-weight:700;color:var(--txt);font-size:11px;text-align:right;max-width:150px;line-height:1.3}
+
+/* ═══════════════════════════════════════
+   PAYMENT MODAL
+═══════════════════════════════════════ */
+.modal-bg{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  z-index:500;align-items:center;justify-content:center;padding:20px;
+}
+.modal-bg.open{display:flex}
+.modal{
+  background:#fff;border-radius:16px;width:100%;max-width:460px;
+  box-shadow:0 28px 80px rgba(0,0,0,.3);overflow:hidden;
+  animation:mu .22s ease;
+}
+@keyframes mu{from{transform:translateY(18px);opacity:0}}
+.modal-hd{
+  background:var(--navy2);padding:20px 24px;
+  display:flex;align-items:flex-start;justify-content:space-between;
+}
+.modal-hd-title{color:#fff;font-size:17px;font-weight:800}
+.modal-hd-sub{color:rgba(255,255,255,.5);font-size:12px;margin-top:3px}
+.modal-close{
+  background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;
+  width:29px;height:29px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.modal-close:hover{background:rgba(255,255,255,.2)}
+.modal-close svg{width:15px;height:15px}
+.modal-body{padding:22px 24px}
+.modal-plate-area{text-align:center;margin-bottom:18px}
+.modal-plate-tag{
+  display:inline-block;background:#ffd700;color:#003399;
+  font-family:'Courier New',Courier,monospace;
+  font-size:20px;font-weight:900;letter-spacing:4px;
+  padding:7px 20px;border-radius:7px;
+}
+.modal-veh{font-size:13px;color:var(--muted);margin-top:6px}
+.line-items{margin-bottom:18px}
+.li{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--bdr);font-size:13px;
+}
+.li.tot{font-size:15px;font-weight:900;padding-top:11px;border-bottom:2px solid var(--txt)}
+.li-n{color:var(--txt);font-weight:500}
+.li-p{font-weight:800;color:var(--txt)}
+.pay-form{display:flex;flex-direction:column;gap:11px}
+.ff{display:flex;flex-direction:column;gap:4px}
+.ff label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.ff input{
+  border:1.5px solid var(--bdr);border-radius:8px;
+  padding:10px 12px;font-size:14px;outline:none;transition:border-color .18s;
+}
+.ff input:focus{border-color:var(--blue)}
+.frow{display:flex;gap:9px}
+.frow .ff{flex:1}
+.pay-btn{
+  width:100%;padding:14px;border:none;border-radius:9px;
+  background:linear-gradient(135deg,#0c7a4c,#0a6e44);
+  color:#fff;font-size:15px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:all .2s;box-shadow:0 4px 16px rgba(10,110,68,.28);margin-top:2px;
+}
+.pay-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(10,110,68,.38)}
+.pay-btn svg{width:17px;height:17px}
+.pay-sec{
+  text-align:center;font-size:11px;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;gap:5px;margin-top:7px;
+}
+.pay-sec svg{width:11px;height:11px;color:var(--green)}
+
+/* ── Responsive ── */
+@media(max-width:960px){
+  .res-body{flex-direction:column}
+  .res-left{width:100%;position:static;height:auto;border-right:none;border-bottom:1px solid var(--bdr)}
+  .res-right{padding:20px 16px 60px}
+  .mkt-stats{grid-template-columns:1fr 1fr}
+  .check-grid{grid-template-columns:1fr}
+  .bf-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .hero-nav{padding:14px 20px}
+  .nav-links{display:none}
+  .search-box{padding:20px 18px 18px}
+  .plate-input{font-size:24px;letter-spacing:3px}
+  .hero-stats{gap:20px;padding:14px 20px}
+  .res-topbar{padding:10px 16px}
+  .tsep{display:none}
+  .trust-row{gap:14px}
+  .val-cards{flex-direction:column}
+  .data-grid{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-    </div>
-    <div class="logo-name">Vehicle<span>Check</span></div>
-  </div>
-  <div class="hdr-sep"></div>
-  <div class="hdr-tag">Australian Vehicle History Reports</div>
-  <div class="hdr-space"></div>
-  <div class="ag-badge">
-    <div class="ag-dot"></div>
-    Powered by AutoGrab Intelligence
-  </div>
-</header>
+<!-- ═══════════════════════════════════════
+     SCREEN 1 — HERO SEARCH
+═══════════════════════════════════════ -->
+<div id="screen-hero" class="screen active">
 
-<div class="main">
-  <aside>
-    <div class="sb-top">
-      <h2>Build Your Report</h2>
-      <p>Select checks or choose a bundle below</p>
-    </div>
-    <div class="sb-price">
-      <div class="pl">Total (AUD, incl. GST)</div>
-      <div class="pa" id="total-display">$0.00</div>
-      <div class="ps">Instant delivery · No subscription</div>
-    </div>
-    <div class="sb-presets">
-      <button class="preset-btn" data-preset="basic" onclick="applyPreset('basic')">
-        <span class="pb-name">Basic</span>
-        <span class="pb-price">$10.40</span>
-      </button>
-      <button class="preset-btn" data-preset="standard" onclick="applyPreset('standard')">
-        <span class="pb-name">Standard</span>
-        <span class="pb-price">$22.30</span>
-      </button>
-      <button class="preset-btn" data-preset="full" onclick="applyPreset('full')">
-        <span class="pb-name">Full Report</span>
-        <span class="pb-price">$39.65</span>
-      </button>
-    </div>
-
-    <div class="sb-grp">
-      <div class="sb-grp-lbl">Identity & Safety</div>
-      <label class="cb on" data-key="vehicle_details" data-price="4.95"><input type="checkbox" checked/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">Vehicle Details</div><div class="cb-desc">Make, model, specs & VIN verify</div></div><div class="cb-price">$4.95</div></label>
-      <label class="cb on" data-key="ppsr" data-price="3.50"><input type="checkbox" checked/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">PPSR Check <span class="cb-badge badge-pop">Popular</span></div><div class="cb-desc">Finance, stolen & write-off check</div></div><div class="cb-price">$3.50</div></label>
-      <label class="cb" data-key="registration" data-price="1.95"><input type="checkbox"/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">Registration Status</div><div class="cb-desc">Current rego, expiry & state</div></div><div class="cb-price">$1.95</div></label>
-      <label class="cb" data-key="writeoff" data-price="2.50"><input type="checkbox"/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">Write-off & Incidents</div><div class="cb-desc">NEVDIS incident history & damage codes</div></div><div class="cb-price">$2.50</div></label>
-    </div>
-
-    <div class="sb-grp">
-      <div class="sb-grp-lbl">History</div>
-      <label class="cb on" data-key="odometer" data-price="5.95"><input type="checkbox" checked/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">Odometer History <span class="cb-badge badge-pop">Best</span></div><div class="cb-desc">Australia's best rollback detection</div></div><div class="cb-price">$5.95</div></label>
-      <label class="cb" data-key="build_data" data-price="5.95"><input type="checkbox"/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">Factory Build Data <span class="cb-badge badge-uni">Unique</span></div><div class="cb-desc">Exactly what left the factory</div></div><div class="cb-price">$5.95</div></label>
-    </div>
-
-    <div class="sb-grp">
-      <div class="sb-grp-lbl">Market & Value</div>
-      <label class="cb" data-key="valuation" data-price="5.95"><input type="checkbox"/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">Market Valuation</div><div class="cb-desc">Retail & trade value, ML-powered</div></div><div class="cb-price">$5.95</div></label>
-      <label class="cb" data-key="market_overlay" data-price="4.95"><input type="checkbox"/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">Market Overlay</div><div class="cb-desc">Live comparable listings & demand</div></div><div class="cb-price">$4.95</div></label>
-      <label class="cb" data-key="price_history" data-price="3.95"><input type="checkbox"/><div class="cb-box"></div><div class="cb-info"><div class="cb-name">Price History</div><div class="cb-desc">Listing price trends over time</div></div><div class="cb-price">$3.95</div></label>
-    </div>
-  </aside>
-
-  <div class="report-area" id="report-area"></div>
-</div>
-
-<div class="bottom-bar">
-  <div class="bb-lbl">
-    <strong>Run a Report</strong>
-    <span>Australian rego plate or 17-digit VIN</span>
-  </div>
-  <div class="bb-inputs">
-    <input type="text" id="rego-input" placeholder="Rego — e.g. ABC123 VIC" maxlength="12"/>
-    <input type="text" id="vin-input" placeholder="VIN — e.g. MR0FB3CD200123456" maxlength="17"/>
-  </div>
-  <button class="btn-run" id="lookup-btn" disabled>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    Get Report
-  </button>
-</div>
-
-<div class="m-overlay hidden" id="modal-overlay">
-  <div class="modal">
-    <div class="m-hdr">
-      <button class="m-close" id="close-modal">✕</button>
-      <h2>Unlock Your Report</h2>
-      <div class="m-vid" id="modal-vid">—</div>
-    </div>
-    <div id="modal-main">
-      <div class="m-body">
-        <div id="line-items"></div>
-        <div class="total-s"><span class="tl">Total (AUD, incl. GST)</span><span class="ta" id="modal-total">$0.00</span></div>
-        <div class="pay-methods">
-          <div class="pm sel" data-method="card"><svg class="pm-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Card</div>
-          <div class="pm" data-method="payid"><svg class="pm-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>PayID</div>
-          <div class="pm" data-method="paypal"><svg class="pm-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11C7 11 6.5 16 12 16h1c4 0 5-3 5-3M7 11H5l1-8h7c4 0 5 2 4.5 4.5C17 10 15 11 12 11H7z"/></svg>PayPal</div>
-        </div>
-        <div class="cf" id="card-fields">
-          <input type="text" placeholder="Cardholder name"/>
-          <input type="text" id="cc-num" placeholder="Card number" maxlength="19"/>
-          <div class="cf-row"><input type="text" placeholder="MM / YY" maxlength="7"/><input type="text" placeholder="CVV" maxlength="4"/></div>
-        </div>
-        <button class="btn-pay" id="pay-btn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Pay & Unlock Report
-        </button>
+  <nav class="hero-nav">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-mark">
+        <svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       </div>
-      <div class="m-footer"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>256-bit SSL · Instant delivery · Powered by AutoGrab</div>
+      <span class="nav-logo-name">Car<em>Check</em></span>
+    </a>
+    <div class="nav-links">
+      <a href="#">Sample report</a>
+      <a href="#">For dealers</a>
+      <a href="#">Pricing</a>
+      <a href="#" class="nav-btn">Run a free search</a>
     </div>
-    <div class="success-scr" id="success-screen">
-      <div class="succ-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-      <h3>Payment Successful</h3>
-      <p>Your report is ready. In production this pulls live data from AutoGrab's API.</p>
-      <div class="proto-note">Prototype only — no real payment processed.</div>
+  </nav>
+
+  <div class="hero-main">
+    <div class="hero-pill">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Official Government PPSR Data
+    </div>
+
+    <h1 class="hero-h1">
+      Don't buy a used car<br>without <span class="hl">checking it first</span>
+    </h1>
+    <p class="hero-sub">Enter the rego plate and instantly see PPSR records, odometer history, write-off status, factory build data and real market pricing — before you hand over a dollar.</p>
+
+    <div class="search-box">
+      <div class="search-tabs">
+        <div class="stab on" onclick="setSearchMode('rego',this)">Rego Plate</div>
+        <div class="stab" onclick="setSearchMode('vin',this)">VIN Number</div>
+      </div>
+
+      <div id="sw-rego">
+        <div class="plate-wrap">
+          <button class="plate-state-btn" tabindex="-1">
+            <span class="psb-state" id="psb-txt">VIC</span>
+            <span class="psb-label">STATE</span>
+            <select id="state-sel" onchange="document.getElementById('psb-txt').textContent=this.value">
+              <option>VIC</option><option>NSW</option><option>QLD</option>
+              <option>WA</option><option>SA</option><option>TAS</option>
+              <option>ACT</option><option>NT</option>
+            </select>
+          </button>
+          <input id="rego-inp" class="plate-input" placeholder="ABC 123" maxlength="8" spellcheck="false" autocomplete="off" onkeydown="if(event.key==='Enter')doSearch()">
+        </div>
+      </div>
+      <div id="sw-vin" style="display:none" class="vin-wrap">
+        <input id="vin-inp" class="vin-input" placeholder="Enter 17-character VIN (e.g. MR0FB3CD200123456)" maxlength="17" spellcheck="false" autocomplete="off" onkeydown="if(event.key==='Enter')doSearch()">
+      </div>
+
+      <button class="search-btn" onclick="doSearch()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/></svg>
+        Check This Vehicle
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </button>
+      <div class="search-note">All Australian states &amp; territories &nbsp;·&nbsp; Instant results &nbsp;·&nbsp; Secure checkout</div>
+    </div>
+
+    <div class="trust-row">
+      <div class="ti">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <span>Official <strong>PPSR</strong> data</span>
+      </div>
+      <div class="tsep"></div>
+      <div class="ti">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        <span>Trusted by <strong>1,000+</strong> dealers</span>
+      </div>
+      <div class="tsep"></div>
+      <div class="ti">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span><strong>ML-powered</strong> valuations</span>
+      </div>
+      <div class="tsep"></div>
+      <div class="ti">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Results in <strong>60 seconds</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hs-item"><span class="hs-num">400,000+</span><span class="hs-label">Reports run</span></div>
+    <div class="hs-item"><span class="hs-num">9 / 10</span><span class="hs-label">Insurers use our data</span></div>
+    <div class="hs-item"><span class="hs-num">40+ makes</span><span class="hs-label">Factory data from 1999</span></div>
+    <div class="hs-item"><span class="hs-num">#1</span><span class="hs-label">Rollback detection AU</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2 — LOADING
+═══════════════════════════════════════ -->
+<div id="screen-loading" class="screen" style="display:none">
+  <div class="ld-plate" id="ld-plate-display">
+    <div class="ld-plate-state" id="ld-state-col">
+      <span class="s" id="ld-state-txt">VIC</span>
+      <span class="l">STATE</span>
+    </div>
+    <div class="ld-plate-num" id="ld-plate-num">ABC 123</div>
+  </div>
+  <div class="ld-spinner"></div>
+  <div class="ld-headline">Running vehicle check…</div>
+  <div class="ld-sub">Querying government databases</div>
+  <div class="ld-steps">
+    <div class="ls-row active" id="ls1"><div class="ls-dot"></div><span>Contacting NEVDIS database</span></div>
+    <div class="ls-row" id="ls2"><div class="ls-dot"></div><span>Verifying registration details</span></div>
+    <div class="ls-row" id="ls3"><div class="ls-dot"></div><span>Checking PPSR encumbrances</span></div>
+    <div class="ls-row" id="ls4"><div class="ls-dot"></div><span>Retrieving odometer history</span></div>
+    <div class="ls-row" id="ls5"><div class="ls-dot"></div><span>Loading valuation &amp; build data</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 3 — RESULTS
+═══════════════════════════════════════ -->
+<div id="screen-results" class="screen" style="display:none">
+
+  <div class="res-topbar">
+    <span class="rtb-logo">Car<em>Check</em></span>
+    <div class="rtb-sep"></div>
+    <div class="rtb-plate" id="rtb-plate"></div>
+    <div class="rtb-vehicle" id="rtb-vehicle"></div>
+    <div class="rtb-spacer"></div>
+    <button class="rtb-new-btn" onclick="goHero()">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      New search
+    </button>
+  </div>
+
+  <div class="res-body">
+    <div class="res-left">
+      <!-- vehicle card -->
+      <div class="veh-card">
+        <div class="veh-img">
+          <img id="veh-photo" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop" alt=""
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="veh-img-svg" style="display:none">
+            <svg viewBox="0 0 420 180" width="300" xmlns="http://www.w3.org/2000/svg">
+              <rect width="420" height="180" fill="#d0d8e4"/>
+              <rect x="28" y="90" width="265" height="58" rx="7" fill="#8fa5c0"/>
+              <rect x="293" y="90" width="100" height="58" rx="5" fill="#7a91ab"/>
+              <path d="M58 90 L85 58 L200 58 L228 90Z" fill="#a8bed4"/>
+              <rect x="90" y="61" width="54" height="24" rx="3" fill="#c8e0f4" opacity=".75"/>
+              <rect x="152" y="61" width="54" height="24" rx="3" fill="#c8e0f4" opacity=".75"/>
+              <circle cx="92" cy="150" r="22" fill="#3a4a5c"/><circle cx="92" cy="150" r="13" fill="#5a6a7c"/><circle cx="92" cy="150" r="5" fill="#8a9aac"/>
+              <circle cx="316" cy="150" r="22" fill="#3a4a5c"/><circle cx="316" cy="150" r="13" fill="#5a6a7c"/><circle cx="316" cy="150" r="5" fill="#8a9aac"/>
+              <rect x="294" y="95" width="2" height="53" fill="#6a7e94"/>
+              <rect x="304" y="95" width="84" height="9" rx="2" fill="#9ab0c4" opacity=".5"/>
+            </svg>
+          </div>
+          <div class="veh-reg-chip" id="veh-reg-chip">REG: CURRENT</div>
+        </div>
+        <div class="veh-info">
+          <div class="veh-sub" id="veh-sub"></div>
+          <div class="veh-name" id="veh-name"></div>
+          <div class="veh-specs" id="veh-specs"></div>
+          <div class="veh-vin-row">
+            <span>VIN</span>
+            <strong id="veh-vin"></strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package selection -->
+      <div class="pkg-head">Choose your report</div>
+      <div class="pkg-list" id="pkg-list"></div>
+
+      <button class="cta-btn" id="cta-main" onclick="openModal()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Get Full Report
+      </button>
+      <div class="cta-sub">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Secure payment &nbsp;·&nbsp; Instant PDF delivery
+      </div>
+    </div>
+
+    <div class="res-right">
+      <div class="rpt-intro">
+        <div class="rpt-intro-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <div class="rpt-intro-text">
+          <h3>Vehicle found — select a package to unlock your report</h3>
+          <p>Preview sections below. Locked sections are included in Standard and Full packages. Upgrade anytime by selecting a package on the left.</p>
+        </div>
+      </div>
+      <div id="report-sections"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAYMENT MODAL
+═══════════════════════════════════════ -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <div>
+        <div class="modal-hd-title">Complete your order</div>
+        <div class="modal-hd-sub">Instant delivery to your email</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-plate-area">
+        <div class="modal-plate-tag" id="modal-plate"></div>
+        <div class="modal-veh" id="modal-veh"></div>
+      </div>
+      <div class="line-items" id="modal-lines"></div>
+      <div class="pay-form">
+        <div class="ff"><label>Email address</label><input type="email" placeholder="you@example.com"></div>
+        <div class="ff"><label>Card number</label><input type="text" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+        <div class="frow">
+          <div class="ff"><label>Expiry</label><input type="text" placeholder="MM / YY" maxlength="7"></div>
+          <div class="ff"><label>CVC</label><input type="text" placeholder="123" maxlength="3"></div>
+        </div>
+        <button class="pay-btn" id="pay-btn" onclick="closeModal()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          Pay &amp; Get Report
+        </button>
+        <div class="pay-sec">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          256-bit SSL encrypted &nbsp;·&nbsp; No card details stored
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-// ─── AutoGrab API — sample response shapes ───────────────────
-// Mirrors devhub.autograb.com field names exactly
-
-// GET /v2/vehicles/registrations/ABC123?region=au&state=vic&features=writeoff_info,registration_status
-const AG = {
-  vehicle: {
-    id:"ag_21_hilux_n80_sr5_4wd", region:"au", title:"2021 Toyota HiLux SR5",
-    year:2021, make:"Toyota", model:"HiLux", badge:"SR5", series:"N80",
-    body_type:"Utility", body_config:"Dual Cab", transmission:"Automatic",
-    wheelbase:"3085mm", fuel:"Diesel", engine:"2GD-FTV 2.8L 4-cyl Turbo",
-    drive:"4WD", num_doors:4,
+/* ═══════════════════════════════════════════════
+   MOCK DATA — AutoGrab API field names
+   Endpoints annotated per section below
+═══════════════════════════════════════════════ */
+const MOCK = {
+  // GET /v2/vehicles/registrations/{PLATE}?region=au&state=vic&features=writeoff_info,registration_status
+  plate:'ABC 123', state:'VIC',
+  upstream_vehicle:'2021 TOYOTA HILUX SR5 AUTO 4WD DIESEL DUAL CAB UTILITY',
+  confidence:'standard',
+  vin:'MR0FB3CD200123456',
+  colour:'040 Glacier White',
+  vehicle:{
+    id:'ag_2021_toyota_hilux_sr5_4wd_auto',
+    year:2021,make:'Toyota',model:'HiLux',badge:'SR5',
+    series:'GUN126R',body_type:'Utility',body_config:'Dual Cab',
+    transmission:'Automatic',wheelbase:'Long',fuel:'Diesel',
+    engine:'2.8L 4cyl Turbo',drive:'4WD',num_doors:4,
+    title:'2021 Toyota HiLux SR5',
   },
-  upstream_vehicle:"2021 TOYOTA HILUX SR5 AUTO 4WD DIESEL DUAL CAB UTILITY",
-  confidence:"standard",
-  vin:"MR0FB3CD200123456",
-  colour:"040 Glacier White",
-  // feature: registration_status
-  registration:{ status:"current", expiry:"2026-07-31", state:"VIC", plate:"ABC123", category:"Light Motor Vehicle", tare_mass:2065, gvm:3200 },
-  // feature: writeoff_info
+  registration:{
+    status:'current',expiry:'2025-03-18',state:'VIC',
+    plate:'ABC123',category:'Passenger',tare_mass:'2,070 kg',gvm:'3,200 kg',
+  },
   incident_list:[],
-
   // POST /v2/reports/ppsr
   ppsr:{
-    id:"ppsr_8f4e2a1b9c3d", vin:"MR0FB3CD200123456", rego:"ABC123", rego_state:"vic",
-    url:"https://storage.googleapis.com/ag-ppsr/8f4e2a1b9c3d/report.pdf",
-    certificate_created_at:"2025-05-21T08:30:00.000Z",
-    has_safety_recalls:false, has_secured_parties:false,
-    has_stolen_records:false, has_written_off_records:false,
+    id:'ppsr_abc123vic_20240315',vin:'MR0FB3CD200123456',rego:'ABC123',rego_state:'VIC',
+    url:'https://ppsr.gov.au/certificate/abc123',
+    certificate_created_at:'2024-03-15T09:22:11Z',
+    has_safety_recalls:false,has_secured_parties:false,
+    has_stolen_records:false,has_written_off_records:false,
   },
-
-  // GET /v2/vehicles/vins/MR0FB3CD200123456/history
-  history:{
-    id:"hist_f7a2b8c1d4e9",
-    events:[
-      { type:"listing",   odometer:12,    price:67990, marketplace:"toyota.com.au",   seller_type:"dealer",  timestamp:"2021-06-14T09:00:00Z" },
-      { type:"delisting", odometer:12,    price:67990, marketplace:"toyota.com.au",   seller_type:"dealer",  timestamp:"2021-06-22T14:00:00Z" },
-      { type:"listing",   odometer:35780, price:58500, marketplace:"carsales.com.au", seller_type:"private", timestamp:"2022-10-03T10:00:00Z" },
-      { type:"delisting", odometer:35780, price:56500, marketplace:"carsales.com.au", seller_type:"private", timestamp:"2022-11-18T16:00:00Z" },
-      { type:"listing",   odometer:67450, price:54900, marketplace:"carsales.com.au", seller_type:"dealer",  timestamp:"2023-10-10T08:00:00Z" },
-      { type:"delisting", odometer:67450, price:54200, marketplace:"carsales.com.au", seller_type:"dealer",  timestamp:"2023-11-02T14:00:00Z" },
-      { type:"listing",   odometer:80100, price:51500, marketplace:"carsales.com.au", seller_type:"private", timestamp:"2024-03-15T09:00:00Z" },
-      { type:"delisting", odometer:80100, price:49900, marketplace:"carsales.com.au", seller_type:"private", timestamp:"2024-04-28T11:00:00Z" },
-    ],
-  },
-
+  // GET /v2/vehicles/vins/{VIN}/history
+  history:{events:[
+    {type:'sale',      odometer:41200,price:56900,marketplace:'carsales',    seller_type:'dealer', timestamp:'2024-01-12T00:00:00Z'},
+    {type:'listed',    odometer:41000,price:59500,marketplace:'carsales',    seller_type:'dealer', timestamp:'2023-12-28T00:00:00Z'},
+    {type:'inspection',odometer:38750,price:null, marketplace:null,          seller_type:null,     timestamp:'2023-06-05T00:00:00Z'},
+    {type:'sale',      odometer:22100,price:68500,marketplace:'autotrader',  seller_type:'dealer', timestamp:'2022-04-20T00:00:00Z'},
+    {type:'listed',    odometer:21800,price:71990,marketplace:'drive.com.au',seller_type:'dealer', timestamp:'2022-03-14T00:00:00Z'},
+    {type:'sale',      odometer:1800, price:64990,marketplace:null,          seller_type:'private',timestamp:'2021-09-03T00:00:00Z'},
+  ]},
   // POST /v2/valuations/predict
-  valuation:{
-    prediction:{ id:"pred_9a4c7f2e1b8d", vehicle_id:"ag_21_hilux_n80_sr5_4wd",
-      price:48200, score:0.92, retail_price:48200, trade_price:43800 },
-  },
-
+  valuation:{prediction:{
+    id:'val_abc123_20240315',vehicle_id:'ag_2021_toyota_hilux_sr5_4wd_auto',
+    price:54200,score:0.87,retail_price:58500,trade_price:48900,
+  }},
   // GET /v2/sourcing/market_overlay/{vehicle_id}
   market_overlay:{
-    sample_size:34, days_checked:30, avg_days_to_sell:18,
-    avg_price:49800, min_price:42500, max_price:58000,
-    avg_odometer:71200, outlier_count:2, days_supply:22,
+    sample_size:47,days_checked:30,avg_days_to_sell:18,
+    avg_price:55640,min_price:44900,max_price:67990,
+    avg_odometer:39200,outlier_count:3,days_supply:28,
     leads:[
-      { year:2021, state:"VIC", price:48500, drive_away_price:50200, kms:74200, seller_type:"dealer",  color:"White",  listed_at:"2025-05-10", is_outlier:false },
-      { year:2021, state:"NSW", price:51000, drive_away_price:52800, kms:68000, seller_type:"dealer",  color:"Silver", listed_at:"2025-05-08", is_outlier:false },
-      { year:2021, state:"QLD", price:46500, drive_away_price:48000, kms:83500, seller_type:"private", color:"White",  listed_at:"2025-05-12", is_outlier:false },
-      { year:2021, state:"VIC", price:53500, drive_away_price:55000, kms:58000, seller_type:"dealer",  color:"Black",  listed_at:"2025-05-15", is_outlier:false },
-      { year:2022, state:"WA",  price:55000, drive_away_price:57200, kms:42000, seller_type:"dealer",  color:"White",  listed_at:"2025-05-06", is_outlier:true  },
+      {year:2021,state:'VIC',price:58900,drive_away_price:60990,kms:39100,seller_type:'dealer', color:'White', listed_at:'2024-03-10',is_outlier:false},
+      {year:2021,state:'NSW',price:56500,drive_away_price:58700,kms:44200,seller_type:'dealer', color:'Silver',listed_at:'2024-03-08',is_outlier:false},
+      {year:2021,state:'QLD',price:54900,drive_away_price:56200,kms:48000,seller_type:'private',color:'Grey',  listed_at:'2024-03-05',is_outlier:false},
+      {year:2022,state:'VIC',price:62000,drive_away_price:64500,kms:28900,seller_type:'dealer', color:'Black', listed_at:'2024-03-12',is_outlier:false},
+      {year:2021,state:'WA', price:44900,drive_away_price:46000,kms:71000,seller_type:'private',color:'White', listed_at:'2024-02-28',is_outlier:true},
     ],
   },
-
   // GET /v2/vehicles/{id}/build-data
-  build_data:{
-    vehicle:{
-      vin:"MR0FB3CD200123456", build_date:"2021-04-08", make:"TOYOTA", model:"HILUX",
-      features:[
-        { code:"SR5", value:"SR5 Grade Level" },
-        { code:"4WD", value:"Four Wheel Drive System" },
-        { code:"2GD", value:"2GD-FTV 2.8L Turbo Diesel Engine" },
-        { code:"AT6", value:"6-Speed Automatic Transmission – Aisin A750F" },
-        { code:"040", value:"Glacier White Pearl (3-coat)" },
-        { code:"SAT", value:"Satellite Navigation – Toyota Touch 2" },
-        { code:"REV", value:"Reverse Camera – Wide Angle" },
-        { code:"BSM", value:"Blind Spot Monitor with Rear Cross-Traffic Alert" },
-        { code:"TSS", value:"Toyota Safety Sense – Pre-Collision, Lane Departure, Auto High Beam" },
-        { code:"DBH", value:"Dual Zone Climate Control Air Conditioning" },
-        { code:"LED", value:"Full LED Headlights & DRLs" },
-        { code:"APP", value:"Apple CarPlay / Android Auto (Wireless)" },
-        { code:"TOW", value:"Factory Tow Bar Provision – 3,500kg Rating" },
-        { code:"DAB", value:"DAB+ Digital Radio" },
-      ],
-    },
-  },
+  build_data:{vehicle:{
+    vin:'MR0FB3CD200123456',build_date:'2021-07-14',make:'Toyota',model:'HiLux',
+    features:[
+      {code:'TR1',value:'Glacier White (040)'},{code:'TP3',value:'Black Cloth Interior'},
+      {code:'TE1',value:'2GD-FTV 2.8L Turbo Diesel'},{code:'TG5',value:'6-speed Automatic'},
+      {code:'TD4',value:'Part-time 4WD w/diff lock'},{code:'TX2',value:'18" Alloy Wheels'},
+      {code:'TF1',value:'Bull Bar — Genuine Toyota'},{code:'TH2',value:'Tow Bar — Class IV 3500kg'},
+      {code:'TS3',value:'Rear Diff Lock'},{code:'TV1',value:'Genuine Nudge Bar'},
+      {code:'TN2',value:'Cargo Divider (tub liner)'},{code:'TW1',value:'Reverse Camera — Factory'},
+    ],
+  }},
 };
 
-const REPORT_ID = 'VCR-' + Math.random().toString(36).substr(2,9).toUpperCase();
-const REPORT_TS = new Date().toLocaleString('en-AU',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-
-// ─── SVG car illustration ────────────────────────────────────
-const CAR_SVG = `<svg viewBox="0 0 860 245" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#b8cce0"/><stop offset="55%" stop-color="#d8e6f0"/><stop offset="100%" stop-color="#c8d8e8"/></linearGradient>
-    <linearGradient id="bd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f6f8fb"/><stop offset="42%" stop-color="#ffffff"/><stop offset="100%" stop-color="#bcc8d4"/></linearGradient>
-    <linearGradient id="hd" x1="0" y1="0" x2="1" y2=".8"><stop offset="0%" stop-color="#dce6f0"/><stop offset="100%" stop-color="#aebcc8"/></linearGradient>
-    <linearGradient id="tr2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c8d2dc"/><stop offset="100%" stop-color="#a0aab4"/></linearGradient>
-    <linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8ab8d8" stop-opacity=".72"/><stop offset="100%" stop-color="#5a90b8" stop-opacity=".85"/></linearGradient>
-    <radialGradient id="tire" cx="38%" cy="33%" r="60%"><stop offset="0%" stop-color="#3c4850"/><stop offset="100%" stop-color="#141c22"/></radialGradient>
-    <radialGradient id="rim" cx="38%" cy="33%" r="60%"><stop offset="0%" stop-color="#ccd8e4"/><stop offset="100%" stop-color="#7888a0"/></radialGradient>
-    <filter id="cs"><feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#0a1830" flood-opacity=".18"/></filter>
-  </defs>
-  <rect width="860" height="245" fill="url(#bg)"/>
-  <rect x="0" y="218" width="860" height="27" fill="#b0c0d0" opacity=".45"/>
-  <line x1="0" y1="218" x2="860" y2="218" stroke="#9aaebb" stroke-width="1"/>
-  <ellipse cx="428" cy="225" rx="338" ry="9" fill="#6888a0" opacity=".2"/>
-  <g filter="url(#cs)">
-    <path d="M72,218 L72,192 L85,178 L140,160 L264,148 L292,105 L308,97 L532,97 L555,116 L558,145 L745,142 L755,158 L758,218 Z" fill="url(#bd)" stroke="#a4b0be" stroke-width="1.5"/>
-    <path d="M85,178 L140,160 L264,148 L267,153 L142,165 L90,182 Z" fill="url(#hd)"/>
-    <path d="M308,97 L532,97 L531,103 L309,103 Z" fill="#fff" opacity=".55"/>
-    <path d="M245,148 L291,106 L308,99 L272,148 Z" fill="url(#gl)" stroke="#6898b8" stroke-width=".8"/>
-    <rect x="313" y="100" width="100" height="40" rx="1" fill="url(#gl)" stroke="#6898b8" stroke-width=".8"/>
-    <path d="M415,100 L531,100 L553,115 L536,140 L415,140 Z" fill="url(#gl)" stroke="#6898b8" stroke-width=".8"/>
-    <path d="M534,100 L553,116 L554,140 L536,140 Z" fill="url(#gl)" stroke="#6898b8" stroke-width=".8"/>
-    <rect x="412" y="100" width="5" height="42" fill="#8898a8"/>
-    <path d="M74,188 Q87,165 108,162 L110,167 Q92,170 79,191 Z" fill="#e4f0ff" stroke="#b0cce0" stroke-width=".8"/>
-    <path d="M77,188 Q88,167 107,164 L109,168 Q92,171 82,190 Z" fill="#aacce8" opacity=".65"/>
-    <line x1="80" y1="192" x2="104" y2="184" stroke="#c0daf0" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
-    <path d="M753,156 L758,156 L758,180 L752,178 Z" fill="#c81010"/>
-    <path d="M753,182 L758,182 L758,196 L752,195 Z" fill="#b80e0e" opacity=".75"/>
-    <path d="M285,146 L298,142 L300,151 L283,155 Z" fill="#ccd4e0" stroke="#aab4c0" stroke-width=".5"/>
-    <rect x="345" y="181" width="24" height="5" rx="2.5" fill="#8898a8"/>
-    <rect x="450" y="181" width="24" height="5" rx="2.5" fill="#8898a8"/>
-    <line x1="414" y1="141" x2="414" y2="218" stroke="#94a4b2" stroke-width="1.5"/>
-    <rect x="96" y="216" width="450" height="7" rx="3" fill="#7888a0"/>
-    <path d="M558,145 L745,142 L755,158 L758,218 L558,218 Z" fill="url(#tr2)" stroke="#94a4b2" stroke-width=".8"/>
-    <rect x="558" y="140" width="190" height="8" rx="1" fill="#a8b4be" stroke="#8898a4" stroke-width=".5"/>
-    <line x1="605" y1="148" x2="605" y2="218" stroke="#98a8b4" stroke-width="1"/>
-    <line x1="652" y1="148" x2="652" y2="218" stroke="#98a8b4" stroke-width="1"/>
-    <line x1="699" y1="148" x2="699" y2="218" stroke="#98a8b4" stroke-width="1"/>
-    <path d="M100,218 C102,168 136,154 182,154 C228,154 262,168 264,218 Z" fill="url(#bd)" stroke="#a4b0be" stroke-width="1.5"/>
-    <path d="M600,218 C602,168 634,154 678,154 C722,154 754,168 756,218 Z" fill="url(#tr2)" stroke="#a4b0be" stroke-width="1.5"/>
-  </g>
-  <circle cx="182" cy="190" r="41" fill="url(#tire)"/>
-  <circle cx="182" cy="190" r="40.5" fill="none" stroke="#18222a" stroke-width=".8"/>
-  <circle cx="182" cy="190" r="35" fill="none" stroke="#242e38" stroke-width="1" stroke-dasharray="4,7"/>
-  <circle cx="182" cy="190" r="25" fill="url(#rim)"/>
-  <g transform="translate(182,190)" stroke="#607890" stroke-width="3" stroke-linecap="round">
-    <line x1="0" y1="-23" x2="0" y2="-12"/><line x1="0" y1="23" x2="0" y2="12"/>
-    <line x1="19.9" y1="-11.5" x2="10.4" y2="-6"/><line x1="-19.9" y1="-11.5" x2="-10.4" y2="-6"/>
-    <line x1="19.9" y1="11.5" x2="10.4" y2="6"/><line x1="-19.9" y1="11.5" x2="-10.4" y2="6"/>
-  </g>
-  <circle cx="182" cy="190" r="7" fill="#b8c8d8"/><circle cx="182" cy="190" r="3" fill="#7888a0"/>
-  <circle cx="678" cy="190" r="41" fill="url(#tire)"/>
-  <circle cx="678" cy="190" r="40.5" fill="none" stroke="#18222a" stroke-width=".8"/>
-  <circle cx="678" cy="190" r="35" fill="none" stroke="#242e38" stroke-width="1" stroke-dasharray="4,7"/>
-  <circle cx="678" cy="190" r="25" fill="url(#rim)"/>
-  <g transform="translate(678,190)" stroke="#607890" stroke-width="3" stroke-linecap="round">
-    <line x1="0" y1="-23" x2="0" y2="-12"/><line x1="0" y1="23" x2="0" y2="12"/>
-    <line x1="19.9" y1="-11.5" x2="10.4" y2="-6"/><line x1="-19.9" y1="-11.5" x2="-10.4" y2="-6"/>
-    <line x1="19.9" y1="11.5" x2="10.4" y2="6"/><line x1="-19.9" y1="11.5" x2="-10.4" y2="6"/>
-  </g>
-  <circle cx="678" cy="190" r="7" fill="#b8c8d8"/><circle cx="678" cy="190" r="3" fill="#7888a0"/>
-  <ellipse cx="182" cy="228" rx="42" ry="5" fill="#6888a0" opacity=".18"/>
-  <ellipse cx="678" cy="228" rx="42" ry="5" fill="#6888a0" opacity=".18"/>
-</svg>`;
-
-// ─── Helpers ─────────────────────────────────────────────────
-const ICO = {
-  shield:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
-  check:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
-  x:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
-  gauge:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2C6.48 2 2 6.48 2 12"/><path d="M22 12c0-5.52-4.48-10-10-10"/><path d="M12 12l3.5-3.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>`,
-  trending:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
-  map:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`,
-  dollar:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
-  wrench:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
-  factory:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/></svg>`,
-  doc:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
-  alert:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+/* ── PACKAGES ── */
+const PKGS = {
+  basic:{id:'basic',name:'Basic',price:9.90,save:null,popular:false,
+    sections:['vehicle_details','ppsr'],
+    includes:['Vehicle details','PPSR check']},
+  standard:{id:'standard',name:'Standard',price:22.80,save:'Save 15%',popular:true,
+    sections:['vehicle_details','ppsr','registration','odometer','valuation'],
+    includes:['Vehicle details','PPSR check','Registration status','Odometer history','Market valuation']},
+  full:{id:'full',name:'Full Report',price:39.65,save:'Save 22%',popular:false,
+    sections:['vehicle_details','ppsr','registration','writeoff','odometer','build_data','valuation','market_overlay','price_history'],
+    includes:['All sections','Factory build data','Write-off check','Market overlay','Price history']},
 };
 
-function kv(k, v, mono=false) {
-  return `<div class="kv"><div class="kk">${k}</div><div class="kv-val${mono?' mono':''}">${v}</div></div>`;
+const SEC_META = {
+  vehicle_details:{title:'Vehicle Details',    source:'NEVDIS Registration Lookup',          icon:'car',   col:'blue', api:'/v2/vehicles/registrations/{PLATE}'},
+  ppsr:           {title:'PPSR Report',        source:'Personal Property Securities Register',icon:'shld',  col:'green',api:'/v2/reports/ppsr'},
+  registration:   {title:'Registration Status',source:'State RTA / NEVDIS',                  icon:'doc',   col:'blue', api:'/v2/vehicles/registrations/{PLATE}'},
+  writeoff:       {title:'Write-off & Incidents',source:'WOVR / State incident databases',   icon:'warn',  col:'red',  api:'features=writeoff_info'},
+  odometer:       {title:'Odometer History',   source:'Rollback detection across marketplaces',icon:'clk', col:'amber',api:'/v2/vehicles/vins/{VIN}/history'},
+  build_data:     {title:'Factory Build Data', source:'OEM factory specification codes',       icon:'code',  col:'blue', api:'/v2/vehicles/{id}/build-data'},
+  valuation:      {title:'Market Valuation',   source:'ML-powered price prediction',           icon:'bar',   col:'green',api:'/v2/valuations/predict'},
+  market_overlay: {title:'Market Overlay',     source:'Live listings — competitive analysis',  icon:'glob',  col:'blue', api:'/v2/sourcing/market_overlay/{vehicle_id}'},
+  price_history:  {title:'Price History',      source:'Historical transactions from marketplaces',icon:'clk2',col:'amber',api:'/v2/vehicles/vins/{VIN}/history'},
+};
+
+const ALL_SECS = ['vehicle_details','ppsr','registration','writeoff','odometer','build_data','valuation','market_overlay','price_history'];
+let activePkg = 'standard';
+let searchMode = 'rego';
+
+/* ── UTILS ── */
+const $c = (n,v)=>`$${v.toLocaleString('en-AU',{minimumFractionDigits:n?2:0})}`;
+const fmtCur = v => $c(0,v);
+const fmtKm  = v => v.toLocaleString('en-AU')+' km';
+const fmtDt  = s => new Date(s).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+const cap    = s => s?s[0].toUpperCase()+s.slice(1):'';
+
+function ico(k){
+  const M={
+    car:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16H6l-2-5V7h18v4l-2 5H13z"/></svg>`,
+    shld:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`,
+    doc:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`,
+    warn:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`,
+    clk:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>`,
+    clk2:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>`,
+    code:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
+    bar:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>`,
+    glob:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
+    chk:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`,
+    x:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`,
+    lock:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>`,
+    ext:`<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>`,
+  };
+  return M[k]||M.doc;
 }
-function ok(text='Clear') { return `<span style="color:var(--green);display:flex;align-items:center;gap:4px">${ICO.check} ${text}</span>`; }
-function fail(text='Recorded') { return `<span style="color:var(--red);display:flex;align-items:center;gap:4px">${ICO.x} ${text}</span>`; }
-function src(...tags) { return `<div class="src-attr">${tags.map(t=>`<span class="src-t">AutoGrab: ${t}</span>`).join('')}</div>`; }
 
-// ─── Section renderers ────────────────────────────────────────
-const SECTION_ORDER = ['vehicle_details','ppsr','registration','writeoff','odometer','build_data','valuation','price_history','market_overlay'];
+/* ── SEARCH MODE ── */
+function setSearchMode(m,el){
+  searchMode=m;
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('sw-rego').style.display = m==='rego'?'':'none';
+  document.getElementById('sw-vin').style.display  = m==='vin' ?'':'none';
+}
 
-function renderSection(key) {
-  const v = AG.vehicle;
-  switch(key) {
-
-    case 'vehicle_details': return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ic-navy">${ICO.doc}</div>
-          <span class="rs-title">Vehicle Details</span>
-          <span class="rs-pill pb">NEVDIS VERIFIED</span>
-          <span class="rs-ep">/v2/vehicles/registrations/{PLATE}</span>
-        </div>
-        <div class="rs-body">
-          <div class="kvg">
-            ${kv('Make', v.make)} ${kv('Model', v.model)} ${kv('Badge', v.badge)}
-            ${kv('Series', v.series)} ${kv('Year', v.year)} ${kv('Colour', AG.colour)}
-            ${kv('Body Type', v.body_type)} ${kv('Body Config', v.body_config)}
-            ${kv('Engine', v.engine)} ${kv('Transmission', v.transmission)}
-            ${kv('Drive', v.drive)} ${kv('Fuel', v.fuel)}
-            ${kv('Doors', v.num_doors)} ${kv('Wheelbase', v.wheelbase)}
-            ${kv('VIN', `<span class="mono">${AG.vin}</span>`)}
-          </div>
-          <div style="margin-top:12px;padding:9px 12px;background:var(--surf2);border:1px solid var(--bdr);border-radius:6px">
-            <div class="kk" style="margin-bottom:3px">Registration Authority (upstream_vehicle)</div>
-            <div class="mono" style="font-size:.76rem;color:var(--txt2)">${AG.upstream_vehicle}</div>
-          </div>
-          <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
-            <span class="kk">Match confidence:</span>
-            <span style="font-size:.72rem;font-weight:700;color:var(--green);background:var(--gbg);border:1px solid var(--gbd);padding:2px 8px;border-radius:3px">${AG.confidence.toUpperCase()}</span>
-          </div>
-          ${src('/v2/vehicles/registrations/{PLATE}','NEVDIS','VicRoads')}
-        </div>
-      </div>`;
-
-    case 'ppsr': {
-      const p = AG.ppsr;
-      const allClear = !p.has_secured_parties && !p.has_stolen_records && !p.has_written_off_records && !p.has_safety_recalls;
-      return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ${allClear?'ic-green':'ic-red'}">${ICO.shield}</div>
-          <span class="rs-title">PPSR Check</span>
-          <span class="rs-pill ${allClear?'pg':'pr'}">${allClear?'ALL CLEAR':'ISSUES FOUND'}</span>
-          <span class="rs-ep">/v2/reports/ppsr</span>
-        </div>
-        <div class="rs-body">
-          <div class="ppsr-g">
-            <div class="pp ${!p.has_secured_parties?'pass':'fail'}">
-              <div class="pp-l">Finance / Encumbrance</div>
-              <div class="pp-v">${p.has_secured_parties?fail('Recorded'):ok('Clear')}</div>
-            </div>
-            <div class="pp ${!p.has_stolen_records?'pass':'fail'}">
-              <div class="pp-l">Stolen Records</div>
-              <div class="pp-v">${p.has_stolen_records?fail('Stolen'):ok('Not Stolen')}</div>
-            </div>
-            <div class="pp ${!p.has_written_off_records?'pass':'fail'}">
-              <div class="pp-l">Written Off</div>
-              <div class="pp-v">${p.has_written_off_records?fail('Written Off'):ok('Clear')}</div>
-            </div>
-            <div class="pp ${!p.has_safety_recalls?'pass':'fail'}">
-              <div class="pp-l">Safety Recalls</div>
-              <div class="pp-v">${p.has_safety_recalls?fail('Open Recalls'):ok('No Open Recalls')}</div>
-            </div>
-          </div>
-          <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--gbg);border:1px solid var(--gbd);border-radius:7px">
-            <div>
-              <div style="font-size:.75rem;font-weight:700;color:var(--green)">PPSR Certificate Available</div>
-              <div style="font-size:.67rem;color:var(--muted);margin-top:1px">ID: ${p.id} · Generated ${new Date(p.certificate_created_at).toLocaleDateString('en-AU')}</div>
-            </div>
-            <a href="${p.url}" style="font-size:.72rem;font-weight:700;color:var(--blue);text-decoration:none;background:var(--blue-lt);border:1px solid #bdd6f8;padding:4px 10px;border-radius:5px">View PDF →</a>
-          </div>
-          ${src('/v2/reports/ppsr','PPSR Gov. Register','NEVDIS','WOVR')}
-        </div>
-      </div>`;
-    }
-
-    case 'registration': {
-      const r = AG.registration;
-      return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ic-green">${ICO.doc}</div>
-          <span class="rs-title">Registration Status</span>
-          <span class="rs-pill pg">CURRENT</span>
-          <span class="rs-ep">features=registration_status</span>
-        </div>
-        <div class="rs-body">
-          <div class="kvg">
-            ${kv('Plate', `<span class="mono">${r.plate} ${r.state}</span>`)}
-            ${kv('Status', ok('Current & Active'))}
-            ${kv('Expiry', new Date(r.expiry).toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'}))}
-            ${kv('Category', r.category)}
-            ${kv('Tare Mass', r.tare_mass + ' kg')}
-            ${kv('GVM', r.gvm + ' kg')}
-          </div>
-          ${src('features=registration_status','State RTA / VicRoads')}
-        </div>
-      </div>`;
-    }
-
-    case 'writeoff': {
-      const incidents = AG.incident_list;
-      return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ${incidents.length?'ic-red':'ic-green'}">${ICO.alert}</div>
-          <span class="rs-title">Write-off & Incident History</span>
-          <span class="rs-pill ${incidents.length?'pr':'pg'}">${incidents.length?incidents.length+' INCIDENTS':'CLEAR'}</span>
-          <span class="rs-ep">features=writeoff_info</span>
-        </div>
-        <div class="rs-body">
-          ${incidents.length === 0 ? `
-            <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--gbg);border:1px solid var(--gbd);border-radius:7px">
-              <div style="color:var(--green)">${ICO.check}</div>
-              <div>
-                <div style="font-size:.82rem;font-weight:700;color:var(--green)">No incidents recorded</div>
-                <div style="font-size:.7rem;color:var(--muted);margin-top:2px">This vehicle has no write-off, collision or damage incidents recorded in NEVDIS.</div>
-              </div>
-            </div>` : incidents.map(i=>`
-            <div style="padding:10px 12px;background:var(--rbg);border:1px solid var(--rbd);border-radius:7px;margin-bottom:8px">
-              <div class="kvg">
-                ${kv('Type', i.code)} ${kv('Type Code', i.type_code)}
-                ${kv('Jurisdiction', i.jurisdiction)} ${kv('Date', i.recorded_date)}
-                ${kv('Damage Codes', i.damage_codes?.join(', ')||'—')}
-              </div>
-            </div>`).join('')}
-          ${src('features=writeoff_info','NEVDIS','WOVR')}
-        </div>
-      </div>`;
-    }
-
-    case 'odometer': {
-      const events = AG.history.events;
-      const unique = events.reduce((acc, e) => {
-        if (!acc.find(x => x.odometer === e.odometer)) acc.push(e);
-        return acc;
-      }, []);
-      let rollback = false;
-      for (let i = 1; i < unique.length; i++) {
-        if (unique[i].odometer < unique[i-1].odometer) { rollback = true; break; }
-      }
-      return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ${rollback?'ic-red':'ic-green'}">${ICO.gauge}</div>
-          <span class="rs-title">Odometer History</span>
-          <span class="rs-pill ${rollback?'pr':'pg'}">${rollback?'ROLLBACK DETECTED':'CONSISTENT'}</span>
-          <span class="rs-ep">/v2/vehicles/vins/{VIN}/history</span>
-        </div>
-        <div class="rs-body">
-          ${rollback?`<div class="rollback-flag">${ICO.alert} Odometer rollback detected — readings are inconsistent across listing events</div>`:''}
-          <div class="odo-events">
-            ${unique.map(e=>{
-              const d = new Date(e.timestamp);
-              const dateStr = d.toLocaleDateString('en-AU',{month:'short',year:'numeric'});
-              return `
-              <div class="ode">
-                <div class="ode-line"><div class="ode-dot"></div><div class="ode-connector"></div></div>
-                <div class="ode-card">
-                  <span class="ode-type type-${e.type}">${e.type}</span>
-                  <span class="ode-km">${e.odometer.toLocaleString()} km</span>
-                  <span class="ode-src">${e.marketplace}</span>
-                  <span class="ode-date">${dateStr}</span>
-                </div>
-              </div>`;
-            }).join('')}
-          </div>
-          <div style="margin-top:4px;padding:8px 12px;background:var(--blue-lt);border:1px solid #bdd6f8;border-radius:6px;font-size:.72rem;color:var(--blue);font-weight:600">
-            Australia's best rollback detection — cross-referenced across ${events.length} marketplace listing events
-          </div>
-          ${src('/v2/vehicles/vins/{VIN}/history','carsales.com.au','gumtree.com.au','autotrader.com.au')}
-        </div>
-      </div>`;
-    }
-
-    case 'build_data': {
-      const bd = AG.build_data.vehicle;
-      return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ic-blue">${ICO.factory}</div>
-          <span class="rs-title">Factory Build Data</span>
-          <span class="rs-pill pb">FACTORY CONFIRMED</span>
-          <span class="rs-ep">/v2/vehicles/{id}/build-data</span>
-        </div>
-        <div class="rs-body">
-          <div class="kvg" style="margin-bottom:12px">
-            ${kv('VIN', `<span class="mono">${bd.vin}</span>`)}
-            ${kv('Build Date', new Date(bd.build_date).toLocaleDateString('en-AU',{day:'2-digit',month:'long',year:'numeric'}))}
-            ${kv('Make', bd.make)} ${kv('Model', bd.model)}
-          </div>
-          <div class="kk" style="margin-bottom:8px">Factory-fitted options (${bd.features.length} codes)</div>
-          <div class="build-features">
-            ${bd.features.map(f=>`
-              <div class="bf">
-                <span class="bf-code">${f.code}</span>
-                <span class="bf-val">${f.value}</span>
-              </div>`).join('')}
-          </div>
-          <div style="margin-top:10px;padding:8px 12px;background:var(--blue-lt);border:1px solid #bdd6f8;border-radius:6px;font-size:.72rem;color:var(--blue);font-weight:600">
-            Coverage for 40+ makes · Data from 1999 onwards — know exactly what left the factory
-          </div>
-          ${src('/v2/vehicles/{id}/build-data','Manufacturer Build Records')}
-        </div>
-      </div>`;
-    }
-
-    case 'valuation': {
-      const pred = AG.valuation.prediction;
-      const score = Math.round(pred.score * 100);
-      return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ic-navy">${ICO.dollar}</div>
-          <span class="rs-title">Market Valuation</span>
-          <span class="rs-pill pb">CONFIDENCE ${score}%</span>
-          <span class="rs-ep">/v2/valuations/predict</span>
-        </div>
-        <div class="rs-body">
-          <div class="val-hero">
-            <div class="val-card retail">
-              <div class="vc-l">Retail Value (prediction.retail_price)</div>
-              <div class="vc-v">$${pred.retail_price.toLocaleString()}</div>
-              <div class="vc-sub">What a buyer pays at a dealership</div>
-              <div class="val-score">
-                <span style="font-size:.65rem;opacity:.7">Confidence</span>
-                <div class="val-score-bar"><div class="val-score-fill" style="width:${score}%"></div></div>
-                <span class="val-score-pct">${score}%</span>
-              </div>
-            </div>
-            <div class="val-card trade">
-              <div class="vc-l">Trade-In Value (prediction.trade_price)</div>
-              <div class="vc-v">$${pred.trade_price.toLocaleString()}</div>
-              <div class="vc-sub">Dealer trade-in or private sale floor</div>
-              <div class="val-score" style="margin-top:10px">
-                <span style="font-size:.65rem;color:var(--muted)">Model ID</span>
-                <div class="val-score-bar dark"><div class="val-score-fill dark" style="width:${score}%"></div></div>
-                <span style="font-size:.65rem;font-weight:700;color:var(--muted)">${score}%</span>
-              </div>
-            </div>
-          </div>
-          <div class="kvg">
-            ${kv('Prediction ID', `<span class="mono">${pred.id}</span>`)}
-            ${kv('Vehicle ID', `<span class="mono">${pred.vehicle_id}</span>`)}
-            ${kv('Retail–Trade Gap', `$${(pred.retail_price - pred.trade_price).toLocaleString()}`)}
-          </div>
-          <div style="margin-top:10px;padding:8px 12px;background:var(--surf2);border:1px solid var(--bdr);border-radius:6px;font-size:.72rem;color:var(--muted);line-height:1.6">
-            Valuation based on active and recently-delisted marketplace listings from the past 7 days within VIC. Excludes government charges, includes GST, assumes good condition with standard OEM accessories.
-          </div>
-          ${src('/v2/valuations/predict','AutoGrab ML Pricing','carsales.com.au','gumtree.com.au')}
-        </div>
-      </div>`;
-    }
-
-    case 'price_history': {
-      const events = AG.history.events.filter(e=>e.type==='listing'&&e.price);
-      const W=500,H=120,pL=42,pR=14,pT=10,pB=26;
-      const prices = events.map(e=>e.price);
-      const pMin = Math.min(...prices)-2000, pMax = Math.max(...prices)+2000;
-      const xS = i => pL + i * ((W-pL-pR)/(events.length-1));
-      const yS = v => pT + (1-(v-pMin)/(pMax-pMin))*(H-pT-pB);
-      const pts = events.map((e,i)=>`${xS(i)},${yS(e.price)}`).join(' ');
-      const area = `${pL},${H-pB} ${pts} ${xS(events.length-1)},${H-pB}`;
-      const chg = (((events[0].price-events[events.length-1].price)/events[0].price)*100).toFixed(1);
-      return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ic-amber">${ICO.trending}</div>
-          <span class="rs-title">Listing Price History</span>
-          <span class="rs-pill pa">▼ ${chg}% SINCE NEW</span>
-          <span class="rs-ep">/v2/vehicles/vins/{VIN}/history</span>
-        </div>
-        <div class="rs-body">
-          <div class="ph-wrap">
-            <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-              <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#1d6fcd" stop-opacity=".16"/>
-                <stop offset="100%" stop-color="#1d6fcd" stop-opacity=".01"/>
-              </linearGradient></defs>
-              <polygon points="${area}" fill="url(#pg)"/>
-              <polyline points="${pts}" fill="none" stroke="#1d6fcd" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-              ${events.map((e,i)=>`<circle cx="${xS(i)}" cy="${yS(e.price)}" r="3.5" fill="#1d6fcd"/>`).join('')}
-              ${events.map((e,i)=>{
-                const d=new Date(e.timestamp);
-                return `<text x="${xS(i)}" y="${H}" text-anchor="middle" font-size="8.5" fill="#8898a8" font-family="sans-serif">${d.toLocaleDateString('en-AU',{month:'short',year:'2-digit'})}</text>`;
-              }).join('')}
-              <text x="${pL}" y="${pT+8}" font-size="8" fill="#8898a8" font-family="monospace">$${(pMax/1000).toFixed(0)}k</text>
-              <text x="${pL}" y="${H-pB-3}" font-size="8" fill="#8898a8" font-family="monospace">$${(pMin/1000).toFixed(0)}k</text>
-            </svg>
-          </div>
-          <div class="kvg" style="margin-top:8px">
-            ${kv('First Listed', '$' + events[0].price.toLocaleString())}
-            ${kv('Last Listed', '$' + events[events.length-1].price.toLocaleString())}
-            ${kv('Depreciation', `<span style="color:var(--amber);font-weight:700">▼ ${chg}%</span>`)}
-            ${kv('Listing Events', events.length + ' recorded')}
-          </div>
-          ${src('/v2/vehicles/vins/{VIN}/history','Marketplace Listing Events')}
-        </div>
-      </div>`;
-    }
-
-    case 'market_overlay': {
-      const mo = AG.market_overlay;
-      return `
-      <div class="rs">
-        <div class="rs-hd">
-          <div class="rs-icon ic-blue">${ICO.map}</div>
-          <span class="rs-title">Market Overlay</span>
-          <span class="rs-pill pb">${mo.sample_size} COMPARABLE SALES</span>
-          <span class="rs-ep">/v2/sourcing/market_overlay/{vehicle_id}</span>
-        </div>
-        <div class="rs-body">
-          <div class="mo-stats">
-            <div class="mo-stat"><div class="ms-v">$${(mo.avg_price/1000).toFixed(0)}k</div><div class="ms-l">Avg Market Price</div></div>
-            <div class="mo-stat"><div class="ms-v">$${(mo.min_price/1000).toFixed(0)}k</div><div class="ms-l">Market Low</div></div>
-            <div class="mo-stat"><div class="ms-v">$${(mo.max_price/1000).toFixed(0)}k</div><div class="ms-l">Market High</div></div>
-            <div class="mo-stat"><div class="ms-v">${mo.avg_days_to_sell}d</div><div class="ms-l">Avg Days to Sell</div></div>
-            <div class="mo-stat"><div class="ms-v">${mo.days_supply}d</div><div class="ms-l">Days Supply</div></div>
-            <div class="mo-stat"><div class="ms-v">${(mo.avg_odometer/1000).toFixed(0)}k</div><div class="ms-l">Avg Odometer</div></div>
-          </div>
-          <div class="kk" style="margin-bottom:8px">Live comparable listings (leads)</div>
-          <table class="mo-table">
-            <thead><tr><th>Year</th><th>State</th><th>Price</th><th>Drive Away</th><th>KMs</th><th>Seller</th></tr></thead>
-            <tbody>
-              ${mo.leads.map(l=>`<tr>
-                <td>${l.year}</td>
-                <td>${l.state}</td>
-                <td style="font-weight:700">$${l.price.toLocaleString()}</td>
-                <td style="color:var(--muted)">$${l.drive_away_price.toLocaleString()}</td>
-                <td>${(l.kms/1000).toFixed(0)}k km</td>
-                <td><span class="seller-chip seller-${l.seller_type}">${l.seller_type}</span>${l.is_outlier?` <span class="outlier-flag">outlier</span>`:''}</td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-          ${src('/v2/sourcing/market_overlay/{vehicle_id}','carsales.com.au','gumtree.com.au','drive.com.au')}
-        </div>
-      </div>`;
-    }
-
-    default: return '';
+/* ── FLOW ── */
+function doSearch(){
+  let plate,state;
+  if(searchMode==='rego'){
+    plate=(document.getElementById('rego-inp').value||'').trim().toUpperCase()||'ABC 123';
+    state=document.getElementById('state-sel').value;
+  } else {
+    plate=(document.getElementById('vin-inp').value||'').trim().toUpperCase()||'MR0FB3CD200123456';
+    state='';
   }
+  MOCK.plate=plate; MOCK.state=state;
+
+  // loading screen
+  document.getElementById('ld-plate-num').textContent=plate;
+  document.getElementById('ld-state-txt').textContent=state||'VIN';
+  document.getElementById('ld-state-col').style.display=state?'':'none';
+  showScreen('loading');
+
+  // animate steps
+  const ids=['ls1','ls2','ls3','ls4','ls5'];
+  const delays=[0,560,1060,1520,1940];
+  ids.forEach(id=>{ const el=document.getElementById(id); el.className='ls-row'; el.querySelector('.ls-dot').innerHTML=''; });
+  document.getElementById('ls1').classList.add('active');
+  ids.forEach((id,i)=>{
+    setTimeout(()=>{
+      const el=document.getElementById(id);
+      el.className='ls-row done';
+      el.querySelector('.ls-dot').innerHTML=ico('chk');
+      if(i+1<ids.length) document.getElementById(ids[i+1]).classList.add('active');
+    },delays[i]+480);
+  });
+
+  setTimeout(()=>{ buildResults(); showScreen('results'); }, 2600);
 }
 
-// ─── Sales / empty state ──────────────────────────────────────
-function renderEmpty() {
-  return `<div class="sales-state">
-    <div class="sales-hero">
-      <div class="ag-powered">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-        Powered by AutoGrab Intelligence
+function goHero(){
+  showScreen('hero');
+  document.getElementById('rego-inp').value='';
+  document.getElementById('vin-inp').value='';
+}
+
+function showScreen(name){
+  ['hero','loading','results'].forEach(n=>{
+    const s=document.getElementById('screen-'+n);
+    s.style.display='none'; s.classList.remove('active');
+  });
+  const s=document.getElementById('screen-'+name);
+  s.style.display=''; s.classList.add('active');
+  if(name==='results') window.scrollTo(0,0);
+}
+
+/* ── BUILD RESULTS ── */
+function buildResults(){
+  const v=MOCK.vehicle;
+  document.getElementById('rtb-plate').textContent=MOCK.plate;
+  document.getElementById('rtb-vehicle').textContent=v.title;
+
+  // vehicle card
+  document.getElementById('veh-sub').textContent=v.year+' · '+v.make.toUpperCase();
+  document.getElementById('veh-name').textContent=v.model+' '+v.badge+' '+v.transmission+' '+v.drive+' '+v.fuel+' '+v.body_config;
+  document.getElementById('veh-vin').textContent=MOCK.vin;
+  const regOk=MOCK.registration.status==='current';
+  const chip=document.getElementById('veh-reg-chip');
+  chip.textContent='REG: '+(MOCK.registration.status||'').toUpperCase();
+  chip.style.background=regOk?'rgba(10,110,68,.88)':'rgba(192,32,26,.88)';
+  document.getElementById('veh-specs').innerHTML=[
+    ['Body',v.body_config],['Trans.',v.transmission],
+    ['Drive',v.drive],['Fuel',v.fuel],
+    ['Engine',v.engine],['Colour',MOCK.colour.split(' ').slice(1).join(' ')],
+  ].map(([l,val])=>`<div class="spec-cell"><div class="spec-lbl">${l}</div><div class="spec-val">${val}</div></div>`).join('');
+
+  renderPkgList();
+  renderReport();
+}
+
+function renderPkgList(){
+  document.getElementById('pkg-list').innerHTML=Object.values(PKGS).map(p=>`
+    <div class="pkg${p.popular?' pop':''}${p.id===activePkg?' sel':''}" onclick="pickPkg('${p.id}')">
+      ${p.popular?'<div class="pkg-badge">Most Popular</div>':''}
+      <div class="pkg-row1">
+        <div class="pkg-radio-name">
+          <div class="pkg-radio"></div>
+          <span class="pkg-name">${p.name}</span>
+        </div>
+        <div class="pkg-pricing">
+          <div class="pkg-price">${fmtCur(p.price)}</div>
+          ${p.save?`<div class="pkg-save">${p.save}</div>`:''}
+        </div>
       </div>
-      <h1>Don't buy blind.<br/>Know <em>everything</em> first.</h1>
-      <p>Australia's most comprehensive vehicle history reports — factory build data, odometer rollback detection, ML-powered valuations and government PPSR checks in one report.</p>
-      <div class="stats-row">
-        <div class="stat-item"><div class="sv">40+</div><div class="sl">Vehicle makes covered</div></div>
-        <div class="stat-item"><div class="sv">1999</div><div class="sl">Data going back to</div></div>
-        <div class="stat-item"><div class="sv">1,000+</div><div class="sl">Dealerships trust AutoGrab</div></div>
-        <div class="stat-item"><div class="sv">9 in 10</div><div class="sl">AU insurers use this data</div></div>
+      <div class="pkg-includes">
+        ${p.includes.map(i=>`<div class="pkg-inc-item">${ico('chk')}<span>${i}</span></div>`).join('')}
       </div>
-    </div>
-    <div class="value-props">
-      <div class="vp">
-        <div class="vp-icon green">${ICO.shield}</div>
-        <h3>Government PPSR Check</h3>
-        <p>The only legally recognised finance and encumbrance check in Australia. Instantly verify the vehicle is debt-free, not stolen and not written off.</p>
+    </div>`).join('');
+
+  const p=PKGS[activePkg];
+  document.getElementById('cta-main').innerHTML=`${ico('shld')} Get ${p.name} — ${fmtCur(p.price)}`;
+}
+
+function pickPkg(id){
+  activePkg=id;
+  renderPkgList();
+  renderReport();
+}
+
+/* ── RENDER REPORT ── */
+function renderReport(){
+  const unlocked=new Set(PKGS[activePkg].sections);
+  document.getElementById('report-sections').innerHTML=ALL_SECS.map(key=>{
+    const meta=SEC_META[key];
+    const open=unlocked.has(key);
+    return `
+    <div class="sec-wrap">
+      <div class="sec-card">
+        <div class="sec-hd">
+          <div class="sec-hd-l">
+            <div class="sec-ico ${meta.col}">${ico(meta.icon)}</div>
+            <div>
+              <div class="sec-title">${meta.title}</div>
+              <div class="sec-source">${meta.source}</div>
+            </div>
+          </div>
+          <div class="sec-api-tag">${meta.api}</div>
+        </div>
+        <div style="position:relative">
+          <div class="sec-body${open?'':' blurred'}">${secBody(key)}</div>
+          <div class="sec-gate${open?'':' show'}">
+            <div class="gate-chip" onclick="upgrade('${key}')">${ico('lock')} Unlock this section</div>
+            <div class="gate-pkg-hint">${gateHint(key)}</div>
+          </div>
+        </div>
       </div>
-      <div class="vp">
-        <div class="vp-icon blue">${ICO.gauge}</div>
-        <h3>Best Rollback Detection</h3>
-        <p>Cross-reference odometer readings across every marketplace listing event. Australia's most comprehensive method for detecting odometer fraud.</p>
-      </div>
-      <div class="vp">
-        <div class="vp-icon amber">${ICO.factory}</div>
-        <h3>Factory Build Data</h3>
-        <p>Know exactly what the vehicle rolled out of the factory with — options, packages and specs worth thousands — for 40+ makes back to 1999.</p>
-      </div>
-      <div class="vp">
-        <div class="vp-icon navy">${ICO.dollar}</div>
-        <h3>ML-Powered Valuation</h3>
-        <p>Real-time retail and trade valuations powered by AutoGrab's machine learning model — updated weekly from active Australian marketplace listings.</p>
-      </div>
-    </div>
-    <div class="sources-strip">
-      <span class="sl-lbl">Data sources</span>
-      <span class="src-chip">PPSR Gov. Register</span>
-      <span class="src-chip">NEVDIS</span>
-      <span class="src-chip">WOVR</span>
-      <span class="src-chip">carsales.com.au</span>
-      <span class="src-chip">gumtree.com.au</span>
-      <span class="src-chip">State RTAs</span>
-      <span class="src-chip">Manufacturer Build Records</span>
-    </div>
+    </div>`;
+  }).join('');
+}
+
+function gateHint(key){
+  for(const id of['basic','standard','full']){
+    if(PKGS[id].sections.includes(key)) return 'Included in '+PKGS[id].name+' ('+fmtCur(PKGS[id].price)+')';
+  }
+  return '';
+}
+
+function upgrade(key){
+  for(const id of['basic','standard','full']){
+    if(PKGS[id].sections.includes(key)){ pickPkg(id); break; }
+  }
+  document.querySelector('.res-left').scrollIntoView({behavior:'smooth'});
+}
+
+/* ── SECTION CONTENT ── */
+function secBody(key){
+  if(key==='vehicle_details') return secVehicle();
+  if(key==='ppsr')            return secPpsr();
+  if(key==='registration')    return secReg();
+  if(key==='writeoff')        return secWriteoff();
+  if(key==='odometer')        return secOdo();
+  if(key==='build_data')      return secBuild();
+  if(key==='valuation')       return secVal();
+  if(key==='market_overlay')  return secMarket();
+  if(key==='price_history')   return secHistory();
+  return '';
+}
+
+function secVehicle(){
+  const v=MOCK.vehicle;
+  const rows=[
+    ['Year',v.year],['Make',v.make],['Model',v.model],['Badge',v.badge],
+    ['Series',v.series],['Body',v.body_type+' – '+v.body_config],
+    ['Transmission',v.transmission],['Drive',v.drive],
+    ['Fuel',v.fuel],['Engine',v.engine],
+    ['Colour',MOCK.colour],['VIN',MOCK.vin],
+  ];
+  return `<div style="margin-bottom:11px"><span class="badge pass">${ico('chk')} Match confidence: <strong>${MOCK.confidence}</strong></span></div>
+  <div class="data-grid">${rows.map(([l,val])=>`<div class="dc"><div class="dc-l">${l}</div><div class="dc-v${l==='VIN'?' mono':''}">${val}</div></div>`).join('')}</div>`;
+}
+
+function secPpsr(){
+  const p=MOCK.ppsr;
+  const checks=[
+    {lbl:'Security interest / encumbrance',pass:!p.has_secured_parties,ok:'No encumbrances',bad:'Active interest'},
+    {lbl:'Stolen vehicle register',         pass:!p.has_stolen_records, ok:'Not stolen',     bad:'Reported stolen'},
+    {lbl:'Written-off vehicle register',    pass:!p.has_written_off_records,ok:'No write-off',bad:'Write-off recorded'},
+    {lbl:'Safety recalls',                  pass:!p.has_safety_recalls, ok:'No open recalls',bad:'Open recall(s)'},
+  ];
+  const allOk=checks.every(c=>c.pass);
+  return `<div style="margin-bottom:13px"><span class="badge ${allOk?'pass':'fail'}">${ico(allOk?'chk':'x')} ${allOk?'All clear — no issues found':'Issues detected'}</span></div>
+  <div class="check-grid">${checks.map(c=>`
+    <div class="ck">
+      <div class="ck-ico ${c.pass?'pass':'fail'}">${ico(c.pass?'chk':'x')}</div>
+      <div><div class="ck-lbl">${c.lbl}</div><div class="ck-val">${c.pass?c.ok:c.bad}</div></div>
+    </div>`).join('')}</div>
+  <div class="ppsr-cert">
+    <div class="ppsr-cert-info">PPSR Certificate<small>Issued ${fmtDt(p.certificate_created_at)} · Cert #${p.id}</small></div>
+    <a class="ppsr-cert-link" href="${p.url}" target="_blank">${ico('ext')} View PDF</a>
   </div>`;
 }
 
-// ─── Health cards ─────────────────────────────────────────────
-function healthCards(sel) {
-  const cards = [];
-  if (sel.has('ppsr')) {
-    const p = AG.ppsr;
-    const clear = !p.has_secured_parties && !p.has_stolen_records && !p.has_written_off_records;
-    cards.push({ l:'PPSR', v: clear?'All Clear':'Issues Found', c: clear?'pass':'fail' });
-  }
-  if (sel.has('registration')) cards.push({ l:'Registration', v:'Current', c:'pass' });
-  if (sel.has('writeoff'))     cards.push({ l:'Write-off', v:'Not Recorded', c:'pass' });
-  if (sel.has('odometer'))     cards.push({ l:'Odometer', v:'Consistent', c:'pass' });
-  if (sel.has('valuation'))    cards.push({ l:'Est. Value', v:'$48,200', c:'info' });
-  if (sel.has('build_data'))   cards.push({ l:'Build Date', v:'Apr 2021', c:'info' });
-  if (!cards.length) return '';
-  return `<div class="health-row">${cards.map(c=>`
-    <div class="hc ${c.c}">
-      <div class="hc-l">${c.l}</div>
-      <div class="hc-v">${c.c==='pass'?ICO.check:c.c==='fail'?ICO.x:''}${c.v}</div>
+function secReg(){
+  const r=MOCK.registration;
+  const exp=new Date(r.expiry),now=new Date(),days=Math.round((exp-now)/864e5);
+  const rows=[
+    ['Status',r.status==='current'?`<span class="badge pass">${ico('chk')} Current</span>`:`<span class="badge fail">${ico('x')} Expired</span>`],
+    ['State',r.state],['Plate',r.plate],
+    ['Expiry',fmtDt(r.expiry)+(days<0?' <span style="color:var(--red);font-size:11px">(expired)</span>':days<90?' <span style="color:var(--amber);font-size:11px">('+days+' days)</span>':'')],
+    ['Category',r.category],['Tare mass',r.tare_mass],['GVM',r.gvm],
+  ];
+  return `<div class="data-grid">${rows.map(([l,val])=>`<div class="dc"><div class="dc-l">${l}</div><div class="dc-v">${val}</div></div>`).join('')}</div>`;
+}
+
+function secWriteoff(){
+  const list=MOCK.incident_list;
+  if(!list.length) return `
+    <div class="ck" style="background:var(--bg);border-radius:8px;padding:15px 12px;margin-bottom:12px">
+      <div class="ck-ico pass" style="width:30px;height:30px">${ico('chk')}</div>
+      <div><div class="ck-lbl">No write-off or incident records found</div><div class="ck-val">Searched WOVR and all 8 state &amp; territory RTA databases</div></div>
+    </div>
+    <div style="padding:11px 13px;background:var(--bg);border-radius:8px;font-size:11.5px;color:var(--muted)">
+      Databases checked: VIC Roads · NSW Transport · QLD TMR · WA DoT · SA DIT · TAS DTF · ACT Access Canberra · NT MVR
+    </div>`;
+  return `<div>${list.map(i=>`<div>${cap(i.type)}</div>`).join('')}</div>`;
+}
+
+function secOdo(){
+  const evs=[...MOCK.history.events].sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  const first=evs[evs.length-1], last=evs[0];
+  const totalKm=last.odometer-first.odometer;
+  let rollback=false;
+  for(let i=1;i<evs.length;i++) if(evs[i].odometer>evs[i-1].odometer) rollback=true;
+  const yrs=Math.round((new Date(last.timestamp)-new Date(first.timestamp))/3.156e10);
+  return `
+  <div style="display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap">
+    <div class="vc2"><div class="vc2-lbl">Latest reading</div><div class="vc2-val">${fmtKm(last.odometer)}</div><div class="vc2-sub">${fmtDt(last.timestamp)}</div></div>
+    <div class="vc2"><div class="vc2-lbl">Total recorded</div><div class="vc2-val">${fmtKm(totalKm)}</div><div class="vc2-sub">Over ${yrs} year${yrs!==1?'s':''}</div></div>
+    <div class="vc2${rollback?' hi':''}"><div class="vc2-lbl">Rollback check</div>
+      <div class="vc2-val${rollback?'':' blue'}" style="${rollback?'color:var(--red)':''}">${rollback?'ROLLBACK!':'No rollback'}</div>
+      <div class="vc2-sub">${evs.length} records checked</div>
+    </div>
+  </div>
+  <div class="odo-tl">${evs.map(e=>`
+    <div class="odo-ev">
+      <div class="odo-dot"></div>
+      <div class="odo-date">${fmtDt(e.timestamp)}</div>
+      <div class="odo-km">${fmtKm(e.odometer)}</div>
+      <div class="odo-det">${cap(e.type)}${e.marketplace?' · '+e.marketplace:''}${e.price?' · '+fmtCur(e.price):''}</div>
     </div>`).join('')}</div>`;
 }
 
-// ─── Render ───────────────────────────────────────────────────
-const selected = new Set([...document.querySelectorAll('.cb.on')].map(el=>el.dataset.key));
-
-function render() {
-  const area = document.getElementById('report-area');
-  if (!selected.size) { area.innerHTML = renderEmpty(); return; }
-
-  const hero = `
-    <div class="v-hero">
-      <div class="car-img-wrap">
-        <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=900&q=80"
-          alt="2021 Toyota HiLux SR5"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-        <div class="svg-fallback" style="display:none">${CAR_SVG}</div>
-        <div class="img-overlay"></div>
-        <div class="img-plate">ABC 123 · VIC</div>
-        <div class="img-conf">${ICO.check} confidence: standard</div>
-      </div>
-      <div class="v-info">
-        <div>
-          <div class="vi-title">${AG.vehicle.year} ${AG.vehicle.make} ${AG.vehicle.model} ${AG.vehicle.badge}</div>
-          <div class="vi-raw">${AG.vin} · ${AG.colour} · ${AG.vehicle.series} · ${AG.vehicle.body_config}</div>
-          <div class="vi-chips">
-            <span class="chip">${AG.vehicle.drive}</span>
-            <span class="chip">${AG.vehicle.engine}</span>
-            <span class="chip">${AG.vehicle.transmission}</span>
-            <span class="chip">${AG.vehicle.body_type}</span>
-            <span class="chip">${AG.registration.state} Registered</span>
-          </div>
-        </div>
-        <div class="v-meta">
-          <div class="vm-id">Report: ${REPORT_ID}</div>
-          <div class="vm-ts">${REPORT_TS}</div>
-          <div class="vm-live"><div class="pulse"></div>Sample Report</div>
-        </div>
-      </div>
-    </div>`;
-
-  const sections = SECTION_ORDER.filter(k=>selected.has(k)).map(renderSection).join('');
-
-  const footer = `
-    <div class="rf">
-      <div>
-        <div class="rf-id">Certificate: ${REPORT_ID} · AutoGrab Vehicle ID: ${AG.vehicle.id}</div>
-        <div class="rf-note">Data sourced from PPSR, NEVDIS, WOVR, AutoGrab Intelligence &amp; Australian marketplace listings. This report contains sample data.</div>
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap">
-        <span class="src-t">PPSR</span><span class="src-t">NEVDIS</span><span class="src-t">AutoGrab</span><span class="src-t">WOVR</span>
-      </div>
-    </div>`;
-
-  area.innerHTML = hero + healthCards(selected) + sections + footer;
+function secBuild(){
+  const b=MOCK.build_data.vehicle;
+  return `
+  <div class="data-grid" style="margin-bottom:13px">
+    <div class="dc"><div class="dc-l">Build date</div><div class="dc-v">${b.build_date}</div></div>
+    <div class="dc"><div class="dc-l">VIN</div><div class="dc-v mono">${b.vin}</div></div>
+    <div class="dc"><div class="dc-l">Make / Model</div><div class="dc-v">${b.make} ${b.model}</div></div>
+  </div>
+  <div class="pkg-head" style="margin-bottom:9px">Factory option codes (${b.features.length})</div>
+  <div class="bf-grid">${b.features.map(f=>`
+    <div class="bf"><span class="bf-code">${f.code}</span><span class="bf-val">${f.value}</span></div>`).join('')}</div>`;
 }
 
-// ─── Interactions ─────────────────────────────────────────────
-function updateTotal() {
-  let t = 0;
-  document.querySelectorAll('.cb').forEach(el => { if (selected.has(el.dataset.key)) t += parseFloat(el.dataset.price); });
-  document.getElementById('total-display').textContent = '$' + t.toFixed(2);
+function secVal(){
+  const p=MOCK.valuation.prediction;
+  const conf=Math.round(p.score*100);
+  return `
+  <div class="val-cards">
+    <div class="vc2 hi"><div class="vc2-lbl">Private asking</div><div class="vc2-val blue">${fmtCur(p.retail_price)}</div><div class="vc2-sub">Confidence ${conf}%</div></div>
+    <div class="vc2"><div class="vc2-lbl">Trade / dealer buy</div><div class="vc2-val">${fmtCur(p.trade_price)}</div><div class="vc2-sub">Wholesale estimate</div></div>
+    <div class="vc2"><div class="vc2-lbl">Market midpoint</div><div class="vc2-val">${fmtCur(p.price)}</div><div class="vc2-sub">ML prediction</div></div>
+  </div>
+  <div style="background:var(--bg);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--muted)">Prediction ID: <code>${p.id}</code> &nbsp;·&nbsp; Vehicle: <code>${p.vehicle_id}</code></div>`;
 }
 
-document.querySelectorAll('.cb').forEach(el => {
-  el.addEventListener('click', () => {
-    const k = el.dataset.key;
-    if (selected.has(k)) { selected.delete(k); el.classList.remove('on'); el.querySelector('input').checked = false; }
-    else { selected.add(k); el.classList.add('on'); el.querySelector('input').checked = true; }
-    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
-    updateTotal(); render(); checkInputs();
-  });
-});
-
-const PRESETS = {
-  basic:    ['vehicle_details','ppsr'],
-  standard: ['vehicle_details','ppsr','registration','odometer','valuation'],
-  full:     ['vehicle_details','ppsr','registration','writeoff','odometer','build_data','valuation','market_overlay','price_history'],
-};
-function applyPreset(name) {
-  const keys = new Set(PRESETS[name]);
-  document.querySelectorAll('.cb').forEach(el => {
-    const on = keys.has(el.dataset.key);
-    el.classList.toggle('on', on);
-    el.querySelector('input').checked = on;
-    if (on) selected.add(el.dataset.key); else selected.delete(el.dataset.key);
-  });
-  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('active', b.dataset.preset===name));
-  updateTotal(); render(); checkInputs();
+function secMarket(){
+  const m=MOCK.market_overlay;
+  const stats=[['Listings',m.sample_size],['Avg sell time',m.avg_days_to_sell+' days'],['Days supply',m.days_supply+' days'],['Avg odo',fmtKm(m.avg_odometer)]];
+  return `
+  <div class="mkt-stats">${stats.map(([l,v])=>`<div class="msc"><div class="msc-l">${l}</div><div class="msc-v">${v}</div></div>`).join('')}</div>
+  <div style="display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap">
+    <div class="dc"><div class="dc-l">Avg price</div><div class="dc-v">${fmtCur(m.avg_price)}</div></div>
+    <div class="dc"><div class="dc-l">Min price</div><div class="dc-v">${fmtCur(m.min_price)}</div></div>
+    <div class="dc"><div class="dc-l">Max price</div><div class="dc-v">${fmtCur(m.max_price)}</div></div>
+    <div class="dc"><div class="dc-l">Outliers</div><div class="dc-v">${m.outlier_count}</div></div>
+  </div>
+  <table class="tbl">
+    <thead><tr><th>Year</th><th>State</th><th>Price</th><th>Drive-away</th><th>Kms</th><th>Seller</th><th>Listed</th></tr></thead>
+    <tbody>${m.leads.map(l=>`<tr>
+      <td>${l.year}</td><td><span class="state-chip">${l.state}</span></td>
+      <td><strong>${fmtCur(l.price)}</strong></td><td>${fmtCur(l.drive_away_price)}</td>
+      <td>${fmtKm(l.kms)}</td><td>${cap(l.seller_type)}</td>
+      <td>${l.listed_at}${l.is_outlier?' <span style="color:var(--amber);font-size:10px;font-weight:800">OUTLIER</span>':''}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
 }
 
-const regoIn = document.getElementById('rego-input');
-const vinIn  = document.getElementById('vin-input');
-const runBtn = document.getElementById('lookup-btn');
-function checkInputs() { runBtn.disabled = !(regoIn.value.trim().length>=3 || vinIn.value.trim().length>=5) || !selected.size; }
-regoIn.addEventListener('input', checkInputs);
-vinIn.addEventListener('input', checkInputs);
+function secHistory(){
+  const evs=[...MOCK.history.events].filter(e=>e.type==='sale'||e.type==='listed')
+    .sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  return evs.map(e=>`
+    <div class="ph-ev">
+      <span class="ph-type ${e.type}">${cap(e.type)}</span>
+      <div><div class="ph-km">${fmtKm(e.odometer)}</div><div style="font-size:11px;color:var(--muted)">${fmtDt(e.timestamp)}</div></div>
+      <div class="ph-det">${e.price?`<strong>${fmtCur(e.price)}</strong>`:'—'}${e.marketplace?`<br><span style="color:var(--muted)">${e.marketplace}</span>`:''}</div>
+    </div>`).join('');
+}
 
-runBtn.addEventListener('click', () => {
-  const id = regoIn.value.trim() ? 'Registration: '+regoIn.value.trim().toUpperCase() : 'VIN: '+vinIn.value.trim().toUpperCase();
-  document.getElementById('modal-vid').textContent = id;
-  let t = 0;
-  const lines = [...document.querySelectorAll('.cb')].filter(el=>selected.has(el.dataset.key)).map(el=>{
-    const p = parseFloat(el.dataset.price); t += p;
-    return `<div class="li-row"><span>${el.querySelector('.cb-name').textContent.replace(/<[^>]+>/g,'').trim()}</span><span class="li-p">$${p.toFixed(2)}</span></div>`;
-  }).join('');
-  document.getElementById('line-items').innerHTML = lines;
-  document.getElementById('modal-total').textContent = '$'+t.toFixed(2);
-  document.getElementById('modal-main').style.display = '';
-  document.getElementById('success-screen').style.display = 'none';
-  const pb = document.getElementById('pay-btn');
-  pb.disabled = false;
-  pb.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Pay & Unlock Report`;
-  document.getElementById('modal-overlay').classList.remove('hidden');
-});
-
-document.getElementById('close-modal').addEventListener('click', ()=>document.getElementById('modal-overlay').classList.add('hidden'));
-document.getElementById('modal-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.add('hidden'); });
-
-document.querySelectorAll('.pm').forEach(el=>{
-  el.addEventListener('click',()=>{
-    document.querySelectorAll('.pm').forEach(x=>x.classList.remove('sel'));
-    el.classList.add('sel');
-    document.getElementById('card-fields').style.display = el.dataset.method==='card'?'':'none';
-  });
-});
-
-document.getElementById('cc-num').addEventListener('input',function(){
-  this.value=this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,19);
-});
-
-document.getElementById('pay-btn').addEventListener('click',function(){
-  this.innerHTML='Processing…'; this.disabled=true;
-  setTimeout(()=>{ document.getElementById('modal-main').style.display='none'; document.getElementById('success-screen').style.display='block'; }, 1500);
-});
-
-// ─── Init ─────────────────────────────────────────────────────
-updateTotal(); render(); checkInputs();
+/* ── MODAL ── */
+function openModal(){
+  const p=PKGS[activePkg];
+  document.getElementById('modal-plate').textContent=MOCK.plate;
+  document.getElementById('modal-veh').textContent=MOCK.vehicle.title;
+  document.getElementById('modal-lines').innerHTML=
+    p.includes.map(i=>`<div class="li"><span class="li-n">${i}</span><span class="li-p">&nbsp;</span></div>`).join('')+
+    `<div class="li tot"><span class="li-n">${p.name} Package</span><span class="li-p">${fmtCur(p.price)}</span></div>`;
+  document.getElementById('pay-btn').innerHTML=`${ico('shld')} Pay ${fmtCur(p.price)} — Get Report`;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+}
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target===document.getElementById('modal')) closeModal(); });
 </script>
 </body>
 </html>
